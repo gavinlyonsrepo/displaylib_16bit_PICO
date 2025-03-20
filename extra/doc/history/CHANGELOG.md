@@ -7,7 +7,7 @@
 * Version 1.6 April 2023
 	* Minor update.
 	* Doxygen Style Comments added, so an automated API can be created.
-	* Refactor , Enums placed inside the  relevant Class. Font and BMP data moved to cpp files.   
+	* Refactor , Enums placed inside the  relevant Class. Font and BMP data moved to cpp files.
 
 * Version 1.7 November 2023
 	* Github pull request no 1 merged. 
@@ -22,4 +22,4 @@
 * Version 1.7.2 Dec 2024
 	* Added Sprite function as per github issue 5.
 	* Replaced use of Malloc with row by row buffer writes. 
-	* Refactored TFTFillRectangle to TFTfillRectBuffer.
+	* Refactored fillRectangle to fillRectBuffer.
