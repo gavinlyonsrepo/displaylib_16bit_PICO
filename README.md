@@ -19,7 +19,7 @@
 
 ## Overview
 
-* Name : displaylib_1bit_PICO
+* Name : displaylib_16bit_PICO
 * Description :
 
 0. C++ Library to support 16-bit color graphic displays
