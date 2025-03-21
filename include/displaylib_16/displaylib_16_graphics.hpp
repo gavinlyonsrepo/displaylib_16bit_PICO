@@ -120,11 +120,14 @@ public:
 	void setTextSize(uint8_t s);
 
 	// Bitmap & Icon
-	DisLib16::Ret_Codes_e drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t color, uint16_t bgcolor, const unsigned char character[]);
-	DisLib16::Ret_Codes_e drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap);
-	DisLib16::Ret_Codes_e drawBitmap24Data(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h);
-	DisLib16::Ret_Codes_e drawBitmap16Data(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h);
-	DisLib16::Ret_Codes_e drawSpriteData(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h, uint16_t backgroundColor);
+	DisLib16::Ret_Codes_e drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t color, uint16_t bgcol, const std::span<const uint8_t> data);
+	DisLib16::Ret_Codes_e drawSpriteData(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h, uint16_t bgColor, bool printBg);
+	DisLib16::Ret_Codes_e drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t col, uint16_t bgcol, const std::span<const uint8_t> data);
+	DisLib16::Ret_Codes_e drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
+	DisLib16::Ret_Codes_e drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
+	DisLib16::Ret_Codes_e drawBitmap24Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
+
+
 
 protected:
 	void pushColor(uint16_t color);
@@ -169,6 +172,8 @@ private:
 		a = b;
 		b = t;
 	}
+	uint16_t convert8bitTo16bit(uint8_t RRRGGGBB); 
+
 	///@endcond
 	
 	/*! Width of the font in bits each representing a bytes sized column*/

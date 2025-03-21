@@ -417,7 +417,8 @@ void displaylib_16_graphics ::drawTriangle(int16_t x0, int16_t y0, int16_t x1, i
 */
 void displaylib_16_graphics ::fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
-	int16_t a, b, y, last, dx01, dy01, dx02, dy02, dx12, dy12, sa, sb;
+	int16_t a, b, y, last, dx01, dy01, dx02, dy02, dx12, dy12;
+	int32_t sa, sb;
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1)
 	{
@@ -813,29 +814,26 @@ void displaylib_16_graphics ::FontNum(Font_Type_e FontNumber)
 	@param w 0-MAX_Y possible values width of icon in pixels , height is fixed at 8 pixels
 	@param color icon foreground colors ,is bi-color
 	@param backcolor icon background colors ,is bi-color
-	@param character  An array of unsigned chars containing icon data vertically addressed.
+	@param bitmap  An array containing icon data vertically addressed.
 	@return
 		-# Display_Success=success.
 		-# Display_BitmapScreenBounds=Co-ordinates out of bounds.
 		-# Display_BitmapNullptr=invalid pointer object.
 		-# Display_IconScreenWidth=Icon width is greater than screen width
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t color, uint16_t backcolor, const unsigned char character[])
+DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t color, uint16_t backcolor, const std::span<const uint8_t> bitmap)
 {
-	// Out of screen bounds
-	if ((x >= _width) || (y >= _height))
+	if ((x >= _width) || (y >= _height)) 	// Out of screen bounds
 	{
 		printf("Error drawIcon 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
 	}
-	// Check for null pointer
-	if (character == nullptr)
+	if( bitmap.empty()) 	//  Check for empty bitmap
 	{
-		printf("Error drawIcon 3: Icon array is not valid pointer object\r\n");
-		return DisLib16::BitmapNullptr;
+		printf("Error: drawBitmap 1: Bitmap span is empty\n" );
+		return DisLib16::BitmapDataEmpty;
 	}
-	// Check w value
-	if (w >= _width)
+	if (w >= _width) 	// Check w value
 	{
 		printf("Error drawIcon 4: Icon is greater than Screen width\r\n");
 		return DisLib16::IconScreenWidth;
@@ -846,7 +844,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, 
 	{
 		for (uint8_t mybit = 0; mybit < 8; mybit++)
 		{
-			value = !!(character[byte] & (1 << mybit));
+			value = !!(bitmap[byte] & (1 << mybit));
 			if (value)
 			{
 				drawPixel(x + byte, y + mybit, backcolor);
@@ -869,8 +867,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, 
 	@param h height of the bitmap in pixels
 	@param color bitmap foreground colors ,is bi-color
 	@param bgcolor bitmap background colors ,is bi-color
-	@param pBmp  an array of uint8_t containing bitmap data horizontally addressed.
-	@param sizeOfBitmap size of the bitmap
+	@param bitmap  an array of uint8_t containing bitmap data horizontally addressed.
 	@return
 		-# Display_Success=success
 		-# Display_BitmapNullptr=invalid pointer object
@@ -879,30 +876,28 @@ DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, 
 	@note A horizontal Bitmap's w must be divisible by 8. For a bitmap with w=88 & h=48.
 		  Bitmap excepted size = (88/8) * 48 = 528 bytes.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, uint8_t *pBmp, uint16_t sizeOfBitmap)
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t color, uint16_t bgcolor, const std::span<const uint8_t> bitmap)
 {
 	int16_t byteWidth = (w + 7) / 8;
 	uint8_t byte = 0;
 	uint16_t mycolor = 0;
 
-	// Validate size of the bitmap
-	if (sizeOfBitmap != ((w / 8) * h))
+	if( bitmap.empty()) //  Check for empty bitmap
 	{
-		printf("Error drawBitmap 4 : Horizontal Bitmap size is incorrect: Check Size =  (w/8 * h): %u  %i  %i \n", sizeOfBitmap, w, h);
+		printf("Error: drawBitmap 1: Bitmap span is empty\n" );
+		return DisLib16::BitmapDataEmpty;
+	}
+	if(w % 8 != 0) 	// check horizontal size
+	{
+		printf("Error: drawBitmap 2 : Horizontal Bitmap size is incorrect: %u : Width must be divisible by 8 \n", w );
 		return DisLib16::BitmapHorizontalSize;
 	}
-	// Check for null pointer
-	if (pBmp == nullptr)
+	if ((x >= _width) || (y >= _height)) // Check bounds
 	{
-		printf("Error drawBitmap 1: Bitmap array is nullptr\r\n");
-		return DisLib16::BitmapNullptr;
-	}
-	// Check bounds
-	if ((x >= _width) || (y >= _height))
-	{
-		printf("Error drawBitmap 2: Out of screen bounds, check x & y\r\n");
+		printf("Error: drawBitmap 4: Out of screen bounds, check x & y\n" );
 		return DisLib16::BitmapScreenBounds;
 	}
+
 	if ((x + w - 1) >= _width)
 		w = _width - x;
 	if ((y + h - 1) >= _height)
@@ -919,7 +914,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 			if (i & 7)
 				byte <<= 1;
 			else
-				byte = pBmp[j * byteWidth + i / 8];
+				byte = bitmap[j * byteWidth + i / 8];
 			mycolor = (byte & 0x80) ? color : bgcolor;
 			// Correct order: High byte first, low byte second
 			rowBuffer[2 * i] = mycolor >> 8;      // High byte
@@ -937,101 +932,111 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 	@brief: Draws a 16-bit color bitmap to the screen from a data array 
 	@param x X coordinate 
 	@param y Y coordinate 
-	@param pBmp pointer to data array 
+	@param bitmap span to data array 
 	@param w width of the bitmap in pixels 
 	@param h height of the bitmap in pixels 
-	@return
-		-# Display_Success=success
-		-# Display_BitmapNullptr=invalid pointer object
-		-# Display_BitmapScreenBounds=Co-ordinates out of bounds
+	@return Display status code:
+			-# DisLib16::Success on success.
+			-# DisLib16::BitmapDataEmpty if bitmap is empty.
+			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
+			-# DisLib16::BitmapSize if bitmap is too small.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h)
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h) 
 {
-	uint8_t j = 0;
-
-	// 1. Check for null pointer
-	if (pBmp == nullptr)
+	if (bitmap.empty()) 	// 1. Check for empty bitmap
 	{
-		printf("Error drawBitmap16 1: Bitmap array is nullptr\r\n");
-		return DisLib16::BitmapNullptr;
+		printf("Error drawBitmap16 1: Bitmap array is empty\r\n");
+		return DisLib16::BitmapDataEmpty;
 	}
-
-	// Check bounds
-	if ((x >= _width) || (y >= _height))
+	if ((x >= _width) || (y >= _height)) 	// Check bounds
 	{
 		printf("Error drawBitmap16 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
+	}
+	if (bitmap.size() < w * h * 2) // Ensure bitmap has enough data
+	{
+		printf("Error drawBitmap16 3: Bitmap size too small\r\n");
+		return DisLib16::BitmapSize;
 	}
 	if ((x + w - 1) >= _width)
 		w = _width - x;
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 
+	uint16_t j = 0;	
+	// Create a non-const span to manipulate bitmap (not needed for just passing to spiWriteDataBuffer)
+	std::span<const uint8_t> currentBitmap = bitmap;
 	// Process bitmap data row-by-row
 	for (j = 0; j < h; j++)
 	{
 		setAddrWindow(x, y + j, x + w - 1, y + j); // Set the window for the current row
-		spiWriteDataBuffer(pBmp, w * sizeof(uint16_t)); // Write one row of pixel data
-		pBmp += w * 2; // Move to the next row in the bitmap
+		// Pass the raw pointer to spiWriteDataBuffer
+		spiWriteDataBuffer(const_cast<uint8_t*>(currentBitmap.data()), w * sizeof(uint16_t));
+		// Move to the next row in the bitmap
+		currentBitmap = currentBitmap.subspan(w * sizeof(uint16_t));
 	}
-
 	return DisLib16::Success;
 }
+
 
 /*!
 	@brief Draws an 24 bit color bitmap to screen from a data array
 	@param x X coordinate
 	@param y Y coordinate
-	@param pBmp pointer to data array
+	@param bitmap span to data array
 	@param w width of the bitmap in pixels
 	@param h height of the bitmap in pixels
-	@return
-		-# Display_Success=success
-		-# Display_BitmapNullptr=invalid pointer object
-		-# Display_BitmapScreenBounds=Co-ordinates out of bounds,
 	@note 24 bit color converted to 16 bit color
+	@return Display status code:
+			-# DisLib16::Success on success.
+			-# DisLib16::BitmapDataEmpty if bitmap is empty.
+			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
+			-# DisLib16::BitmapSize if bitmap is too small.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap24Data(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h)
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap24Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
 {
-	uint8_t i, j;
-	uint16_t color, red, green, blue;
-	// 1. Check for null pointer
-	if (pBmp == nullptr)
+	if (bitmap.empty()) 	// 1. Check for empty bitmap
 	{
-		printf("Error drawBitmap24 1: Bitmap array is nullptr\r\n");
-		return DisLib16::BitmapNullptr;
+		printf("Error drawBitmap24 1: Bitmap array is empty\r\n");
+		return DisLib16::BitmapDataEmpty;
 	}
-	// Check bounds
-	if ((x >= _width) || (y >= _height))
+	if ((x >= _width) || (y >= _height)) 	// Check bounds
 	{
 		printf("Error drawBitmap24 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
+	}
+	if (bitmap.size() < w * h * 3) // Ensure bitmap has enough data
+	{
+		printf("Error drawBitmap24 3: Bitmap size too small\r\n");
+		return DisLib16::BitmapSize;
 	}
 	if ((x + w - 1) >= _width)
 		w = _width - x;
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 
+	uint16_t i, j;
+	uint16_t color, red, green, blue;
 	// Buffer for one row of pixels (16-bit per pixel split into bytes)
 	uint8_t rowBuffer[w * 2];
+	// Create a span iterator for bitmap
+	auto bitmapIter = bitmap.begin();
 	// Draw the bitmap row by row
 	for (j = 0; j < h; j++)
 	{
 		for (i = 0; i < w; i++)
 		{
-			// Extract RGB values from 24-bit color data
-			red = *pBmp++;
-			green = *pBmp++;
-			blue = *pBmp++;
+			// Extract RGB values from 24-bit color data using iterator
+			red = *bitmapIter++;
+			green = *bitmapIter++;
+			blue = *bitmapIter++;
 			// Convert to 16-bit RGB565 format
 			color = ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
 			// Store high and low bytes of the color in the row buffer
-			rowBuffer[2 * i] = color >> 8;      // High byte
-			rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
+			rowBuffer[2 * i] = color >> 8;
+			rowBuffer[2 * i + 1] = color & 0xFF;
 		}
-		// Set the address window for the current row
 		setAddrWindow(x, y + j, x + w - 1, y + j);
-		// Write the row to the display
 		spiWriteDataBuffer(rowBuffer, w * 2);
 	}
 	return DisLib16::Success;
@@ -1370,44 +1375,57 @@ void displaylib_16_graphics::setTextColor(uint16_t c, uint16_t b){
 	@brief: Draws an 16 bit color sprite bitmap to screen from a data array with transparent background
 	@param x X coordinate
 	@param y Y coordinate
-	@param pBmp pointer to data array
+	@param bitmap pointer to data array
 	@param w width of the sprite in pixels
 	@param h height of the sprite in pixels
 	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
+	@param printBg  if true print the background color, if false sprite mode.
 	@note Experimental , does not use buffer or malloc, just draw pixel
-	@return
-		-# Display_Success=success
-		-# Display_BitmapNullptr=invalid pointer object
-		-# Display_BitmapScreenBounds=Co-ordinates out of bounds
+	@return Display status code:
+			-# DisLib16::Success on success.
+			-# DisLib16::BitmapDataEmpty if bitmap is empty.
+			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
+			-# DisLib16::BitmapSize if bitmap is too small.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_t y, uint8_t *pBmp, uint16_t w, uint16_t h, uint16_t backgroundColor)
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h, uint16_t backgroundColor, bool printBg)
 {
-	uint8_t i, j;
-	uint16_t colour;
-	// 1. Check for null pointer
-	if (pBmp == nullptr)
+	if (bitmap.empty())
 	{
 		printf("Error drawSprite 1: Sprite array is nullptr\r\n");
-		return DisLib16::BitmapNullptr;
+		return DisLib16::BitmapDataEmpty;
 	}
-	// Check bounds
 	if ((x >= _width) || (y >= _height))
 	{
 		printf("Error drawSprite 2: Sprite out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
 	}
+	if (bitmap.size() < w * h * 2) // Ensure bitmap has enough data
+	{
+		printf("Error drawSprite 3: Bitmap size too small\r\n");
+		return DisLib16::BitmapSize;
+	}
 	if ((x + w - 1) >= _width)
 		w = _width - x;
 	if ((y + h - 1) >= _height)
 		h = _height - y;
-
+	// Create an iterator to traverse the bitmap
+	auto bitmapIter = bitmap.begin();
+	uint16_t i, j;
+	uint16_t colour;
 	for(j = 0; j < h; j++)
 	{
 		for(i = 0; i < w; i ++)
 		{
-			colour = (pBmp[0] << 8) | pBmp[1];
-			pBmp += 2;
-			if (colour != backgroundColor){
+			// Extract the 16-bit color from two consecutive bytes
+			colour = (*bitmapIter << 8) | *(bitmapIter + 1);
+			// Move the iterator forward by 2
+			bitmapIter += 2;
+			if(printBg == false)
+			{
+				if (colour != backgroundColor){
+					drawPixel(x+i-1, y + j-1, colour);
+				}
+			}else{
 				drawPixel(x+i-1, y + j-1, colour);
 			}
 		}
@@ -1415,4 +1433,85 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_
 	return DisLib16::Success;
 }
 
+/*!
+	@brief Draws an 8-bit color bitmap (RRRGGGBB format) to the screen.
+		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each 
+		pixel to 16-bit RGB565, and writes it to the display.
+	@param x X coordinate of the top-left corner of the bitmap.
+	@param y Y coordinate of the top-left corner of the bitmap.
+	@param bitmap span to the 8-bit bitmap data array.
+	@param w Width of the bitmap in pixels.
+	@param h Height of the bitmap in pixels.
+	@return Display status code:
+			-# DisLib16::Success on success.
+			-# DisLib16::BitmapDataEmpty if bitmap is empty.
+			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
+			-# DisLib16::BitmapSize if bitmap is too small.
+*/
+
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
+{
+	if (bitmap.empty())// 1. Check for empty bitmap
+	{
+		printf("Error drawBitmap8 1: Bitmap array is empty\r\n");
+		return DisLib16::BitmapDataEmpty;
+	}
+	// 2. Check bounds
+	if ((x >= _width) || (y >= _height))
+	{
+		printf("Error drawBitmap8 2: Out of screen bounds\r\n");
+		return DisLib16::BitmapScreenBounds;
+	}
+	if (bitmap.size() < w * h) // Ensure bitmap has enough data
+	{
+		printf("Error drawBitmap8 3: Bitmap size too small\r\n");
+		return DisLib16::BitmapSize;
+	}
+	if ((x + w - 1) >= _width)
+		w = _width - x;
+	if ((y + h - 1) >= _height)
+		h = _height - y;
+
+	uint8_t rowBuffer[w * 2];  // Allocate space for 16-bit per pixel
+	uint16_t j = 0;
+	uint16_t color = 0;
+	// Create an iterator to traverse the bitmap
+	auto bitmapIter = bitmap.begin();
+	// Process bitmap data row-by-row
+	for (j = 0; j < h; j++)
+	{
+		// Convert 8-bit colors to 16-bit RGB565
+		for (uint16_t i = 0; i < w; i++)
+		{
+			color = convert8bitTo16bit(*bitmapIter);
+			rowBuffer[2 * i] = color >> 8;      // High byte
+			rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
+			++bitmapIter;
+		}
+		setAddrWindow(x, y + j, x + w - 1, y + j);
+		spiWriteDataBuffer(rowBuffer, w * 2);
+	}
+	return DisLib16::Success;
+}
+
+/*! 
+	@brief convert 8 bit color to 16 bit color 565
+	@param RRRGGGBB a byte of 8bit color
+	@details RRRGGGBB to RRRRRGGGGGGBBBBB
+	@return a uint16_t 565 color value
+*/
+uint16_t displaylib_16_graphics::convert8bitTo16bit(uint8_t RRRGGGBB) 
+{
+	uint16_t red   = (RRRGGGBB >> 5) & 0x07;
+	uint16_t green = (RRRGGGBB >> 2) & 0x07;
+	uint16_t blue  =  RRRGGGBB & 0x03;
+	// Scale 3-bit red (0-7) to 5-bit (0-31)
+	red = (red * 255 / 7) >> 3; 
+	// Scale 3-bit green (0-7) to 6-bit (0-63)
+	green = (green * 255 / 7) >> 2; 
+	// Scale 2-bit blue (0-3) to 5-bit (0-31)
+	blue = (blue * 255 / 3) >> 3;
+
+	return (red << 11) | (green << 5) | blue;
+}
 //**************** EOF *****************

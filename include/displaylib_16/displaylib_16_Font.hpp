@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <span>
 #include "pico/stdlib.h"
 #include "displaylib_16_common.hpp"
 

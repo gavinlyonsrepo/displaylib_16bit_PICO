@@ -32,7 +32,8 @@ enum Ret_Codes_e : uint8_t
 	BufferNullptr = 15,          /**< The Buffer data array is an invalid pointer object*/
 	ShapeScreenBounds = 16,		 /**< Shape is outside screen bounds, check x and y */
 	IconScreenWidth = 17,        /**< Icon is greater than screen width , check width w value */
-	GenericError = 18            /**< Generic Error */
+	BitmapDataEmpty = 18,        /**< Empty bitmap span object  */
+	GenericError = 19            /**< Generic Error */
 };
 
 uint16_t LibraryVersion(void);

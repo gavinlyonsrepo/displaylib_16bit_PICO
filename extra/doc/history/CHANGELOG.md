@@ -23,3 +23,6 @@
 	* Added Sprite function as per github issue 5.
 	* Replaced use of Malloc with row by row buffer writes. 
 	* Refactored fillRectangle to fillRectBuffer.
+
+* Version 2.0.0 Mar 2025
+	* Work in progress
