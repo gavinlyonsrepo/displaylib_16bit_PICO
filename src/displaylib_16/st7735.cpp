@@ -62,11 +62,13 @@ void ST7735_TFT ::TFTPowerDown(void)
 	TFTchangeMode(TFT_Display_off_mode);
 	DISPLAY_DC_SetLow;
 	DISPLAY_RST_SetLow;
-	DISPLAY_SCLK_SetLow;
-	DISPLAY_SDATA_SetLow;
 	DISPLAY_CS_SetLow;
-	if (_hardwareSPI == true) 
+	if (_hardwareSPI == true) {
 		spi_deinit(_pspiInterface);
+	}else{
+		DISPLAY_SCLK_SetLow;
+		DISPLAY_SDATA_SetLow;
+	}
 }
 
 /*!

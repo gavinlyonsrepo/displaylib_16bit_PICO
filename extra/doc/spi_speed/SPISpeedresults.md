@@ -1,75 +1,43 @@
-# SPI Speed test results  St7735
+March 2025 v2.0.0
 
+=====================
+st7789 fps_functions HW SPi 8Mhz
 
-**Dec 2024 V1.72**
-1. 701 Bitmap + FPS Test :: HW SPI  8MHZ :: 22 fps
-2. 701 Bitmap + FPS Test :: HW SPI  32MHZ :: 71 fps
-3. 701 Bitmap + FPS Test :: SW SPI   ::  9 fps
-4. 702 Functions + FPS Test :: HW SPI  8MHZ :: 26 fps 
+Text =
+count 500
+pixelText = 5 FPS
+BufferTest = 30 FPS 18 seconds
 
-**JAN 2024 v1.7.1**
+Graphics = 
+count 1000
+44 FPS 24 seconds
+=======================
 
-1. 702 Functions + FPS Test :: HW SPI  8MHZ :: 28 fps 
-2. 702 Functions + FPS Test :: SW SPI :: 18fps
-1. 701 Bitmap + FPS Test :: HW SPI  8MHZ :: 22 fps 
-2. 701 Bitmap + FPS Test :: SW SPI ::  9 fps 
+=======================
+st7789 bitmap_fps hw SPI 8MHz
 
+Seconds :: 20 
+Count :: 437 
+FPS :: 23 
+=======================
 
-**November 8 2022**
+=====================
+st7735 fps_functions HW SPi 8Mhz
 
-1. test11B function ::  ST7735_TFT_TESTS file
-2. test :: graphics + text
-3. 8 MHZ HW SPI
-4. 33 fps 
+Text =
+count 1500
+pixelText = 12 FPS
+BufferTest = 53 FPS 18 seconds
 
-**November 8 2022**
+Graphics = 
+count 1000
+53 FPS 20 seconds
+=======================
 
-1. test11B function ::  ST7735_TFT_TESTS file
-2. test :: graphics + text
-3. SW SPI
-4. 7 fps 
+=======================
+st7735 bitmap_fps hw SPI 8MHz
 
-**November 10 2022**
-
-1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.drawBitmap16Data(0, 0, (uint8_t*)motorImage, 128, 128);
-3. 8 MHZ HW SPI
-4. 22 fps 
-
-**November 10 2022**
-
-1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.drawBitmap16Data(0, 0, (uint8_t*)motorImage, 128, 128);
-3. 20 MHZ HW SPI
-4. 39 fps
-
-**November 10 2022**
-
-1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.drawBitmap16Data(0, 0, (uint8_t*)motorImage, 128, 128);
-3. 60 MHZ HW SPI
-4. 64 fps
-
-**November 10 2022**
-
-1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.drawBitmap24Data(0, 0, (uint8_t*)fruitBowl, 128, 128);
-3. 20 MHZ HW SPI
-4. 34 fps
-
-**November 10 2022**
-
-1. testFPS function ::  ST7735_TFT_BMP_DATA file
-2. test :: myTFT.drawBitmap(0, 0, 128 , 128, ST7735_WHITE , ST7735_GREEN, ArrowImage);
-3. 20 MHZ HW SPI
-4. 43 FPS
-
-# SPI Speed test results St7789
-
-**DEC 2024 v1.0.2*
-
-1. 702 Functions + FPS Test :: HW SPI  8MHZ :: 90 fps
-2. 702 Functions + FPS Test :: SW SPI :: 6 fps
-3. 701 Bitmap + FPS Test :: HW SPI  8MHZ :: 22 fps
-4. 701 Bitmap + FPS Test :: SW SPI ::  9 fps
-5. fillScreen test : 6 FPS (malloc or  row buffer method: same result)
+Seconds :: 20 
+Count :: 437 
+FPS :: 23 
+=======================

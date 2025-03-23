@@ -20,13 +20,11 @@
 ST7735_TFT myTFT;
 
 //  Section ::  Function Headers 
-
 void Setup(void);  // setup + user options
 void Test100(void);  
 void EndTests(void);
 
 //  Section ::  MAIN loop
-
 int main(void) 
 {
 	Setup();
@@ -85,14 +83,11 @@ void Setup(void)
 	@brief print out hello world on TFT
 */
 void Test100(void) {
-
-	char teststr1[] = "Hello";
-	char teststr2[] = "World";
-	
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_Default);
-	myTFT.drawText(15, 15, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 2);
-	myTFT.drawText(15, 35, teststr2, myTFT.C_WHITE, myTFT.C_BLACK, 2);
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	myTFT.setCursor(5,5);
+	myTFT.setFont(font_default);
+	myTFT.print("Hello World");
 	MILLISEC_DELAY(5000);
 	myTFT.fillScreen(myTFT.C_BLACK);
 	MILLISEC_DELAY(1000);

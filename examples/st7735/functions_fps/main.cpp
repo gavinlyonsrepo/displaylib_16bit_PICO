@@ -10,7 +10,8 @@
 		-# Test502  scroll
 		-# Test503  Rotate
 		-# Test504 change modes test -> Invert, display on/off and Sleep.
-		-# Test602 FPS frame rate per second test 
+		-# Test602 FPS frame rate per second test , text
+		-# Test603 FPS frame rate per second test , graphics
 */
 
 // Section ::  libraries
@@ -37,7 +38,8 @@ void Test501(void);	// test colors
 void Test502(void);	// scroll
 void Test503(void);	// Rotate
 void Test504(void);	// change modes test -> Invert, display on/off and Sleep.
-void Test602(void); // FPS, frame rate per second
+void Test602(void); // FPS, frame rate per second text
+void Test603(void); // FPS, frame rate per second graphics
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -45,11 +47,13 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
 	Test501();
 	Test502();
 	Test503();
 	Test504();
 	Test602();
+	Test603();
 	EndTests();
 	return 0;
 }
@@ -129,7 +133,7 @@ void Test502(void)
 
 	for (uint8_t i = 0; i < LINES; i++)
 	{
-		myTFT.drawText(0, LINE_OFFSET + i * LINE_SIZE, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+		myTFT.writeCharString(0, LINE_OFFSET + i * LINE_SIZE, teststr1);
 	}
 	myTFT.setScrollDefinition(TOP_FIXED, BOTTOM_FIXED, 1); // bottom-to-top
 	uint8_t pos = LINE_OFFSET;
@@ -160,23 +164,24 @@ void Test503()
 	char teststr3[] = "Rotate 270"; // 270
 
 	myTFT.fillScreen(myTFT.C_BLACK);
+	
 	myTFT.setRotation(myTFT.Degrees_0);
-	myTFT.drawText(20, 20, teststr0, myTFT.C_GREEN, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(20, 20, teststr0);
 	MILLISEC_DELAY(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setRotation(myTFT.Degrees_90);
-	myTFT.drawText(20, 20, teststr1, myTFT.C_GREEN, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(20, 20, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setRotation(myTFT.Degrees_180);
-	myTFT.drawText(20, 20, teststr2, myTFT.C_GREEN, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(20, 20, teststr2);
 	MILLISEC_DELAY(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setRotation(myTFT.Degrees_270);
-	myTFT.drawText(20, 20, teststr3, myTFT.C_GREEN, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(20, 20, teststr3);
 	MILLISEC_DELAY(TEST_DELAY2);
 
 	myTFT.setRotation(myTFT.Degrees_0);
@@ -191,12 +196,13 @@ void Test504()
 {
 	printf("Test 504: Mode Tests\r\n");
 	char teststr1[] = "Modes Test";
+	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
 	myTFT.fillRoundRect(8, 10, 24, 60, 8, myTFT.C_RED);
 	myTFT.fillRoundRect(32, 10, 24, 60, 8, myTFT.C_GREEN);
 	myTFT.fillRoundRect(56, 10, 24, 60, 8, myTFT.C_BLUE);
 	myTFT.fillRoundRect(80, 10, 24, 60, 8, myTFT.C_YELLOW);
 	myTFT.fillRoundRect(104, 10, 24, 60, 8, myTFT.C_WHITE);
-	myTFT.drawText(10, 80, teststr1, myTFT.C_RED, myTFT.C_YELLOW, 1);
+	myTFT.writeCharString(10, 80, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -223,11 +229,63 @@ void Test504()
 
 
 /*!
-	@brief   Frame rate per second test, FPS test. Optionally specify -> set bool bTestFPS
+	@brief   Frame rate per second test, FPS test
 */
 void Test602(void)
 {
-	myTFT.FontNum(myTFT.Font_Default);
+	myTFT.fillScreen(myTFT.C_BLACK);
+	myTFT.setFont(font_pico);
+	// Values to count frame rate per second
+	long previousMillis = 0;
+	long lastFramerate = 0;
+	long currentFramerate = 0;
+	uint16_t count = 0;
+	uint16_t seconds = 0;
+	uint16_t fps = 0;
+	while (1)
+	{
+		unsigned long currentMillis = to_ms_since_boot(get_absolute_time());
+
+		if (currentMillis - previousMillis >= 1000) // every second
+		{
+			fps = currentFramerate - lastFramerate;
+			lastFramerate = currentFramerate;
+			previousMillis = currentMillis;
+			seconds++;
+			if (count >= 1000){
+				printf("FPS : %u\n", fps);
+				printf("Seconds : %u\n", seconds);
+				return; // end if count gets to this
+			}
+		}
+		currentFramerate++;
+		count++;
+
+		//  ** Code to test **
+		// print seconds
+		myTFT.setCursor(5, 5);
+		myTFT.println("Secs:");
+		myTFT.println(seconds);
+		// print fps
+		myTFT.println("FPS:");
+		myTFT.println(fps);
+		// print count
+		myTFT.println("Count:");
+		myTFT.println(count);
+
+		myTFT.println("Testing!");
+		myTFT.println(DisLib16::LibraryVersion());
+		//  ****
+	}
+}
+
+/*!
+	@brief   Frame rate per second test, FPS test. graphics
+*/
+void Test603(void)
+{
+	myTFT.fillScreen(myTFT.C_BLACK);
+	myTFT.setFont(font_mega);
 	// Values to count frame rate per second
 	long previousMillis = 0;
 	long lastFramerate = 0;
@@ -236,11 +294,8 @@ void Test602(void)
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
 	uint16_t shapeColor = 0x2222;
-	myTFT.setTextSize(1);
-
 	while (1)
 	{
-
 		unsigned long currentMillis = to_ms_since_boot(get_absolute_time());
 
 		if (currentMillis - previousMillis >= 1000) // every second
@@ -250,32 +305,27 @@ void Test602(void)
 			previousMillis = currentMillis;
 			seconds++;
 			shapeColor = rand() % 60000;
-			if (count >= 1500)
-				return; // end if count gets to 1500
+			if (count >= 1000){
+				printf("FPS : %u\n", fps);
+				printf("Seconds : %u\n", seconds);
+				return; // end if count gets to this
+			}
 		}
 		currentFramerate++;
 		count++;
-
 		//  ** Code to test **
-		// print seconds
-		myTFT.setCursor(5, 15);
-		myTFT.print("Secs :");
-		myTFT.setCursor(50, 15);
-		myTFT.print(seconds);
 		// print fps
-		myTFT.setCursor(5, 25);
-		myTFT.print("FPS :");
-		myTFT.setCursor(50, 25);
+		myTFT.setCursor(5, 5);
 		myTFT.print(fps);
-		// print count
-		myTFT.setCursor(5, 35);
-		myTFT.print("Count :");
-		myTFT.setCursor(50, 35);
-		myTFT.print(count);
-		// print some graphics
-		myTFT.drawCircle(90, 90, 10, shapeColor);
-		myTFT.drawRectWH(40, 80, 20, 20, shapeColor << 1);
-		myTFT.drawRoundRect(5, 80, 20, 20, 2, shapeColor >> 1);
+		// Print some graphics adjusted for 128x128 screen
+		myTFT.drawCircle(90, 50, 10, shapeColor);
+		myTFT.drawRectWH(40, 40, 20, 20, shapeColor << 1);
+		myTFT.drawRoundRect(5, 40, 20, 20, 2, shapeColor >> 1);
+		myTFT.fillCircle(90, 90, 10, shapeColor);
+		myTFT.fillRect(40, 90, 20, 20, shapeColor << 1);
+		myTFT.fillRoundRect(5, 90, 20, 20, 2, shapeColor >> 1);
+		myTFT.fillTriangle(30, 100, 64, 70, 98, 100, shapeColor - 100);
+		myTFT.fillTriangle(30, 100, 64, 120, 98, 120, shapeColor);
 		//  ****
 	}
 }
@@ -285,10 +335,11 @@ void Test602(void)
 */
 void EndTests(void)
 {
-	char teststr1[] = "Tests over";
-	myTFT.FontNum(myTFT.Font_Default);
+	myTFT.setFont(font_default);
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.drawText(5, 50, teststr1, myTFT.C_GREEN, myTFT.C_BLACK, 2);
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	myTFT.setCursor(15,15);
+	myTFT.print("tests over");
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTPowerDown();
 	printf("TFT :: Tests Over");

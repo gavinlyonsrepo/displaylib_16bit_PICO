@@ -9,7 +9,7 @@
 /*!
 	@brief Construct a new st7735 tft graphics::st7735 tft graphics object
  */
-displaylib_16_graphics::displaylib_16_graphics(){}
+displaylib_16_graphics::displaylib_16_graphics() {}
 
 /*!
 	@brief Draw a pixel to screen
@@ -22,10 +22,10 @@ void displaylib_16_graphics ::drawPixel(uint16_t x, uint16_t y, uint16_t color)
 	if ((x >= _width) || (y >= _height))
 		return;
 	setAddrWindow(x, y, x + 1, y + 1);
-	uint8_t TransmitBuffer[2] {(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
+	uint8_t TransmitBuffer[2]{(uint8_t)(color >> 8), (uint8_t)(color & 0xFF)};
 	spiWriteDataBuffer(TransmitBuffer, 2);
-	//writeData(color >> 8);
-	//writeData(color & 0xFF);
+	// writeData(color >> 8);
+	// writeData(color & 0xFF);
 }
 
 /*!
@@ -75,7 +75,6 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::fillRectBuffer(uint16_t x, uint16_
 	}
 	return DisLib16::Success;
 }
-
 
 /*!
 	@brief Fills the whole screen with a given color.
@@ -143,112 +142,160 @@ void displaylib_16_graphics ::drawFastHLine(uint16_t x, uint16_t y, uint16_t w, 
 
 /*!
 	@brief draws a circle where (x0,y0) are center coordinates an r is circle radius.
-	@param x0 circle center x position
-	@param y0 circle center y position
-	@param r radius of circle
+	@param centerX circle center x position
+	@param centerY circle center y position
+	@param radius radius of circle
 	@param color The color of the circle , 565 16 Bit color
 */
-void displaylib_16_graphics ::drawCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
+void displaylib_16_graphics ::drawCircle(int16_t centerX, int16_t centerY, int16_t radius, uint16_t color)
 {
-	int16_t f, ddF_x, ddF_y, x, y;
-	f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
-	drawPixel(x0, y0 + r, color);
-	drawPixel(x0, y0 - r, color);
-	drawPixel(x0 + r, y0, color);
-	drawPixel(x0 - r, y0, color);
+	// Initial decision parameter for the circle drawing algorithm
+	int16_t decisionParam = 1 - radius;
+	// Differences for circle drawing in the x and y directions
+	int16_t deltaX = 1;
+	int16_t deltaY = -2 * radius;
+	// Starting coordinates
+	int16_t x = 0;
+	int16_t y = radius;
+	// Draw the initial points on the circle (4 points)
+	drawPixel(centerX, centerY + radius, color);
+	drawPixel(centerX, centerY - radius, color);
+	drawPixel(centerX + radius, centerY, color);
+	drawPixel(centerX - radius, centerY, color);
+	// Apply the circle drawing algorithm to plot points around the circle
 	while (x < y)
 	{
-		if (f >= 0)
+		// If the decision parameter is positive or zero, adjust y and deltaY
+		if (decisionParam >= 0)
 		{
 			y--;
-			ddF_y += 2;
-			f += ddF_y;
+			deltaY += 2;
+			decisionParam += deltaY;
 		}
+		// Always adjust x and deltaX
 		x++;
-		ddF_x += 2;
-		f += ddF_x;
-		drawPixel(x0 + x, y0 + y, color);
-		drawPixel(x0 - x, y0 + y, color);
-		drawPixel(x0 + x, y0 - y, color);
-		drawPixel(x0 - x, y0 - y, color);
-		drawPixel(x0 + y, y0 + x, color);
-		drawPixel(x0 - y, y0 + x, color);
-		drawPixel(x0 + y, y0 - x, color);
-		drawPixel(x0 - y, y0 - x, color);
+		deltaX += 2;
+		decisionParam += deltaX;
+		// Draw the 8 symmetrical points of the circle for each iteration
+		drawPixel(centerX + x, centerY + y, color);
+		drawPixel(centerX - x, centerY + y, color);
+		drawPixel(centerX + x, centerY - y, color);
+		drawPixel(centerX - x, centerY - y, color);
+		drawPixel(centerX + y, centerY + x, color);
+		drawPixel(centerX - y, centerY + x, color);
+		drawPixel(centerX + y, centerY - x, color);
+		drawPixel(centerX - y, centerY - x, color);
 	}
 }
 
 ///@cond
-/*! @brief Used internally by drawRoundRect */
-void displaylib_16_graphics ::drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uint16_t color)
+
+
+/*!
+	@brief Internal helper function used by drawRoundRect to draw parts of a circle.
+	@param centerX The x-coordinate of the circle's center.
+	@param centerY The y-coordinate of the circle's center.
+	@param radius The radius of the circle.
+	@param cornerFlags A bitmask indicating which corners of the circle to draw.
+	@param color The color of the circle.
+*/
+void displaylib_16_graphics::drawCircleHelper(int16_t centerX, int16_t centerY,
+										   int16_t radius, uint8_t cornerFlags, uint16_t color)
 {
-	int16_t f, ddF_x, ddF_y, x, y;
-	f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
+	// Initial decision parameter for the circle drawing algorithm
+	int16_t decisionParam = 1 - radius;
+	// Differences for circle drawing in the x and y directions
+	int16_t deltaX = 1;
+	int16_t deltaY = -2 * radius;
+	// Starting coordinates
+	int16_t x = 0;
+	int16_t y = radius;
+	// Apply the circle drawing algorithm to plot points in the specified corners
 	while (x < y)
 	{
-		if (f >= 0)
+		// If the decision parameter is positive or zero, adjust y and deltaY
+		if (decisionParam >= 0)
 		{
 			y--;
-			ddF_y += 2;
-			f += ddF_y;
+			deltaY += 2;
+			decisionParam += deltaY;
 		}
+		// Always adjust x and deltaX
 		x++;
-		ddF_x += 2;
-		f += ddF_x;
-		if (cornername & 0x4)
+		deltaX += 2;
+		decisionParam += deltaX;
+		// Draw the points for each corner based on the cornerFlags
+		if (cornerFlags & 0x4) // Top-right corner
 		{
-			drawPixel(x0 + x, y0 + y, color);
-			drawPixel(x0 + y, y0 + x, color);
+			drawPixel(centerX + x, centerY + y, color);
+			drawPixel(centerX + y, centerY + x, color);
 		}
-		if (cornername & 0x2)
+		if (cornerFlags & 0x2) // Bottom-right corner
 		{
-			drawPixel(x0 + x, y0 - y, color);
-			drawPixel(x0 + y, y0 - x, color);
+			drawPixel(centerX + x, centerY - y, color);
+			drawPixel(centerX + y, centerY - x, color);
 		}
-		if (cornername & 0x8)
+		if (cornerFlags & 0x8) // Top-left corner
 		{
-			drawPixel(x0 - y, y0 + x, color);
-			drawPixel(x0 - x, y0 + y, color);
+			drawPixel(centerX - y, centerY + x, color);
+			drawPixel(centerX - x, centerY + y, color);
 		}
-		if (cornername & 0x1)
+		if (cornerFlags & 0x1) // Bottom-left corner
 		{
-			drawPixel(x0 - y, y0 - x, color);
-			drawPixel(x0 - x, y0 - y, color);
+			drawPixel(centerX - y, centerY - x, color);
+			drawPixel(centerX - x, centerY - y, color);
 		}
 	}
 }
 
 /*!
-	@brief Used internally by fill circle fillRoundRect and fillcircle
+	@brief Internal helper function used by fillCircle and fillRoundRect to fill parts of a circle.
+	@param centerX The x-coordinate of the circle's center.
+	@param centerY The y-coordinate of the circle's center.
+	@param radius The radius of the circle.
+	@param cornerFlags A bitmask indicating which parts of the circle to fill.
+	@param verticalOffset An additional vertical offset to adjust the line length.
+	@param color The color to fill the circle with.
 */
-void displaylib_16_graphics ::fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color)
+void displaylib_16_graphics::fillCircleHelper(int16_t centerX, int16_t centerY, int16_t radius,
+											  uint8_t cornerFlags, int16_t verticalOffset, uint16_t color)
 {
-	int16_t f, ddF_x, ddF_y, x, y;
-	f = 1 - r, ddF_x = 1, ddF_y = -2 * r, x = 0, y = r;
+	// Initial decision parameter for the circle filling algorithm
+	int16_t decisionParam = 1 - radius;
+	// Differences for circle drawing in the x and y directions
+	int16_t deltaX = 1;
+	int16_t deltaY = -2 * radius;
+	// Starting coordinates
+	int16_t x = 0;
+	int16_t y = radius;
+	// Apply the circle filling algorithm to plot vertical lines at the specified points
 	while (x < y)
 	{
-		if (f >= 0)
+		// If the decision parameter is positive or zero, adjust y and deltaY
+		if (decisionParam >= 0)
 		{
 			y--;
-			ddF_y += 2;
-			f += ddF_y;
+			deltaY += 2;
+			decisionParam += deltaY;
 		}
+		// Always adjust x and deltaX
 		x++;
-		ddF_x += 2;
-		f += ddF_x;
-
-		if (cornername & 0x1)
+		deltaX += 2;
+		decisionParam += deltaX;
+		// Draw the vertical lines for each part of the circle based on the cornerFlags
+		if (cornerFlags & 0x1) // Bottom-right corner
 		{
-			drawFastVLine(x0 + x, y0 - y, 2 * y + 1 + delta, color);
-			drawFastVLine(x0 + y, y0 - x, 2 * x + 1 + delta, color);
+			drawFastVLine(centerX + x, centerY - y, 2 * y + 1 + verticalOffset, color);
+			drawFastVLine(centerX + y, centerY - x, 2 * x + 1 + verticalOffset, color);
 		}
-		if (cornername & 0x2)
+		if (cornerFlags & 0x2) // Bottom-left corner
 		{
-			drawFastVLine(x0 - x, y0 - y, 2 * y + 1 + delta, color);
-			drawFastVLine(x0 - y, y0 - x, 2 * x + 1 + delta, color);
+			drawFastVLine(centerX - x, centerY - y, 2 * y + 1 + verticalOffset, color);
+			drawFastVLine(centerX - y, centerY - x, 2 * x + 1 + verticalOffset, color);
 		}
 	}
 }
+
 ///@endcond
 
 /*!
@@ -258,7 +305,7 @@ void displaylib_16_graphics ::fillCircleHelper(int16_t x0, int16_t y0, int16_t r
 	@param r radius of circle
 	@param color color of the circle , 565 16 Bit color
 */
-void displaylib_16_graphics ::fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
+void displaylib_16_graphics::fillCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color)
 {
 	drawFastVLine(x0, y0 - r, 2 * r + 1, color);
 	fillCircleHelper(x0, y0, r, 3, 0, color);
@@ -417,8 +464,8 @@ void displaylib_16_graphics ::drawTriangle(int16_t x0, int16_t y0, int16_t x1, i
 */
 void displaylib_16_graphics ::fillTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, uint16_t color)
 {
-	int16_t a, b, y, last, dx01, dy01, dx02, dy02, dx12, dy12;
-	int32_t sa, sb;
+	// Temporary variables for line drawing
+	int16_t leftX, rightX, y, lastY;
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1)
 	{
@@ -435,380 +482,297 @@ void displaylib_16_graphics ::fillTriangle(int16_t x0, int16_t y0, int16_t x1, i
 		swapint16t(y0, y1);
 		swapint16t(x0, x1);
 	}
+	// If the triangle is flat (top and bottom vertices are the same y-coordinate)
 	if (y0 == y2)
 	{
-		a = b = x0;
-		if (x1 < a)
-			a = x1;
-		else if (x1 > b)
-			b = x1;
-		if (x2 < a)
-			a = x2;
-		else if (x2 > b)
-			b = x2;
-		drawFastHLine(a, y0, b - a + 1, color);
+		leftX = rightX = x0;
+		if (x1 < leftX)
+			leftX = x1;
+		else if (x1 > rightX)
+			rightX = x1;
+		if (x2 < leftX)
+			leftX = x2;
+		else if (x2 > rightX)
+			rightX = x2;
+		drawFastHLine(leftX, y0, rightX - leftX + 1, color);
 		return;
 	}
-	dx01 = x1 - x0;
-	dy01 = y1 - y0;
-	dx02 = x2 - x0;
-	dy02 = y2 - y0;
-	dx12 = x2 - x1;
-	dy12 = y2 - y1;
-	sa = 0;
-	sb = 0;
+	int16_t dx01 = x1 - x0,
+			dy01 = y1 - y0,
+			dx02 = x2 - x0,
+			dy02 = y2 - y0,
+			dx12 = x2 - x1,
+			dy12 = y2 - y1;
+	// Accumulated error terms for drawing the triangle
+	int32_t sa = 0, sb = 0;
 	if (y1 == y2)
-		last = y1;
+		lastY = y1;
 	else
-		last = y1 - 1;
-	for (y = y0; y <= last; y++)
+		lastY = y1 - 1;
+	for (y = y0; y <= lastY; y++)
 	{
-		a = x0 + sa / dy01;
-		b = x0 + sb / dy02;
+		leftX = x0 + sa / dy01;
+		rightX = x0 + sb / dy02;
 		sa += dx01;
 		sb += dx02;
-		if (a > b)
-			swapint16t(a, b);
-		drawFastHLine(a, y, b - a + 1, color);
+		if (leftX > rightX)
+			swapint16t(leftX, rightX);
+		drawFastHLine(leftX, y, rightX - leftX + 1, color);
 	}
-
+	// Reset error terms for the lower part of the triangle
 	sa = dx12 * (y - y1);
 	sb = dx02 * (y - y0);
+	// Draw the lower part of the triangle
 	for (; y <= y2; y++)
 	{
-		a = x1 + sa / dy12;
-		b = x0 + sb / dy02;
+		leftX = x1 + sa / dy12;
+		rightX = x0 + sb / dy02;
 		sa += dx12;
 		sb += dx02;
-		if (a > b)
-			swapint16t(a, b);
-		drawFastHLine(a, y, b - a + 1, color);
+		if (leftX > rightX)
+			swapint16t(leftX, rightX);
+		drawFastHLine(leftX, y, rightX - leftX + 1, color);
 	}
-}
-
-/*!
-	@brief  writes a character on the display
-	@param  x X coordinate
-	@param  y Y coordinate
-	@param  character The ASCII character
-	@param color 565 16-bit foreground color
-	@param bg 565 16-bit background color
-	@param size 1-15
-	@return
-		-# Display_Success 
-		-# Display_WrongFont = Wrong font This Function for font #1-6 only.
-		-# Display_CharScreenBounds = X  Y Co-ordinates out of bounds.
-		-# Display_CharFontASCIIRange = ASCII character not in fonts range.
-	@note Function Overloaded 2 off , the other drawChar method is for fonts > 6
-*/
-DisLib16::Ret_Codes_e displaylib_16_graphics ::drawChar(uint16_t x, uint16_t y, uint8_t character, uint16_t color, uint16_t bg, uint8_t size)
-{
-	int8_t i, j;
-	uint8_t line;
-	// 0. Check size
-	if (size == 0 || size >= 15)
-		size = 1;
-	// 1. Check for screen out of bounds
-	if ((x >= _width) ||								  // Clip right
-		(y >= _height) ||							  // Clip bottom
-		((x + (_CurrentFontWidth + 1) * size - 1) < 0) || // Clip left
-		((y + _CurrentFontheight * size - 1) < 0))		  // Clip top
-	{
-		printf("Error drawChar 3: Co-ordinates out of bounds\r\n");
-		return DisLib16::CharScreenBounds;
-	}
-
-	// 2. Check for character out of font range bounds
-	if (character < _CurrentFontoffset || character >= (_CurrentFontLength + _CurrentFontoffset))
-	{
-		printf("Error drawChar 4: Character = %u , Out of Font bounds %u <-> %u\r\n", character, _CurrentFontoffset,  (unsigned int)(_CurrentFontLength + _CurrentFontoffset));
-		return DisLib16::CharFontASCIIRange;
-	}
-
-	for (i = 0; i < (_CurrentFontWidth + 1); i++)
-	{
-
-		if (i == _CurrentFontWidth)
-		{
-			line = 0x00;
-		}
-		else
-		{
-			switch (_FontNumber)
-			{
-			case Font_Default:
-				line = pFontDefaultptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			case Font_Thick:
-				line = pFontThickptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			case Font_Seven_Seg:
-				line = pFontSevenSegptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			case Font_Wide:
-				line = pFontWideptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			case Font_Tiny:
-				line = pFontTinyptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			case Font_HomeSpun:
-				line = pFontHomeSpunptr[(character - _CurrentFontoffset) * _CurrentFontWidth + i];
-				break;
-			default:
-				printf("Error drawChar 5: Wrong font number set must be 1-6 : %u \r\n", _FontNumber);
-				return DisLib16::WrongFont;
-				break;
-			}
-		}
-		for (j = 0; j < _CurrentFontheight; j++, line >>= 1)
-		{
-			if (line & 0x01)
-			{
-				if (size == 1)
-					drawPixel(x + i, y + j, color);
-				else
-					fillRect(x + (i * size), y + (j * size), size, size, color);
-			}
-			else if (bg != color)
-			{
-				if (size == 1)
-					drawPixel(x + i, y + j, bg);
-				else
-					fillRect(x + i * size, y + j * size, size, size, bg);
-			}
-		}
-	}
-	return DisLib16::Success;
 }
 
 /*!
 	@brief turn on or off screen wrap of the text (fonts 1-6)
 	@param w TRUE on
 */
-void displaylib_16_graphics ::setTextWrap(bool w)
+void displaylib_16_graphics ::setTextWrap(bool w) { _textwrap = w; }
+
+/*!
+	@brief Write 1 character on Display
+	@param  x character starting position on x-axis. Valid values
+	@param  y character starting position on x-axis. Valid values
+	@param  value Character to be written.
+	@note uses spiWriteDataBuffer method to write each character as a buffer for speed.
+			Much faster than pixel by pixel spi byte writes
+	@return Will return DisLib16::Ret_Codes_e enum
+		-# DisLib16::Success  success
+		-# DisLib16::CharScreenBounds co-ords out of bounds check x and y
+		-# DisLib16::CharFontASCIIRange Character out of ASCII Font bounds, check Font range
+		-# DisLib16::MemoryAError Could not assign memory for character buffer
+ */
+DisLib16::Ret_Codes_e displaylib_16_graphics::writeChar(int16_t x, int16_t y, char value)
 {
-	_wrap = w;
+
+	// 1. Check for screen out of  bounds
+	if ((x >= _width) ||				// Clip right
+		(y >= _height) ||				// Clip bottom
+		((x + _Font_X_Size + 1) < 0) || // Clip left
+		((y + _Font_Y_Size) < 0))		// Clip top
+	{
+		printf("Error 1: writeChar16 : Co-ordinates out of bounds\n");
+		return DisLib16::CharScreenBounds;
+	}
+	// 2. Check for character out of font range bounds
+	if (value < _FontOffset || value >= (_FontOffset + _FontNumChars + 1))
+	{
+		printf("Error 2: writeChar16 : Character out of Font bounds %c : %u  <--> %u \n", value, _FontOffset, (unsigned int)(_FontOffset + _FontNumChars));
+		return DisLib16::CharFontASCIIRange;
+	}
+
+	uint16_t ltextcolor = 0;
+	uint16_t ltextbgcolor = 0;
+	if (getInvertFont() == true)
+	{
+		ltextbgcolor = _textcolor;
+		ltextcolor = _textbgcolor;
+	}
+	else
+	{
+		ltextbgcolor = _textbgcolor;
+		ltextcolor = _textcolor;
+	}
+	// Locate font bitmap
+	uint16_t fontIndex = ((value - _FontOffset) * ((_Font_X_Size * _Font_Y_Size) / 8)) + 4;
+
+	if (_textCharPixelOrBuffer)
+	{
+		// Pixel-by-pixel drawing mode
+		// **Corrected Pixel-by-Pixel Drawing Mode**
+		for (int16_t cy = 0; cy < _Font_Y_Size; cy++)
+		{ // Process row first
+			for (int16_t cx = 0; cx < _Font_X_Size; cx++)
+			{ // Then process each column in the row
+				int byteIndex = fontIndex + (cy * (_Font_X_Size / 8)) + (cx / 8);
+				int bitIndex = 7 - (cx % 8); // Bit index within the byte (MSB first)
+
+				if (_FontSelect[byteIndex] & (1 << bitIndex))
+				{
+					drawPixel(x + cx, y + cy, ltextcolor);
+				}
+				else
+				{
+					drawPixel(x + cx, y + cy, ltextbgcolor);
+				}
+			}
+		}
+	}
+	else
+	{
+		// Buffered mode
+		uint8_t buffer[_Font_X_Size * _Font_Y_Size * 2];
+		int16_t colByte = _FontSelect[fontIndex];
+		int16_t colbit = 7;
+		uint32_t bufferIndex = 0;
+		for (int16_t cx = 0; cx < _Font_X_Size; cx++)
+		{
+			for (int16_t cy = 0; cy < _Font_Y_Size; cy++)
+			{
+				if ((colByte & (1 << colbit)) != 0)
+				{
+					buffer[bufferIndex++] = (ltextcolor >> 8) & 0xFF; // High byte
+					buffer[bufferIndex++] = ltextcolor & 0xFF;		  // Low byte
+				}
+				else
+				{
+					buffer[bufferIndex++] = (ltextbgcolor >> 8) & 0xFF; // High byte
+					buffer[bufferIndex++] = ltextbgcolor & 0xFF;		// Low byte
+				}
+				colbit--;
+				if (colbit < 0)
+				{
+					colbit = 7;
+					fontIndex++;
+					colByte = _FontSelect[fontIndex];
+				}
+			}
+		}
+		// Set window and write buffer
+		setAddrWindow(x, y, x + _Font_X_Size - 1, y + _Font_Y_Size - 1);
+		spiWriteDataBuffer(buffer, bufferIndex);
+	}
+	// // Create character buffer
+	// uint8_t buffer[_Font_X_Size * _Font_Y_Size * 2];
+	// uint16_t ltextcolor = 0;
+	// uint16_t ltextbgcolor = 0;
+	// if (getInvertFont()== true)
+	// {
+	// 	ltextbgcolor = _textcolor;
+	// 	ltextcolor = _textbgcolor;
+	// }else
+	// {
+	// 	ltextbgcolor = _textbgcolor;
+	// 	ltextcolor = _textcolor;
+	// }
+	// uint16_t fontIndex = 0;
+	// uint32_t bufferIndex = 0; // Index into the display buffer
+	// int16_t colByte, cx, cy;
+	// int16_t colbit;
+	// fontIndex = ((value - _FontOffset)*((_Font_X_Size * _Font_Y_Size) / 8)) + 4;
+	// colByte = _FontSelect[fontIndex];
+	// colbit = 7;
+	// for (cx = 0; cx < _Font_X_Size; cx++)
+	// {
+	// 	for (cy = 0; cy < _Font_Y_Size; cy++)
+	// 	{
+	// 		if ((colByte & (1 << colbit)) != 0) {
+	// 			buffer[bufferIndex++] = (ltextcolor >> 8) & 0xFF; // High byte
+	// 			buffer[bufferIndex++] = ltextcolor & 0xFF;    // Low byte
+	// 		} else {
+	// 			buffer[bufferIndex++] = (ltextbgcolor >> 8) & 0xFF; // High byte
+	// 			buffer[bufferIndex++] = ltextbgcolor & 0xFF;    // Low byte
+	// 		}
+	// 		colbit--;
+	// 		if (colbit < 0) {
+	// 			colbit = 7;
+	// 			fontIndex++;
+	// 			colByte = _FontSelect[fontIndex];
+	// 		}
+	// 	}
+	// }
+
+	// // Set window and write buffer
+	// setAddrWindow(x, y, x + _Font_X_Size - 1, y +_Font_Y_Size - 1);;
+	// spiWriteDataBuffer(buffer, bufferIndex);
+
+	return DisLib16::Success;
 }
 
 /*!
-	@brief Writes text string on the display
-	@param x X coordinate
-	@param y Y coordinate
-	@param pText pointer to string/array
-	@param color 565 16-bit
-	@param bg background color
-	@param size 1-x
-	@return
-		-# Display_Success=success
-		-# Display_WrongFont=wrong font
-		-# Display_CharScreenBounds=Co-ordinates out of bounds
-		-# Display_CharArrayNullptr=Invalid pointer object
-		-# if drawChar method error upstream it return that error code.
-	@note for font #1-6 only
-*/
-DisLib16::Ret_Codes_e displaylib_16_graphics ::drawText(uint16_t x, uint16_t y, char *pText, uint16_t color, uint16_t bg, uint8_t size)
+	@brief Write Text character array on display
+	@param  x character starting position on x-axis.
+	@param  y character starting position on y-axis.
+	@param  pText Pointer to the array of the text to be written.
+	@return Will return
+		-# DisLib16::Success Success
+		-# DisLib16::CharArrayNullptr  String pText Array invalid pointer object
+		-# Failure code from  writeChar method upstream
+ */
+DisLib16::Ret_Codes_e displaylib_16_graphics::writeCharString(int16_t x, int16_t y, char *pText)
 {
-
-	// Check if correct font
-	if (_FontNumber >= Font_Bignum)
-	{
-		printf("Error drawText 2: Wrong font number selected, must be 1-6\r\n");
-		return DisLib16::WrongFont;
-	}
+	uint8_t count = 0;
+	uint8_t MaxLength = 0;
 	// Check for null pointer
 	if (pText == nullptr)
 	{
-		printf("Error drawText 3: String array is not valid pointer object\r\n");
+		fprintf(stderr, "Error: writeCharString16 1 :String array is not valid pointer");
 		return DisLib16::CharArrayNullptr;
 	}
-	// Out of screen bounds
-	if ((x >= _width) || (y >= _height))
-	{
-		printf("Error drawText 4: Out of screen bounds\r\n");
-		return DisLib16::CharScreenBounds;
-	}
-	uint8_t cursorX = x;
-	uint8_t cursorY = y;
-	DisLib16::Ret_Codes_e errorCode;
+	DisLib16::Ret_Codes_e DrawCharReturnCode;
 	while (*pText != '\0')
 	{
-		if (_wrap && ((cursorX + size * _CurrentFontWidth) > _width))
+		// check if text has reached end of screen
+		if ((x + (count * _Font_X_Size)) > _width - _Font_X_Size)
 		{
-			cursorX = 0;
-			cursorY = cursorY + size * 7 + 3;
-			if (cursorY > _height)
-				cursorY = _height;
+			y = y + _Font_Y_Size;
+			x = 0;
+			count = 0;
 		}
-		errorCode = drawChar(cursorX, cursorY, *pText, color, bg, size);
-		if ( errorCode != DisLib16::Success)
-		{
-			printf("Error drawText 5: Method drawChar failed\r\n");
-			return errorCode;
-		}
-		cursorX = cursorX + size * (_CurrentFontWidth + 1);
-
-		if (cursorX > _width)
-			cursorX = _width;
-		pText++;
+		DrawCharReturnCode = writeChar(x + (count * (_Font_X_Size)), y, *pText++);
+		if (DrawCharReturnCode != DisLib16::Success)
+			return DrawCharReturnCode;
+		count++;
+		MaxLength++;
+		if (MaxLength >= 250)
+			break; // 2nd way out of loop, safety check
 	}
 	return DisLib16::Success;
 }
 
 /*!
-	@brief: called by the print class after it converts the data to a character
-	@param character character
-	@return 
-		-# 1=success
-		-# -1=drawChar upstream function failed.
+	@brief write method used in the print class when user calls print
+	@param character the character to print
+	@return Will return
+		-# 1. success
+		-# DisLib16::Ret_Codes_e enum error code,  An error in the writeChar method.upstream
 */
-size_t displaylib_16_graphics ::write(uint8_t character)
+size_t displaylib_16_graphics::write(uint8_t character)
 {
-	if (_FontNumber < Font_Bignum)
+	DisLib16::Ret_Codes_e DrawCharReturnCode = DisLib16::Success;
+	;
+	switch (character)
 	{
-		switch (character)
+	case '\n':
+		_cursorY += _Font_Y_Size;
+		_cursorX = 0;
+		break;
+	case '\r':
+		break;
+	default:
+		DrawCharReturnCode = writeChar(_cursorX, _cursorY, character);
+		if (DrawCharReturnCode != DisLib16::Success)
 		{
-		case '\n':
-			_cursorY += _textSize * _CurrentFontheight;
-			_cursorX = 0;
-			break;
-		case '\r': /* skip */
-			break;
-		default:
-			if (drawChar(_cursorX, _cursorY, character, _textcolor, _textbgcolor, _textSize) != 0)
-			{
-				printf("Error write_print method 1C: Method drawChar failed\r\n");
-				return -1;
-			}
-			_cursorX += _textSize * (_CurrentFontWidth + 1);
-			if (_wrap && (_cursorX > (_width - _textSize * (_CurrentFontWidth + 1))))
-			{
-				_cursorY += _textSize * _CurrentFontheight;
-				_cursorX = 0;
-			}
+			// Set the write error based on the result of the drawing operation
+			setWriteError(DrawCharReturnCode); // Set error flag to non-zero value}
 			break;
 		}
-	}
-	else // for font numbers 7-12
-	{
-		switch (character)
+		_cursorX += (_Font_X_Size);
+		if (_textwrap && (_cursorX > (_width - (_Font_X_Size))))
 		{
-		case '\n':
-			_cursorY += _CurrentFontheight;
+			_cursorY += _Font_Y_Size;
 			_cursorX = 0;
-			break;
-		case '\r': /* skip */
-			break;
-		default:
-			if (drawChar(_cursorX, _cursorY, character, _textcolor, _textbgcolor) != 0)
-			{
-				printf("Error write_print method 2C: Method drawChar failed\r\n");
-				return -1;
-			}
-			_cursorX += (_CurrentFontWidth);
-			if (_wrap && (_cursorX > (_width - (_CurrentFontWidth + 1))))
-			{
-				_cursorY += _CurrentFontheight;
-				_cursorX = 0;
-			}
-			break;
-		} // end of switch
-	}	  // end of else
+		}
+		break;
+	} // end of switch
+
 	return 1;
 }
 
 /*!
-	@brief   Set the font type
-	@param FontNumber 1-12 enum OLED_FONT_TYPE_e
-*/
-void displaylib_16_graphics ::FontNum(Font_Type_e FontNumber)
-{
-	_FontNumber = FontNumber;
-	switch (_FontNumber)
-	{
-	case Font_Default: // Norm default 5 by 8
-		_CurrentFontWidth = Font_width_5;
-		_CurrentFontoffset = Font_offset_none;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAll;
-		break;
-	case Font_Thick: // Thick 7 by 8 (NO LOWERCASE LETTERS)
-		_CurrentFontWidth = Font_width_7;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAlphaNumNoLCase;
-		break;
-	case Font_Seven_Seg: // Seven segment 4 by 8
-		_CurrentFontWidth = Font_width_4;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_Wide: // Wide  8 by 8 (NO LOWERCASE LETTERS)
-		_CurrentFontWidth = Font_width_8;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAlphaNumNoLCase;
-		break;
-	case Font_Tiny: // tiny 3 by 8
-		_CurrentFontWidth = Font_width_3;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_HomeSpun: // homespun 7 by 8
-		_CurrentFontWidth = Font_width_7;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_Bignum: // big nums 16 by 32 (NUMBERS + : only)
-		_CurrentFontWidth = Font_width_16;
-		_CurrentFontoffset = Font_offset_minus;
-		_CurrentFontheight = Font_height_32;
-		_CurrentFontLength = FontLenNumeric;
-		break;
-	case Font_Mednum: // med nums 16 by 16 (NUMBERS + : only)
-		_CurrentFontWidth = Font_width_16;
-		_CurrentFontoffset = Font_offset_minus;
-		_CurrentFontheight = Font_height_16;
-		_CurrentFontLength = FontLenNumeric;
-		break;
-	case Font_ArialRound: // Arial round 16 by 24
-		_CurrentFontWidth = Font_width_16;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_24;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_ArialBold: // Arial bold  16 by 16
-		_CurrentFontWidth = Font_width_16;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_16;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_Mia: // mia  8 by 16
-		_CurrentFontWidth = Font_width_8;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_16;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	case Font_Dedica: // dedica  6 by 12
-		_CurrentFontWidth = Font_width_6;
-		_CurrentFontoffset = Font_offset_space;
-		_CurrentFontheight = Font_height_12;
-		_CurrentFontLength = FontLenAlphaNum;
-		break;
-	default:
-		_CurrentFontWidth = Font_width_5;
-		_CurrentFontoffset = Font_offset_none;
-		_CurrentFontheight = Font_height_8;
-		_CurrentFontLength = FontLenAll;
-		_FontNumber = Font_Default;
-		break;
-	}
-}
-
-/*!
-	@brief Draws an custom Icon of X by 8 size to screen , where X = 0 to 127
+	@brief Draws an custom Icon of X by 8 size to screen , where X = 0 to MAX width
 	@param x X coordinate
 	@param y Y coordinate
 	@param w 0-MAX_Y possible values width of icon in pixels , height is fixed at 8 pixels
@@ -823,17 +787,17 @@ void displaylib_16_graphics ::FontNum(Font_Type_e FontNumber)
 */
 DisLib16::Ret_Codes_e displaylib_16_graphics ::drawIcon(uint16_t x, uint16_t y, uint16_t w, uint16_t color, uint16_t backcolor, const std::span<const uint8_t> bitmap)
 {
-	if ((x >= _width) || (y >= _height)) 	// Out of screen bounds
+	if ((x >= _width) || (y >= _height)) // Out of screen bounds
 	{
 		printf("Error drawIcon 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
 	}
-	if( bitmap.empty()) 	//  Check for empty bitmap
+	if (bitmap.empty()) //  Check for empty bitmap
 	{
-		printf("Error: drawBitmap 1: Bitmap span is empty\n" );
+		printf("Error: drawBitmap 1: Bitmap span is empty\n");
 		return DisLib16::BitmapDataEmpty;
 	}
-	if (w >= _width) 	// Check w value
+	if (w >= _width) // Check w value
 	{
 		printf("Error drawIcon 4: Icon is greater than Screen width\r\n");
 		return DisLib16::IconScreenWidth;
@@ -882,19 +846,19 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 	uint8_t byte = 0;
 	uint16_t mycolor = 0;
 
-	if( bitmap.empty()) //  Check for empty bitmap
+	if (bitmap.empty()) //  Check for empty bitmap
 	{
-		printf("Error: drawBitmap 1: Bitmap span is empty\n" );
+		printf("Error: drawBitmap 1: Bitmap span is empty\n");
 		return DisLib16::BitmapDataEmpty;
 	}
-	if(w % 8 != 0) 	// check horizontal size
+	if (w % 8 != 0) // check horizontal size
 	{
-		printf("Error: drawBitmap 2 : Horizontal Bitmap size is incorrect: %u : Width must be divisible by 8 \n", w );
+		printf("Error: drawBitmap 2 : Horizontal Bitmap size is incorrect: %i : Width must be divisible by 8 \n", w);
 		return DisLib16::BitmapHorizontalSize;
 	}
 	if ((x >= _width) || (y >= _height)) // Check bounds
 	{
-		printf("Error: drawBitmap 4: Out of screen bounds, check x & y\n" );
+		printf("Error: drawBitmap 3: Out of screen bounds, check x & y\n");
 		return DisLib16::BitmapScreenBounds;
 	}
 
@@ -916,39 +880,36 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 			else
 				byte = bitmap[j * byteWidth + i / 8];
 			mycolor = (byte & 0x80) ? color : bgcolor;
-			// Correct order: High byte first, low byte second
-			rowBuffer[2 * i] = mycolor >> 8;      // High byte
-			rowBuffer[2 * i + 1] = mycolor & 0xFF; // Low byte
+			rowBuffer[2 * i] = mycolor >> 8;
+			rowBuffer[2 * i + 1] = mycolor & 0xFF;
 		}
-		// Set the address window for the current row
 		setAddrWindow(x, y + j, x + w - 1, y + j);
-		// Write the row to the display
 		spiWriteDataBuffer(rowBuffer, w * 2);
 	}
 	return DisLib16::Success;
 }
 
-/*! 
-	@brief: Draws a 16-bit color bitmap to the screen from a data array 
-	@param x X coordinate 
-	@param y Y coordinate 
-	@param bitmap span to data array 
-	@param w width of the bitmap in pixels 
-	@param h height of the bitmap in pixels 
+/*!
+	@brief: Draws a 16-bit color bitmap to the screen from a data array
+	@param x X coordinate
+	@param y Y coordinate
+	@param bitmap span to data array
+	@param w width of the bitmap in pixels
+	@param h height of the bitmap in pixels
 	@return Display status code:
 			-# DisLib16::Success on success.
 			-# DisLib16::BitmapDataEmpty if bitmap is empty.
 			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
 			-# DisLib16::BitmapSize if bitmap is too small.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h) 
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
 {
-	if (bitmap.empty()) 	// 1. Check for empty bitmap
+	if (bitmap.empty()) // 1. Check for empty bitmap
 	{
 		printf("Error drawBitmap16 1: Bitmap array is empty\r\n");
 		return DisLib16::BitmapDataEmpty;
 	}
-	if ((x >= _width) || (y >= _height)) 	// Check bounds
+	if ((x >= _width) || (y >= _height)) // Check bounds
 	{
 		printf("Error drawBitmap16 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
@@ -963,21 +924,20 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint1
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 
-	uint16_t j = 0;	
-	// Create a non-const span to manipulate bitmap (not needed for just passing to spiWriteDataBuffer)
+	uint16_t j = 0;
+	// Create a non-const span to manipulate bitmap
 	std::span<const uint8_t> currentBitmap = bitmap;
 	// Process bitmap data row-by-row
 	for (j = 0; j < h; j++)
 	{
 		setAddrWindow(x, y + j, x + w - 1, y + j); // Set the window for the current row
 		// Pass the raw pointer to spiWriteDataBuffer
-		spiWriteDataBuffer(const_cast<uint8_t*>(currentBitmap.data()), w * sizeof(uint16_t));
+		spiWriteDataBuffer(const_cast<uint8_t *>(currentBitmap.data()), w * sizeof(uint16_t));
 		// Move to the next row in the bitmap
 		currentBitmap = currentBitmap.subspan(w * sizeof(uint16_t));
 	}
 	return DisLib16::Success;
 }
-
 
 /*!
 	@brief Draws an 24 bit color bitmap to screen from a data array
@@ -986,7 +946,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint1
 	@param bitmap span to data array
 	@param w width of the bitmap in pixels
 	@param h height of the bitmap in pixels
-	@note 24 bit color converted to 16 bit color
+	@note 24 bit color converted to 16 bit color, excepted input format  RRRRRRRR GGGGGGGG BBBBBBBB
 	@return Display status code:
 			-# DisLib16::Success on success.
 			-# DisLib16::BitmapDataEmpty if bitmap is empty.
@@ -995,12 +955,12 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint1
 */
 DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap24Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
 {
-	if (bitmap.empty()) 	// 1. Check for empty bitmap
+	if (bitmap.empty()) // 1. Check for empty bitmap
 	{
 		printf("Error drawBitmap24 1: Bitmap array is empty\r\n");
 		return DisLib16::BitmapDataEmpty;
 	}
-	if ((x >= _width) || (y >= _height)) 	// Check bounds
+	if ((x >= _width) || (y >= _height)) // Check bounds
 	{
 		printf("Error drawBitmap24 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
@@ -1038,181 +998,6 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap24Data(uint16_t x, uint1
 		}
 		setAddrWindow(x, y + j, x + w - 1, y + j);
 		spiWriteDataBuffer(rowBuffer, w * 2);
-	}
-	return DisLib16::Success;
-}
-
-/*!
-	@brief writes a char (c) on the display
-	@param x X coordinate
-	@param y Y coordinate
-	@param character The ASCII character
-	@param color 565 16-bit
-	@param bg background color
-	@return
-		-# Display_Success=success
-		-# Display_WrongFont =wrong font
-		-# Display_CharScreenBounds=Co-ordinates out of bounds,
-		-# Display_CharFontASCIIRange=ASCII character not in fonts range,
-		-# Display_FontNotEnabled=Font selected but not enabled in _font.hpp
-	@note for font 7-12 only
-*/
-DisLib16::Ret_Codes_e displaylib_16_graphics ::drawChar(uint16_t x, uint16_t y, uint8_t character, uint16_t color, uint16_t bg)
-{
-	uint8_t FontSizeMod = 0;
-	uint8_t i, j;
-	uint8_t ctemp = 0, y0 = y;
-
-	// 1. Check for screen out of bounds
-	if ((x >= _width) ||					 // Clip right
-		(y >= _height) ||				 // Clip bottom
-		((x + _CurrentFontWidth + 1) < 0) || // Clip left
-		((y + _CurrentFontheight) < 0))		 // Clip top
-	{
-		printf("Error drawChar 3B: Co-ordinates out of bounds\r\n");
-		return DisLib16::CharScreenBounds;
-	}
-
-	// 2. Check for character out of font range bounds
-	if (character < _CurrentFontoffset || character >= (_CurrentFontLength + _CurrentFontoffset))
-	{
-		printf("Error drawChar 4B: Character = %u. Out of Font bounds : %u <> %u\r\n", character, _CurrentFontoffset, (unsigned int)(_CurrentFontLength + _CurrentFontoffset));
-		return DisLib16::CharFontASCIIRange;
-	}
-
-	// 3. Check for correct font and set FontSizeMod for fonts 7-12
-	switch (_FontNumber)
-	{
-	case Font_Bignum:
-	case Font_Mednum:
-	case Font_ArialRound:
-	case Font_ArialBold:
-		FontSizeMod = 2;
-		break;
-	case Font_Mia:
-	case Font_Dedica:
-		FontSizeMod = 1;
-		break;
-	default:
-		printf("Error drawChar 5B: Wrong font selected, Font must be > 7 : %u\r\n", _FontNumber);
-		return DisLib16::WrongFont;
-		break;
-	}
-
-	for (i = 0; i < _CurrentFontheight * FontSizeMod; i++)
-	{
-		switch (_FontNumber)
-		{
-		case Font_Bignum:
-			ctemp = pFontBigNum16x32ptr[character - _CurrentFontoffset][i];
-			break;
-		case Font_Mednum:
-			ctemp = pFontMedNum16x16ptr[character - _CurrentFontoffset][i];
-			break;
-#ifdef _DISPLAY_OPTIONAL_FONT_9
-		case Font_ArialRound:
-			ctemp = pFontArial16x24ptr[character - _CurrentFontoffset][i];
-			break;
-#endif
-#ifdef _DISPLAY_OPTIONAL_FONT_10
-		case Font_ArialBold:
-			ctemp = pFontArial16x16ptr[character - _CurrentFontoffset][i];
-			break;
-#endif
-#ifdef _DISPLAY_OPTIONAL_FONT_11
-		case Font_Mia:
-			ctemp = pFontMia8x16ptr[character - _CurrentFontoffset][i];
-			break;
-#endif
-#ifdef _DISPLAY_OPTIONAL_FONT_12
-		case Font_Dedica:
-			ctemp = pFontDedica6x12ptr[character - _CurrentFontoffset][i];
-			break;
-#endif
-		default:
-			printf("Error drawChar 6B: Is the font you selected enabled in _font.hpp? : %u\r\n", _FontNumber);
-			return DisLib16::FontNotEnabled;
-			break;
-		}
-		for (j = 0; j < 8; j++)
-		{
-			if (ctemp & 0x80)
-			{
-				drawPixel(x, y, color);
-			}
-			else
-			{
-				drawPixel(x, y, bg);
-			}
-
-			ctemp <<= 1;
-			y++;
-			if ((y - y0) == _CurrentFontheight)
-			{
-				y = y0;
-				x++;
-				break;
-			}
-		}
-	}
-	return DisLib16::Success;
-}
-
-/*!
-	@brief Writes text string (*ptext) on the display
-	@param x X coordinate
-	@param y Y coordinate
-	@param pText pointer to string of ASCII character's
-	@param color 565 16-bit
-	@param bg background color
-	@return
-		-# Display_Success=success
-		-# Display_WrongFont =wrong font
-		-# Display_CharScreenBounds=Co-ordinates out of bounds
-		-# Display_FontPtrNullptr=Invalid pointer object
-		-# if drawChar method error upstream it return that error code.
-	@note for font 7-12 only
-*/
-DisLib16::Ret_Codes_e displaylib_16_graphics ::drawText(uint16_t x, uint16_t y, char *pText, uint16_t color, uint16_t bg)
-{
-	// Check for correct font
-	if (_FontNumber < Font_Bignum)
-	{
-		printf("Error drawText 2B: Wrong font selected, must be 7 to 12 \r\n");
-		return DisLib16::WrongFont;
-	}
-	// Check for null pointer
-	if (pText == nullptr)
-	{
-		printf("Error drawText 3B: String array is not valid pointer object\r\n");
-		return DisLib16::CharArrayNullptr;
-	}
-	// Out of screen bounds
-	if ((x >= _width) || (y >= _height))
-	{
-		printf("Error drawText 4B: Out of screen bounds\r\n");
-		return DisLib16::CharScreenBounds;
-	}
-	DisLib16::Ret_Codes_e errorCode;
-	while (*pText != '\0')
-	{
-		if (x > (_width - _CurrentFontWidth))
-		{
-			x = 0;
-			y += _CurrentFontheight;
-			if (y > (_height - _CurrentFontheight))
-			{
-				y = x = 0;
-			}
-		}
-		errorCode = drawChar(x, y, *pText, color, bg);
-		if (errorCode != DisLib16::Success)
-		{
-			printf("Error drawText 5B: drawChar method failed\r\n");
-			return errorCode;
-		}
-		x += _CurrentFontWidth;
-		pText++;
 	}
 	return DisLib16::Success;
 }
@@ -1346,18 +1131,11 @@ void displaylib_16_graphics::setCursor(int16_t x, int16_t y)
 }
 
 /*!
-	@brief Set the size of text, fonts 1-6
-	@param s size of text. 1 2 3 etc
-*/
-void displaylib_16_graphics::setTextSize(uint8_t s){
-	_textSize = (s > 0) ? s : 1;
-}
-
-/*!
 	@brief Set text color
 	@param c  text color , Color definitions 16-Bit Color Values R5G6B5
 */
-void displaylib_16_graphics::setTextColor(uint16_t c){
+void displaylib_16_graphics::setTextColor(uint16_t c)
+{
 	_textcolor = _textbgcolor = c;
 }
 
@@ -1366,7 +1144,8 @@ void displaylib_16_graphics::setTextColor(uint16_t c){
 	@param c text foreground color , Color definitions 16-Bit Color Values R5G6B5
 	@param b text background color , Color definitions 16-Bit Color Values R5G6B5
 */
-void displaylib_16_graphics::setTextColor(uint16_t c, uint16_t b){
+void displaylib_16_graphics::setTextColor(uint16_t c, uint16_t b)
+{
 	_textcolor = c;
 	_textbgcolor = b;
 }
@@ -1380,7 +1159,7 @@ void displaylib_16_graphics::setTextColor(uint16_t c, uint16_t b){
 	@param h height of the sprite in pixels
 	@param backgroundColor the background color of sprite (16 bit 565) this will be made transparent
 	@param printBg  if true print the background color, if false sprite mode.
-	@note Experimental , does not use buffer or malloc, just draw pixel
+	@note  Does not use buffer or malloc, just draw pixel
 	@return Display status code:
 			-# DisLib16::Success on success.
 			-# DisLib16::BitmapDataEmpty if bitmap is empty.
@@ -1412,21 +1191,24 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_
 	auto bitmapIter = bitmap.begin();
 	uint16_t i, j;
 	uint16_t colour;
-	for(j = 0; j < h; j++)
+	for (j = 0; j < h; j++)
 	{
-		for(i = 0; i < w; i ++)
+		for (i = 0; i < w; i++)
 		{
 			// Extract the 16-bit color from two consecutive bytes
 			colour = (*bitmapIter << 8) | *(bitmapIter + 1);
 			// Move the iterator forward by 2
 			bitmapIter += 2;
-			if(printBg == false)
+			if (printBg == false)
 			{
-				if (colour != backgroundColor){
-					drawPixel(x+i-1, y + j-1, colour);
+				if (colour != backgroundColor)
+				{
+					drawPixel(x + i - 1, y + j - 1, colour);
 				}
-			}else{
-				drawPixel(x+i-1, y + j-1, colour);
+			}
+			else
+			{
+				drawPixel(x + i - 1, y + j - 1, colour);
 			}
 		}
 	}
@@ -1435,7 +1217,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_
 
 /*!
 	@brief Draws an 8-bit color bitmap (RRRGGGBB format) to the screen.
-		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each 
+		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each
 		pixel to 16-bit RGB565, and writes it to the display.
 	@param x X coordinate of the top-left corner of the bitmap.
 	@param y Y coordinate of the top-left corner of the bitmap.
@@ -1451,13 +1233,12 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_
 
 DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
 {
-	if (bitmap.empty())// 1. Check for empty bitmap
+	if (bitmap.empty()) // 1. Check for empty bitmap
 	{
 		printf("Error drawBitmap8 1: Bitmap array is empty\r\n");
 		return DisLib16::BitmapDataEmpty;
 	}
-	// 2. Check bounds
-	if ((x >= _width) || (y >= _height))
+	if ((x >= _width) || (y >= _height)) // 2. Check bounds
 	{
 		printf("Error drawBitmap8 2: Out of screen bounds\r\n");
 		return DisLib16::BitmapScreenBounds;
@@ -1472,7 +1253,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 
-	uint8_t rowBuffer[w * 2];  // Allocate space for 16-bit per pixel
+	uint8_t rowBuffer[w * 2]; // Allocate space for 16-bit per pixel
 	uint16_t j = 0;
 	uint16_t color = 0;
 	// Create an iterator to traverse the bitmap
@@ -1484,7 +1265,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 		for (uint16_t i = 0; i < w; i++)
 		{
 			color = convert8bitTo16bit(*bitmapIter);
-			rowBuffer[2 * i] = color >> 8;      // High byte
+			rowBuffer[2 * i] = color >> 8;		 // High byte
 			rowBuffer[2 * i + 1] = color & 0xFF; // Low byte
 			++bitmapIter;
 		}
@@ -1494,24 +1275,747 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 	return DisLib16::Success;
 }
 
-/*! 
+/*!
 	@brief convert 8 bit color to 16 bit color 565
 	@param RRRGGGBB a byte of 8bit color
 	@details RRRGGGBB to RRRRRGGGGGGBBBBB
 	@return a uint16_t 565 color value
 */
-uint16_t displaylib_16_graphics::convert8bitTo16bit(uint8_t RRRGGGBB) 
+uint16_t displaylib_16_graphics::convert8bitTo16bit(uint8_t RRRGGGBB)
 {
-	uint16_t red   = (RRRGGGBB >> 5) & 0x07;
+	uint16_t red = (RRRGGGBB >> 5) & 0x07;
 	uint16_t green = (RRRGGGBB >> 2) & 0x07;
-	uint16_t blue  =  RRRGGGBB & 0x03;
-	// Scale 3-bit red (0-7) to 5-bit (0-31)
-	red = (red * 255 / 7) >> 3; 
-	// Scale 3-bit green (0-7) to 6-bit (0-63)
-	green = (green * 255 / 7) >> 2; 
-	// Scale 2-bit blue (0-3) to 5-bit (0-31)
-	blue = (blue * 255 / 3) >> 3;
-
+	uint16_t blue = RRRGGGBB & 0x03;
+	red = (red * 255 / 7) >> 3;		// Scale 3-bit red (0-7) to 5-bit (0-31)
+	green = (green * 255 / 7) >> 2; // Scale 3-bit green (0-7) to 6-bit (0-63)
+	blue = (blue * 255 / 3) >> 3;	// Scale 2-bit blue (0-3) to 5-bit (0-31)
 	return (red << 11) | (green << 5) | blue;
 }
+
+/*!
+	@brief Set the text rendering mode to either buffered or pixel-by-pixel.
+	@param mode If true, characters are drawn pixel by pixel; if false, characters are drawn using a buffer.
+ */
+void displaylib_16_graphics::setTextCharPixelOrBuffer(bool mode)
+{
+	_textCharPixelOrBuffer = mode;
+}
+
+/*!
+	@brief Get the current text rendering mode.
+	@return True if characters are drawn pixel by pixel, false if drawn using a buffer.
+ */
+bool displaylib_16_graphics::getTextCharPixelOrBuffer() const
+{
+	return _textCharPixelOrBuffer;
+}
+
+//==================================================
+#ifdef dislib16_ADVANCED_GRAPHICS_ENABLE
+
+/*!
+	@brief Get the current maximum angle of the arc.
+	@return The current maximum angle in degrees.
+*/
+float displaylib_16_graphics::getArcAngleMax() const
+{
+	return _arcAngleMax;
+}
+/*!
+	@brief Set a new maximum angle for the arc.
+	@param arcAngleMax The new maximum angle in degrees (should be positive).
+*/
+void displaylib_16_graphics::setArcAngleMax(float arcAngleMax)
+{
+	if (arcAngleMax > 0)
+	{ // Ensure the max angle is positive
+		_arcAngleMax = arcAngleMax;
+	}
+}
+/*!
+	@brief Get the current angle offset.
+	@return The current angle offset in degrees.
+*/
+int displaylib_16_graphics::getArcAngleOffset() const
+{
+	return _arcAngleOffset;
+}
+/*!
+	@brief Set a new angle offset.
+	@param arcAngleOffset The new angle offset in degrees.
+*/
+void displaylib_16_graphics::setArcAngleOffset(int arcAngleOffset)
+{
+	_arcAngleOffset = arcAngleOffset;
+}
+
+/*!
+	@brief Draws a polygon with a specified number of sides, diameter, rotation, and color.
+	This function draws a regular polygon by connecting points equally spaced around a circle,
+	with each point having a distance defined by the diameter. The polygon is rotated by the given
+	angle (in degrees) before being drawn. The number of sides is enforced to be at least 3.
+	@param x The x-coordinate of the center of the polygon.
+	@param y The y-coordinate of the center of the polygon.
+	@param sides The number of sides the polygon will have. Must be at least 3.
+	@param diameter The diameter of the circle inscribed by the polygon.
+	@param rotation The angle (in degrees) by which to rotate the polygon.
+	@param fill if false draw ,if true fill
+	@param color The color of the polygon edges.
+	@returns error code  GenericError , if user inputs incorrect sides value
+ */
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawPolygon(int16_t x, int16_t y, uint8_t sides, int16_t diameter, float rotation, bool fill, uint16_t color)
+{
+	if ((sides < 3) || (sides > 12))
+	{
+		fprintf(stderr, "Error : drawPolygon : sides incorrect value 3-12\r\n");
+		return DisLib16::GenericError;
+	}
+	// Convert degrees to radians
+	const float degreesToRadians = std::numbers::pi / 180.0;
+	const float angleBetweenPoints = 360.0 / sides;
+	// Dynamic arrays for polygon vertices and intersections
+	std::vector<int16_t> vx(sides), vy(sides); // Dynamic size based on sides
+	std::vector<int16_t> intersectX(sides);	   // Maximum sides intersections
+	// Calculate polygon vertex positions
+	for (uint8_t i = 0; i < sides; i++)
+	{
+		vx[i] = x + (sin((i * angleBetweenPoints + rotation) * degreesToRadians) * diameter);
+		vy[i] = y + (cos((i * angleBetweenPoints + rotation) * degreesToRadians) * diameter);
+	}
+	// If not filling, just draw the polygon outline
+	if (!fill)
+	{
+		for (uint8_t i = 0; i < sides; i++)
+		{
+			uint8_t j = (i + 1) % sides;				 // Next vertex
+			drawLine(vx[i], vy[i], vx[j], vy[j], color); // Draw edge between consecutive vertices
+		}
+	}
+	// If filling, use scanline algorithm to fill the polygon
+	else
+	{
+		// Scanline fill algorithm
+		int16_t minY = vy[0], maxY = vy[0];
+		for (uint8_t i = 1; i < sides; i++)
+		{
+			if (vy[i] < minY)
+				minY = vy[i];
+			if (vy[i] > maxY)
+				maxY = vy[i];
+		}
+		// Loop through scanlines
+		for (int16_t scanY = minY; scanY <= maxY; scanY++)
+		{
+			uint8_t intersections = 0;
+			// Find intersections with polygon edges
+			for (uint8_t i = 0; i < sides; i++)
+			{
+				uint8_t j = (i + 1) % sides;
+				if ((vy[i] <= scanY && vy[j] > scanY) || (vy[j] <= scanY && vy[i] > scanY))
+				{
+					// Compute intersection using linear interpolation
+					float t = (float)(scanY - vy[i]) / (vy[j] - vy[i]);
+					intersectX[intersections++] = vx[i] + t * (vx[j] - vx[i]);
+				}
+			}
+
+			// Sort intersection points (bubble sort for simplicity)
+			for (uint8_t i = 0; i < intersections - 1; i++)
+			{
+				for (uint8_t j = i + 1; j < intersections; j++)
+				{
+					if (intersectX[i] > intersectX[j])
+					{
+						std::swap(intersectX[i], intersectX[j]);
+					}
+				}
+			}
+
+			// Draw horizontal lines between pairs of intersections
+			for (uint8_t i = 0; i < intersections; i += 2)
+			{
+				if (i + 1 < intersections)
+				{
+					drawFastHLine(intersectX[i], scanY, intersectX[i + 1] - intersectX[i] + 1, color);
+				}
+			}
+		}
+	}
+	return DisLib16::Success;
+}
+
+/*!
+	@brief Draws a grid of dots on the screen starting from the given coordinates.
+		This function draws a grid of pixels with a specified gap between them.
+		It checks that the provided coordinates and dimensions are within the screen bounds
+		and adjusts them if necessary. It also validates The grid of dots gap value and defaults it to 2 if invalid.
+	@param x The x-coordinate of the top-left corner where The grid of dots will start.
+	@param y The y-coordinate of the top-left corner where The grid of dots will start.
+	@param w The width of the area to draw The grid of dots, from the starting x-coordinate.
+	@param h The height of the area to draw The grid of dots, from the starting y-coordinate.
+	@param DotGridGap The gap between each dot gap line, controlling the spacing between drawn pixels.
+	@param color The color of the pixels to draw in The grid of dots.
+	@return DisLib16::Ret_Codes_e Returns a status code indicating success or failure. Possible return values:
+	- DisLib16::Success: The grid of dots was successfully drawn.
+	- DisLib16::ShapeScreenBounds: The provided coordinates or dimensions are out of screen bounds.
+ */
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawDotGrid(int16_t x, int16_t y, int16_t w, int16_t h, uint8_t DotGridGap, uint16_t color)
+{
+	// User input handling
+	if ((x >= _width) || (y >= _height))
+	{
+		fprintf(stderr, "Error: drawDotGrid: Out of screen bounds\n");
+		return DisLib16::ShapeScreenBounds;
+	}
+	if (DotGridGap < 2 || DotGridGap > 20)
+	{
+		printf("Warning : drawDotGrid: Invalid Dot Gap value(2-20) , setting to 2\n");
+		DotGridGap = 2;
+	}
+	if ((x + w - 1) >= _width)
+		w = _width - x;
+	if ((y + h - 1) >= _height)
+		h = _height - y;
+	// Swap coordinates if the width or height are smaller than the starting point
+	int16_t dotGapWidth, dotGapHeight;
+	if (w < x)
+	{
+		dotGapWidth = w;
+		w = x;
+		x = dotGapWidth;
+	}
+	if (h < y)
+	{
+		dotGapHeight = h;
+		h = y;
+		y = dotGapHeight;
+	}
+
+	// Draw the grid of pixels
+	for (int16_t row = y; row <= h; row += DotGridGap)
+	{
+		for (int16_t col = x; col <= w; col += DotGridGap)
+		{
+			drawPixel(col, row, color);
+		}
+	}
+	return DisLib16::Success;
+}
+
+/*!
+	@brief Draws a line using an angle and length as parameters.
+	This function draws a line starting from `(x, y)`, extending in the direction
+	specified by `angle`, with a given `length`. The function also allows applying
+	an `offset` to the angle before computing the line’s end coordinates.
+	@param x The starting x-coordinate (horizontal position).
+	@param y The starting y-coordinate (vertical position).
+	@param angle The angle (in degrees) at which the line is drawn.
+	@param start calculates a new starting position by moving start units along the given angle.
+	@param length The length of the line.
+	@param offset An additional offset applied to the angle before calculating the endpoint.
+	@param color The color of the line (RGB565 format).
+ */
+void displaylib_16_graphics::drawLineAngle(int16_t x, int16_t y, int angle, uint8_t start, uint8_t length, int offset, uint16_t color)
+{
+	if (start == 0)
+	{
+		if (length < 2)
+		{
+			drawPixel(x, y, color);
+		}
+		else
+		{
+			drawLine(x, y,
+					 x + length * cosineFromDegrees(angle + offset),
+					 y + length * sineFromDegrees(angle + offset), color);
+		}
+	}
+	else
+	{
+		if (start - length < 2)
+		{
+			drawPixel(x, y, color);
+		}
+		else
+		{
+			drawLine(
+				x + start * cosineFromDegrees(angle + offset),
+				y + start * sineFromDegrees(angle + offset),
+				x + (start + length) * cosineFromDegrees(angle + offset),
+				y + (start + length) * sineFromDegrees(angle + offset),
+				color);
+		}
+	}
+}
+
+/*!
+	@brief Draws a quadrilateral (four-sided polygon) by connecting four points with lines.
+	This function draws a quadrilateral by drawing four lines between the given vertices.
+	The lines are drawn in the order: (x0, y0) to (x1, y1), (x1, y1) to (x2, y2),
+	(x2, y2) to (x3, y3), and finally (x3, y3) back to (x0, y0).
+	@param x0 The x-coordinate of the first vertex.
+	@param y0 The y-coordinate of the first vertex.
+	@param x1 The x-coordinate of the second vertex.
+	@param y1 The y-coordinate of the second vertex.
+	@param x2 The x-coordinate of the third vertex.
+	@param y2 The y-coordinate of the third vertex.
+	@param x3 The x-coordinate of the fourth vertex.
+	@param y3 The y-coordinate of the fourth vertex.
+	@param color The 565 color used to draw the lines of the quadrilateral.
+ */
+void displaylib_16_graphics::drawQuadrilateral(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3, uint16_t color)
+{
+	drawLine(x0, y0, x1, y1, color); // low 1
+	drawLine(x1, y1, x2, y2, color); // high 1
+	drawLine(x2, y2, x3, y3, color); // high 2
+	drawLine(x3, y3, x0, y0, color); // low 2
+}
+
+/*!
+	@brief Fills a quadrilateral with the specified color using triangles.
+	This function fills a quadrilateral by dividing it into triangles and filling them individually.
+	@param x0 The x-coordinate of the first vertex.
+	@param y0 The y-coordinate of the first vertex.
+	@param x1 The x-coordinate of the second vertex.
+	@param y1 The y-coordinate of the second vertex.
+	@param x2 The x-coordinate of the third vertex.
+	@param y2 The y-coordinate of the third vertex.
+	@param x3 The x-coordinate of the fourth vertex.
+	@param y3 The y-coordinate of the fourth vertex.
+	@param color The color used to fill the quadrilateral.
+
+ */
+void displaylib_16_graphics::fillQuadrilateral(int16_t x0, int16_t y0, int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3, uint16_t color)
+{
+	// Compute the cross product of vectors (x1-x0, y1-y0) and (x2-x0, y2-y0)
+	// to determine convexity
+	int32_t crossProduct = (x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0);
+	if (crossProduct >= 0)
+	{
+		// Convex case (or degenerate, treat as convex)
+		fillTriangle(x0, y0, x1, y1, x2, y2, color);
+		fillTriangle(x2, y2, x3, y3, x0, y0, color);
+	}
+	else
+	{
+		// Concave case: Choose the alternative diagonal
+		fillTriangle(x1, y1, x2, y2, x3, y3, color);
+		fillTriangle(x3, y3, x0, y0, x1, y1, color);
+	}
+}
+
+/*!
+	@brief Draw an ellipse on the display.
+	This function uses the midpoint ellipse algorithm to efficiently draw an
+	ellipse centered at (cx, cy) with the given semi-major (horizontal) and
+	semi-minor (vertical) axes.
+	@param cx X-coordinate of the ellipse center.
+	@param cy Y-coordinate of the ellipse center.
+	@param semiMajorAxis Length of the semi-major axis (horizontal radius).
+	@param semiMinorAxis Length of the semi-minor axis (vertical radius).
+	@param fill if false draw Ellipse , if true fill it!
+	@param color 16-bit color value for the ellipse.
+ */
+void displaylib_16_graphics::drawEllipse(int16_t cx, int16_t cy, int16_t semiMajorAxis, int16_t semiMinorAxis, bool fill, uint16_t color)
+{
+	int16_t x, y;
+	// int16_t twiceMajorAxisSquared, twiceMinorAxisSquared; //stores 2 * (a*a) &  2 * (b*b)
+	int32_t stopXThreshold, stopYThreshold; // ndicates when iteration stops in X & Y direction.
+	int32_t deltaX, deltaY;					// Represents the X & Y direction error change.
+	int32_t decisionParam;
+	// Precompute squared values for efficiency
+	const int32_t twiceMajorAxisSquared = 2 * (semiMajorAxis * semiMajorAxis);
+	const int32_t twiceMinorAxisSquared = 2 * (semiMinorAxis * semiMinorAxis);
+	// Region 1: Upper half
+	x = semiMajorAxis;
+	y = 0;
+	deltaX = (semiMinorAxis * semiMinorAxis) * (1 - (2 * semiMajorAxis)); // Initial error term for X
+	deltaY = (semiMajorAxis * semiMajorAxis);							  // Initial error term for Y
+	decisionParam = 0;
+	stopXThreshold = (twiceMinorAxisSquared * semiMajorAxis); // Stopping condition for region 1
+	stopYThreshold = 0;
+	// First region: X decreases faster than Y increases
+	while (stopXThreshold >= stopYThreshold)
+	{
+		if (fill)
+		{
+			drawFastHLine(cx - x, cy + y, 2 * x + 1, color); // Fill horizontal line
+			if (y != 0)
+				drawFastHLine(cx - x, cy - y, 2 * x + 1, color); // Mirror bottom half
+		}
+		else
+		{
+			ellipseHelper(cx, cy, x, y, color);
+		}
+		y++;
+		stopYThreshold += twiceMajorAxisSquared;
+		decisionParam += deltaY;
+		deltaY += twiceMajorAxisSquared;
+		// Check for boundary error and adjust X
+		if ((2 * decisionParam) + deltaX > 0)
+		{
+			x--;
+			stopXThreshold -= twiceMinorAxisSquared;
+			decisionParam += deltaX;
+			deltaX += twiceMinorAxisSquared;
+		}
+	}
+	// Region 2: Lower half
+	x = 0;
+	y = semiMinorAxis;
+	deltaX = (semiMinorAxis * semiMinorAxis);							  // Reset X error term
+	deltaY = (semiMajorAxis * semiMajorAxis) * (1 - (2 * semiMinorAxis)); // Initial error term for Y
+	decisionParam = 0;
+	stopXThreshold = 0;
+	stopYThreshold = (twiceMajorAxisSquared * semiMinorAxis); // Stopping condition for region 2
+	// Second region: Y decreases faster than X increases
+	while (stopXThreshold <= stopYThreshold)
+	{
+		if (fill)
+		{
+			drawFastHLine(cx - x, cy + y, 2 * x + 1, color); // Fill horizontal line
+			if (y != 0)
+				drawFastHLine(cx - x, cy - y, 2 * x + 1, color); // Mirror bottom half
+		}
+		else
+		{
+			ellipseHelper(cx, cy, x, y, color);
+		}
+		x++;
+		stopXThreshold += twiceMinorAxisSquared;
+		decisionParam += deltaX;
+		deltaX += twiceMinorAxisSquared;
+		// Check for boundary error and adjust Y
+		if (((2 * decisionParam) + deltaY) > 0)
+		{
+			y--;
+			stopYThreshold -= twiceMajorAxisSquared;
+			decisionParam += deltaY;
+			deltaY += twiceMajorAxisSquared;
+		}
+	}
+}
+
+/// @cond
+
+/*!
+	@brief Plots four symmetric points of an ellipse.
+	This function takes advantage of the symmetry of ellipses, plotting the
+	four points in each quadrant to minimize calculations.
+	@param cx X-coordinate of the ellipse center.
+	@param cy Y-coordinate of the ellipse center.
+	@param x Current X offset.
+	@param y Current Y offset.
+	@param color 16-bit color value.
+ */
+void displaylib_16_graphics::ellipseHelper(uint16_t cx, uint16_t cy, uint16_t x, uint16_t y, uint16_t color)
+{
+	drawPixel(cx + x, cy + y, color);
+	if (x != 0)
+		drawPixel(cx - x, cy + y, color);
+	if (y != 0)
+		drawPixel(cx + x, cy - y, color);
+	if (x != 0 && y != 0)
+		drawPixel(cx - x, cy - y, color);
+}
+
+/*!
+	@brief helps drawArc draw an Arc on screen
+	@param centerX X-coordinate of the center of the arc
+	@param centerY Y-coordinate of the center of the arc
+	@param radius The radius of the arc
+	@param thickness the thickness of the arc
+	@param start Starting angle of arc
+	@param end End angle of arc
+	@param color The color of the arc.
+*/
+void displaylib_16_graphics::drawArcHelper(uint16_t centerX, uint16_t centerY, uint16_t radius, uint16_t thickness, float start, float end, uint16_t color)
+{
+	// Define bounding box variables
+	int16_t minX = 65535;
+	int16_t maxX = -32767;
+	int16_t minY = 32767;
+	int16_t maxY = -32767;
+	// Trigonometric values
+	float cosStart, sinStart, cosEnd, sinEnd;
+	float outerRadius, tempValue;
+	float startAngle, endAngle;
+	// Squared radius values for comparison
+	int16_t innerRadiusSquared, outerRadiusSquared;
+	// Loop variables
+	int16_t x, y, xSquared, ySquared;
+	int16_t y1Start, y2End, y2Start;
+	// Slope calculations
+	float startSlope, endSlope;
+	// Boolean flags for arc filling logic
+	bool y1StartFound, y2StartFound, y1EndFound, y2EndSearching;
+	// Convert arc angles to degrees from the normalized input range
+	startAngle = (start / _arcAngleMax) * 360;
+	endAngle = (end / _arcAngleMax) * 360;
+	// Normalize angles to stay within the 0-360 range
+	while (startAngle < 0)
+		startAngle += 360;
+	while (endAngle < 0)
+		endAngle += 360;
+	while (startAngle > 360)
+		startAngle -= 360;
+	while (endAngle > 360)
+		endAngle -= 360;
+	// Handle cases where the arc wraps around 0 degrees
+	if (startAngle > endAngle)
+	{
+		drawArcHelper(centerX, centerY, radius, thickness, ((startAngle / 360.0) * _arcAngleMax), _arcAngleMax, color);
+		drawArcHelper(centerX, centerY, radius, thickness, 0, ((endAngle / 360.0) * _arcAngleMax), color);
+	}
+	else
+	{ // Compute trigonometric values for start and end angles
+		cosStart = cosineFromDegrees(startAngle);
+		sinStart = sineFromDegrees(startAngle);
+		cosEnd = cosineFromDegrees(endAngle);
+		sinEnd = sineFromDegrees(endAngle);
+		// Determine the bounding box of the arc
+		outerRadius = radius;
+		tempValue = outerRadius * cosStart;
+		if (tempValue < minX)
+			minX = tempValue;
+		if (tempValue > maxX)
+			maxX = tempValue;
+		tempValue = outerRadius * sinStart;
+		if (tempValue < minY)
+			minY = tempValue;
+		if (tempValue > maxY)
+			maxY = tempValue;
+
+		tempValue = outerRadius * cosEnd;
+		if (tempValue < minX)
+			minX = tempValue;
+		if (tempValue > maxX)
+			maxX = tempValue;
+		tempValue = outerRadius * sinEnd;
+		if (tempValue < minY)
+			minY = tempValue;
+		if (tempValue > maxY)
+			maxY = tempValue;
+		// Adjust bounding box for inner arc
+		outerRadius = radius - thickness;
+		tempValue = outerRadius * cosStart;
+		if (tempValue < minX)
+			minX = tempValue;
+		if (tempValue > maxX)
+			maxX = tempValue;
+		tempValue = outerRadius * sinStart;
+		if (tempValue < minY)
+			minY = tempValue;
+		if (tempValue > maxY)
+			maxY = tempValue;
+
+		tempValue = outerRadius * cosEnd;
+		if (tempValue < minX)
+			minX = tempValue;
+		if (tempValue > maxX)
+			maxX = tempValue;
+		tempValue = outerRadius * sinEnd;
+		if (tempValue < minY)
+			minY = tempValue;
+		if (tempValue > maxY)
+			maxY = tempValue;
+		// Special cases for quarter-circle boundary adjustments
+		if ((startAngle < 90) && (endAngle > 90))
+			maxY = radius;
+		if ((startAngle < 180) && (endAngle > 180))
+			minX = -radius;
+		if ((startAngle < 270) && (endAngle > 270))
+			minY = -radius;
+		// Calculate slopes for boundary conditions
+		startSlope = (float)cosStart / (float)sinStart;
+		endSlope = (float)cosEnd / (float)sinEnd;
+		if (endAngle == 360)
+			endSlope = -1000000; // Force slope to an extreme value
+		innerRadiusSquared = (radius - thickness) * (radius - thickness);
+		outerRadiusSquared = radius * radius;
+		// Scan through bounding box to determine which pixels to fill
+		for (x = minX; x <= maxX; x++)
+		{
+			y1StartFound = false;
+			y2StartFound = false;
+			y1EndFound = false;
+			y2EndSearching = false;
+			y1Start = 0;
+			y2End = 0;
+			y2Start = 0;
+			for (y = minY; y <= maxY; y++)
+			{
+				xSquared = x * x;
+				ySquared = y * y;
+				// Check if pixel is within the arc boundaries
+				if (
+					(xSquared + ySquared < outerRadiusSquared && xSquared + ySquared >= innerRadiusSquared) && ((y > 0 && startAngle < 180 && x <= y * startSlope) || (y < 0 && startAngle > 180 && x >= y * startSlope) || (y < 0 && startAngle <= 180) || (y == 0 && startAngle <= 180 && x < 0) || (y == 0 && startAngle == 0 && x > 0)) && ((y > 0 && endAngle < 180 && x >= y * endSlope) || (y < 0 && endAngle > 180 && x <= y * endSlope) || (y > 0 && endAngle >= 180) || (y == 0 && endAngle >= 180 && x < 0) || (y == 0 && startAngle == 0 && x > 0)))
+				{ // Find start and end points for vertical line drawing
+					if (!y1StartFound)
+					{
+						y1StartFound = true;
+						y1Start = y;
+					}
+					else if (y1EndFound && !y2StartFound)
+					{
+						y2StartFound = true;
+						y2Start = y;
+						y += y2End - y1Start - 1;
+						if (y > maxY - 1)
+						{
+							y = y2Start;
+							y2EndSearching = true;
+						}
+					}
+					else if (y2StartFound && !y2EndSearching)
+					{
+						y2EndSearching = true;
+					}
+				}
+				else
+				{
+					if (y1StartFound && !y1EndFound)
+					{
+						y1EndFound = true;
+						y2End = y - 1;
+						drawFastVLine(centerX + x, centerY + y1Start, y - y1Start, color);
+						if (y < 0)
+						{
+							y = abs(y);
+						}
+						else
+						{
+							break;
+						}
+					}
+					else if (y2StartFound)
+					{
+						if (y2EndSearching)
+						{
+							drawFastVLine(centerX + x, centerY + y2Start, y - y2Start, color);
+							y2EndSearching = false;
+							break;
+						}
+						else
+						{
+							y = y2Start;
+							y2EndSearching = true;
+						}
+					}
+				}
+			}
+			if (y1StartFound && !y1EndFound)
+			{
+				y2End = maxY;
+				drawFastVLine(centerX + x, centerY + y1Start, y2End - y1Start + 1, color);
+			}
+			else if (y2StartFound && y2EndSearching)
+			{
+				drawFastVLine(centerX + x, centerY + y2Start, maxY - y2Start + 1, color);
+			}
+		}
+	}
+}
+
+/// @endcond
+
+/*!
+	@brief Draw an arc on the TFT display.
+	This function draws an arc between two angles (start and end) on a circle with a given radius.
+	@param cx X-coordinate of the center of the circle.
+	@param cy Y-coordinate of the center of the circle.
+	@param radius The radius of the circle.
+	@param thickness the thickness of the arc
+	@param startAngle The starting angle of the arc (in degrees).
+	@param endAngle The ending angle of the arc (in degrees).
+	@param color The color of the arc.
+	@details variables _arcAngleMax and  _arcAngleOffset which can be set by user with setters
+		to define behaviour of arc.
+		_arcAngleOffset is zero default, means 0 degree is positive X axis , Arc is drawn counterclockwise
+		XXX 270 XXX
+		180 XXX 000
+		XXX 090 XXX
+		This function uses a modified midpoint circle algorithm combined with scanline filling
+		to efficiently draw an arc with a specified thickness. It calculates pixel positions using
+		trigonometric boundary checks and slopes for accurate rendering.
+		For more information, see: https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+ */
+void displaylib_16_graphics::drawArc(uint16_t cx, uint16_t cy, uint16_t radius, uint16_t thickness, float startAngle, float endAngle, uint16_t color)
+{
+	if (radius == 0)
+		radius = 1;
+	if (thickness == 0)
+		thickness = 1;
+	// Check if the arc should be a full circle (0 to 360 degrees)
+	if (startAngle == 0 && endAngle == _arcAngleMax)
+	{
+		drawArcHelper(cx, cy, radius, thickness, 0, _arcAngleMax, color);
+	}
+	else
+	{
+		// Apply the offset and adjust the start/end angles
+		drawArcHelper(
+			cx, cy, radius, thickness,
+			startAngle + (_arcAngleOffset / (float)360) * _arcAngleMax, // Adjust start angle with the offset
+			endAngle + (_arcAngleOffset / (float)360) * _arcAngleMax,	// Adjust end angle with the offset
+			color);
+	}
+}
+
+/*!
+	@brief Draw a simple arc of one pixel on the display( no offsets , thickness or maximum arc calculations)
+	This function draws an arc between two angles (start and end) on a circle with a given radius.
+	@param cx X-coordinate of the center of the circle.
+	@param cy Y-coordinate of the center of the circle.
+	@param radius The radius of the circle.
+	@param startAngle The starting angle of the arc (in degrees).
+	@param endAngle The ending angle of the arc (in degrees).
+	@param color The color of the arc.
+	@details 0 degree is positive X axis , arc is drawn counterclockwise
+ */
+void displaylib_16_graphics::drawSimpleArc(int16_t cx, int16_t cy, int16_t radius, float startAngle, float endAngle, uint16_t color)
+{
+	const float degreesToRadians = std::numbers::pi / 180.0;
+	// Ensure that the start and end angles are in the correct order (start < end)
+	if (startAngle > endAngle)
+	{
+		std::swap(startAngle, endAngle);
+	}
+	// Loop through the angle range, in small steps
+	float step = 1.0f; // This controls the smoothness of the arc
+	for (float angle = startAngle; angle <= endAngle; angle += step)
+	{
+		float rad = angle * degreesToRadians;
+		int16_t x = cx + radius * cos(rad);
+		int16_t y = cy + radius * sin(rad);
+		drawPixel(x, y, color);
+	}
+}
+
+/*!
+ * @brief Computes the cosine of an angle given in degrees.
+ * This function converts the input angle from degrees to radians and then calculates
+ * the cosine of that angle using the standard C++ `cos` function.
+ * @param angle The angle in degrees.
+ * @return The cosine value of the given angle.
+ */
+float displaylib_16_graphics::cosineFromDegrees(float angle)
+{
+	float radians = angle / 360.0f * 2.0f * std::numbers::pi;
+	return std::cos(radians);
+}
+
+/*!
+ * @brief Computes the sine of an angle given in degrees.
+ * This function converts the input angle from degrees to radians and then calculates
+ * the sine of that angle using the standard C++ `sin` function.
+ * @param angle The angle in degrees.
+ * @return The sine value of the given angle.
+ */
+float displaylib_16_graphics::sineFromDegrees(float angle)
+{
+	float radians = angle / 360.0f * 2.0f * std::numbers::pi;
+	return std::sin(radians);
+}
+#endif
 //**************** EOF *****************

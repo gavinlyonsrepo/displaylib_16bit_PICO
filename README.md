@@ -10,6 +10,7 @@
     * [API documentation](#api-documentation)
     * [Fonts](#fonts)
   * [Software](#software)
+    * [Advanced Graphics](#advanced-graphics)
     * [Test](#test)
     * [Print](#print)
     * [File-system](#file-system)
@@ -28,7 +29,8 @@
 2. Bitmaps supported.
 3. Polymorphic print class included to print many data types.
 4. Multiple displays supported, see supported-devices, new components can be easily added.
-5. [URL project github link](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO)
+5. 16 fonts included. 
+6. [URL project github link](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO)
 
 * Author: Gavin Lyons
 
@@ -51,13 +53,26 @@
 
 ### API Documentation
 
-TODO
+TODO, Work in Progress.
 
 ### Fonts
 
-The font system readme for the graphic displays is in the 'doc' folder [at link.](extra/doc/fonts/README.md)
+The font system readme is in the 'doc' folder [at link.](extra/doc/fonts/README.md)
 
 ## Software
+
+### Advanced Graphics
+
+There is an advanced graphics modes in library.
+Standard graphics supports drawing lines, pixels  
+rectangles, triangles, circles and rounded rectangles.
+Advanced graphics supports drawing polygons, dot grid, quadrilaterals, 
+arcs, ellipses and lines at an angle. 
+It is ON by default.
+If you don't want these 'advanced' functions and want to save memory space: Simply 
+comment out line 19 #define ADVANCED_GRAPHICS_ENABLE in displaylib_16_graphics.hpp. 
+This will disable advanced graphics mode. If this is disabled some examples and demos 
+may not work fully or even compile. 
 
 ### Test
 

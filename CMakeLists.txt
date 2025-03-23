@@ -17,17 +17,19 @@ add_compile_options(-Wall -Wextra)
 
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME} 
-  #examples/st7735/hello/main.cpp
+  examples/st7735/hello/main.cpp
   #examples/st7735/graphics/main.cpp
   #examples/st7735/functions_fps/main.cpp
   #examples/st7735/text/main.cpp
   #examples/st7735/bmp_data/main.cpp
+  #examples/st7735/demos/main.cpp
 
   #examples/st7789/hello/main.cpp
   #examples/st7789/graphics/main.cpp
   #examples/st7789/functions_fps/main.cpp
   #examples/st7789/text/main.cpp
-  examples/st7789/bmp_data/main.cpp
+  #examples/st7789/bmp_data/main.cpp
+  #examples/st7789/demos/main.cpp
 )
 
 # Create map/bin/hex/uf2 files

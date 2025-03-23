@@ -114,6 +114,8 @@ void Setup(void)
 	// ******************************************
 
 	myTFT.TFTST7789Initialize(); 
+	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
+	myTFT.setFont(font_default);
 }
 
 /*!
@@ -148,7 +150,7 @@ void Test301(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
 	char teststr1[] = "Test 301";
-	myTFT.drawText(90, 90, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(90, 90, teststr1);
 	// TOP icons box
 	myTFT.drawIcon(40, 40, 16, myTFT.C_BLACK, myTFT.C_WHITE, SignalIcon);
 	myTFT.drawIcon(60, 40, 16, myTFT.C_BLACK, myTFT.C_WHITE, MsgIcon);
@@ -168,7 +170,7 @@ void Test302(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
 	char teststr1[] = "Test 302";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(50, 50, teststr1);
 	myTFT.drawBitmap(80, 60, 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(20, 100, 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(30, 140, 40, 16, myTFT.C_YELLOW, myTFT.C_RED, sSunTextImage);
@@ -182,7 +184,7 @@ void Test302(void)
 void Test303(void)
 {
 	char teststr1[] = "Test 303";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap(50, 65, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -195,7 +197,7 @@ void Test303(void)
 void Test304(void)
 {
 	char teststr1[] = "Test 304";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap16Data(65, 65, sMotorImage, 128, 128);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -208,7 +210,7 @@ void Test304(void)
 void Test305(void)
 {
 	char teststr1[] = "Test 305";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap24Data(65, 65, sPosterImage, 80, 48);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -221,7 +223,7 @@ void Test305(void)
 void Test306(void)
 {
 	char teststr1[] = "Test 306";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap8Data(65, 65, sColorTestImage, 96,96);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -238,13 +240,12 @@ void Test603(void)
 	long previousMillis = 0;
 	long lastFramerate = 0;
 	long currentFramerate = 0;
-
+	myTFT.setFont(font_mega);
 	uint16_t count = 0;
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
 	char teststr1[] = "Test 601 FPS, Output Results to USB port";
-	myTFT.drawText(20, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 2);
-	myTFT.setTextSize(2);
+	myTFT.writeCharString(20, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
 
@@ -278,7 +279,6 @@ void Test603(void)
 	// Print to screen
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setCursor(0, 50); 
-	myTFT.setTextSize(2);
 	myTFT.print("Seconds : ");
 	myTFT.println(seconds);
 	myTFT.print("Count : ");
@@ -316,8 +316,8 @@ void Test802(void)
 	// === Tests===
 	printf("=== START Error checking. Expecting errors ===\r\n");
 	// Perform function calls and store return values
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawText(5, 55, testString5, myTFT.C_RED, myTFT.C_BLACK, 2)); 
+	myTFT.setFont(font_mega);
+	returnValues.push_back(myTFT.writeCharString(5, 55, testString5)); 
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 	//drawIcon
@@ -389,7 +389,7 @@ void EndTests(void)
 {
 	char teststr1[] = "Tests over";
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.drawText(50, 50, teststr1, myTFT.C_GREEN, myTFT.C_BLACK, 2);
+	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTPowerDown();
 	printf("TFT :: Tests Over\r\n");

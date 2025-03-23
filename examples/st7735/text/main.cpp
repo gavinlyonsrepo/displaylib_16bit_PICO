@@ -13,8 +13,8 @@
 	@test
 	-# Test 701 print out fonts 1-12
 	-# Test 702 defined 16-bit Colors, text
-	-# Test 703 print entire ASCII font 0 to 254, default font
-	-# Test 704 font sizes + character draw using draw functions
+	-# Test 703 print entire ASCII font 32 to 127, default font
+	-# Test 704 font invert + test character draw using draw functions
 	-# Test 705 print method all fonts
 	-# Test 706 Misc print class tests (string object, println invert, wrap, base nums etc)
 	-# Test 707 Misc draw functions (Invert, wrap)
@@ -50,7 +50,7 @@ void Test704(void);
 void Test705(void);
 void Test706(void);
 void Test707(void);
-void Test808(void);
+bool Test808(void);
 void EndTests(void);
 void DisplayReset(void);
 
@@ -66,7 +66,9 @@ int main(void)
 	Test705();
 	Test706();
 	Test707();
+#ifdef dislib16_ADVANCED_FONTS_ENABLE
 	Test808();
+#endif
 	EndTests();
 	return 0;
 }
@@ -123,115 +125,86 @@ void Setup(void)
 }
 
 
-/*! 
-	@brief Test 701: Print out fonts 1-12 with drawtext 
-*/
 void Test701(void) {
-
-	printf("Test 701: Print out fonts 1-12 with drawtext\r\n");
-	char teststr1[] = "Default 1";
-	char teststr2[] = "THICK 2";
-	char teststr3[] = "Seven 3";
-	char teststr4[] = "WIDE 4";
-	char teststr5[] = "Tiny 5";
-	char teststr6[] = "Home 6";
-	char teststr7[] = "1234";
-	char teststr8[] = "123456";
-	char teststr9[] = "Arial R 9";
-	char teststr10[] = "Arial B 10";
-	char teststr11[] = "Mia 11";
-	char teststr12[] = "Dedica 12";
-
+	printf("Test 701: Print out some fonts with writeCharString\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
-
-	myTFT.FontNum(myTFT.Font_Default);
-	myTFT.drawText(5, 2, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 2);
-	myTFT.FontNum(myTFT.Font_Thick);
-	myTFT.drawText(5, 20, teststr2, myTFT.C_GREEN, myTFT.C_BLACK, 2);
-	myTFT.FontNum(myTFT.Font_Seven_Seg);
-	myTFT.drawText(5, 36, teststr3, myTFT.C_BLUE, myTFT.C_BLACK, 2);
-	myTFT.FontNum(myTFT.Font_Wide);
-	myTFT.drawText(5, 52, teststr4, myTFT.C_CYAN, myTFT.C_BLACK, 2);
-	myTFT.FontNum(myTFT.Font_Tiny);
-	myTFT.drawText(5, 68, teststr5, myTFT.C_RED, myTFT.C_BLACK, 2);
-	myTFT.FontNum(myTFT.Font_HomeSpun);
-	myTFT.drawText(5, 84, teststr6, myTFT.C_YELLOW, myTFT.C_BLACK, 2);
+	
+	struct FontText {
+		const char *text;
+		display_Font_name_e font;
+		int x, y;
+	};
+	
+	// First set of fonts
+	FontText fontTests1[] = {
+		{"Default", font_default, 5, 5}, {"GLL", font_gll, 5, 15}, {"Pico", font_pico, 5, 30},
+		{"Sinclair", font_sinclairS, 5, 45}, {"Orla", font_orla, 5, 65}, {"Retro", font_retro, 5, 95},
+		{"Mega", font_mega, 5, 2}, {"Arial b", font_arialBold, 5, 30}, {"Hall", font_hallfetica, 5, 60},
+		{"Arial R", font_arialRound, 5, 90}, {"GroTesk", font_groTesk, 5, 5}
+	};
+	// Loop for first set
+	size_t testCount1 = sizeof(fontTests1) / sizeof(FontText);
+	for (size_t i = 0; i < testCount1; ++i) {
+		myTFT.setFont(fontTests1[i].font);
+		myTFT.writeCharString(fontTests1[i].x, fontTests1[i].y, const_cast<char*>(fontTests1[i].text));
+		if (i == 5 || i == 9) {
+			DisplayReset();
+		}
+	}
 	DisplayReset();
-
-	myTFT.FontNum(myTFT.Font_Bignum);
-	myTFT.drawText(5, 2, teststr7, myTFT.C_WHITE, myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_Mednum);
-	myTFT.drawText(5, 33, teststr8, myTFT.C_GREEN, myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_ArialRound);
-	myTFT.drawText(5, 50, teststr9, myTFT.C_BLUE, myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_ArialBold);
-	myTFT.drawText(5, 74, teststr10, myTFT.C_CYAN, myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_Mia);
-	myTFT.drawText(5, 91, teststr11, myTFT.C_RED, myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_Dedica);
-	myTFT.drawText(5, 106, teststr12, myTFT.C_YELLOW, myTFT.C_BLACK);
-	DisplayReset();
-
+#ifdef dislib16_ADVANCED_FONTS_ENABLE
+	// Second set of fonts
+	FontText fontTests2[] = {
+		{"16", font_sixteenSeg, 5, 5}, {"7", font_sevenSeg, 5, 5}, {"inco", font_inconsola, 5, 5},
+		{"GB", font_groTeskBig, 5, 5}, {"Mint", font_mint, 5, 5}
+	};
+	// Loop for second set
+	size_t testCount2 = sizeof(fontTests2) / sizeof(FontText);
+	for (size_t i = 0; i < testCount2; ++i) {
+		myTFT.setFont(fontTests2[i].font);
+		myTFT.writeCharString(fontTests2[i].x, fontTests1[i].y, const_cast<char*>(fontTests2[i].text));
+		DisplayReset();
+	
+	}
+#endif
+	
 }
 
-/*!
-	@brief Test 702: Some of the Defined 16-bit Colors for text
-*/
 void Test702(void) {
-	printf("Test 702: Some of the Defined 16-bit Colors for text\r\n");
-	myTFT.FontNum(myTFT.Font_Default);
-	char teststr1[] = "WHITE";
-	char teststr2[] = "BLUE";
-	char teststr3[] = "RED";
-	char teststr4[] = "GREEN";
-	char teststr5[] = "CYAN";
-	char teststr6[] = "MAGENTA";
-	char teststr7[] = "YELLOW";
-	char teststr8[] = "GREY";
-	char teststr9[] = "TAN";
-	char teststr10[] = "BROWN";
-	char teststr11[] = "ORANGE";
-	char teststr12[] = "DGREEN";
-
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
-	myTFT.drawText(5, 15, teststr2, myTFT.C_BLUE, myTFT.C_BLACK, 1);
-	myTFT.drawText(5, 25, teststr3, myTFT.C_RED, myTFT.C_BLACK, 1);
-	myTFT.drawText(5, 35, teststr4, myTFT.C_GREEN, myTFT.C_BLACK, 1);
-	myTFT.drawText(5, 45, teststr5, myTFT.C_CYAN, myTFT.C_BLACK, 1);
-	myTFT.drawText(5, 55, teststr6, myTFT.C_MAGENTA, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 5, teststr7, myTFT.C_YELLOW, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 15, teststr8, myTFT.C_GREY, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 25, teststr9, myTFT.C_TAN, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 35, teststr10 , myTFT.C_BROWN, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 45, teststr11 , myTFT.C_ORANGE, myTFT.C_BLACK, 1);
-	myTFT.drawText(60, 55, teststr12, myTFT.C_DGREEN, myTFT.C_BLACK, 1);
-
+	printf("Test 702: Some of the Defined 16-bit Colors for text\n");
+	myTFT.setFont(font_default);
+	struct ColorText {
+		const char *text;
+		uint16_t color;
+	};
+	
+	ColorText colorTexts[] = {
+		{"WHITE", myTFT.C_WHITE}, {"BLUE", myTFT.C_BLUE}, {"RED", myTFT.C_RED},
+		{"GREEN", myTFT.C_GREEN}, {"CYAN", myTFT.C_CYAN}, {"MAGENTA", myTFT.C_MAGENTA},
+		{"YELLOW", myTFT.C_YELLOW}, {"GREY", myTFT.C_GREY}, {"TAN", myTFT.C_TAN},
+		{"BROWN", myTFT.C_BROWN}, {"ORANGE", myTFT.C_ORANGE}, {"DGREEN", myTFT.C_DGREEN}
+	};
+	
+	for (size_t i = 0; i < 12; ++i) {
+		int x = (i < 6) ? 5 : 60;  // First 6 on the left, next 6 on the right
+		int y = 5 + (i % 6) * 10;  // Vertical spacing
+		myTFT.setTextColor(colorTexts[i].color, myTFT.C_BLACK);
+		myTFT.writeCharString(x, y, const_cast<char*>(colorTexts[i].text));
+	}
+	
 	DisplayReset();
+	
 }
 
-/*!
-	@brief Test 703: Print entire ASCII font 0 to 254, default font
-*/
 void Test703(void) {
-	printf("Test 703: Print entire ASCII font 0 to 254, default font\r\n");
+	printf("Test 703: Print entire ASCII font 32 to 127, default font\n");
 	uint8_t row = 5;
 	uint8_t col = 5;
-	for (char i = 0; i < 126; i++) {
+	myTFT.setFont(font_default);
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	for (char i = 32; i < 127; i++) {
 
-		myTFT.drawChar(col, row, i, myTFT.C_GREEN, myTFT.C_BLACK, 1);
-		col += 10;
-		if (col > 115) {
-			row += 10;
-			col = 5;
-		}
-	}
-	DisplayReset();
-
-	row = 5;
-	col = 5;
-	for (unsigned char j = 127; j < 254; j++) {
-
-		myTFT.drawChar(col, row, j, myTFT.C_GREEN, myTFT.C_BLACK, 1);
+		myTFT.writeChar(col, row, i);
 		col += 10;
 		if (col > 115) {
 			row += 10;
@@ -242,160 +215,158 @@ void Test703(void) {
 }
 
 
-/*!
-	@brief Test 704: font sizes (2-5) + character draw using draw functions
-*/
+
 void Test704(void) {
-	printf("Test 704: font sizes (2-5) + character draw using draw functions\r\n");
-	myTFT.FontNum(myTFT.Font_Default);
+	printf("Test 704: font invert + test character draw using draw functions\n");
+	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
+	myTFT.setFont(font_default);
 	char teststr1[] = "TEST";
-	myTFT.drawText(0, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 2);
-	myTFT.drawText(0, 25, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 3);
-	myTFT.drawText(0, 55, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 4);
-	myTFT.drawChar(0, 85, 'G', myTFT.C_WHITE, myTFT.C_BLACK, 5);
-	myTFT.drawChar(45, 85, 'L', myTFT.C_WHITE, myTFT.C_BLACK, 5);
-
+	myTFT.writeCharString(15, 5, teststr1);
+	myTFT.setInvertFont(true);
+	myTFT.writeCharString(15, 15, teststr1); //inverted yellow on red
+	myTFT.setInvertFont(false);
+	myTFT.writeCharString(15, 25, teststr1);
+	myTFT.writeChar(0, 85, 'G');
+	myTFT.writeChar(25, 85, 'L');
 	DisplayReset();
 }
 
-/*!
-	@brief Test 705: Print class methods
-*/
+
 void Test705(void)
 {
-	printf("Test 705: Print class methods\r\n");
+	printf("Test 705: Print class methods\n");
 
-	// Test Fonts 1-6
-
-	myTFT.setTextSize(1);
+	// Test Fonts default +  + pico+ sinclair + retro
 	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
 
 	myTFT.setCursor(5,5);
-	myTFT.FontNum(myTFT.Font_Default);
+	myTFT.setFont(font_default);
 	myTFT.print("Default ");
 	myTFT.print(-43);
 
 	myTFT.setCursor(5,15);
-	myTFT.FontNum(myTFT.Font_Thick);
-	myTFT.print("THICK ");
-	myTFT.print(123.284,1); // print 123.2
+	myTFT.setFont(font_gll);
+	myTFT.print("GLL ");
+	myTFT.print(123.284,1); // print 123.3
 
 	myTFT.setCursor(5,25);
-	myTFT.FontNum(myTFT.Font_Seven_Seg);
-	myTFT.print("7 SEG ");
+	myTFT.setFont(font_pico);
+	myTFT.print("pico ");
 	myTFT.print(747);
 
-	myTFT.setCursor(5,35);
-	myTFT.FontNum(myTFT.Font_Wide);
-	myTFT.print("WIDE ");
+	myTFT.setCursor(5,65);
+	myTFT.setFont(font_sinclairS);
+	myTFT.print("sinclair ");
 	myTFT.print(456);
 
-	myTFT.setCursor(5,45);
-	myTFT.FontNum(myTFT.Font_Tiny);
-	myTFT.print("Tiny!  ");
+	myTFT.setCursor(5,85);
+	myTFT.setFont(font_retro);
+	myTFT.print("retro  ");
 	myTFT.print(-3.14);
-
-	myTFT.setCursor(5,55);
-	myTFT.FontNum(myTFT.Font_HomeSpun);
-	myTFT.print("HomeSpun ");
-	myTFT.print(6.019,2 );// print 6.02
-
 	DisplayReset();
 
-	// Test Font 7-12
-
-	myTFT.FontNum(myTFT.Font_Bignum); // Test bignum font 7
+	// Test font  mega Arial bold and Hallf.
 	myTFT.setCursor(5,5);
-	myTFT.println(-7.16);
-	myTFT.print("10:05");
+	myTFT.setFont(font_mega);
+	myTFT.println("mega ");
+	myTFT.print(61);
 
-	myTFT.setCursor(5,70); // Test mednum font 8
-	myTFT.FontNum(myTFT.Font_Mednum);
-	myTFT.println(-8.16);
-	myTFT.print("12:45");
-
-	DisplayReset();
-
-	myTFT.setCursor(5,5); // Test Arial round font 9
-	myTFT.FontNum(myTFT.Font_ArialRound);
-	myTFT.println("A rnd");
-	myTFT.print(96.78);
-
-	myTFT.setCursor(5,70); // Test Arial bold font 10
-	myTFT.FontNum(myTFT.Font_ArialBold);
+	myTFT.setCursor(5,40);
+	myTFT.setFont(font_arialBold);
 	myTFT.println("A bold");
 	myTFT.print(12.08);
 
+	myTFT.setCursor(5,80);
+	myTFT.setFont(font_hallfetica);
+	myTFT.println("hall f");
+	myTFT.print(1.48);
 	DisplayReset();
 
-	myTFT.setCursor(5,5); // Test 71 Mia
-	myTFT.FontNum(myTFT.Font_Mia);
-	myTFT.println("Mia Font");
-	myTFT.print(1141.23);
+	// Test Font orla + arial round
 
-	myTFT.setCursor(10,50); // Test 72 Dedica
-	myTFT.FontNum(myTFT.Font_Dedica);
-	myTFT.println("Dedica Font");
-	myTFT.print(1241.23);
+	myTFT.setFont(font_orla);
+	myTFT.setCursor(5,5);
+	myTFT.println(-7.16);
+	myTFT.print("Orla");
 
+	myTFT.setCursor(5,70);
+	myTFT.setFont(font_arialRound);
+	myTFT.println(-8.16);
+	myTFT.print("a rnd");
 	DisplayReset();
+
+#ifdef dislib16_ADVANCED_FONTS_ENABLE
+	// Test font grotesk + sixteen segment
+	myTFT.setCursor(5,5);
+	myTFT.setFont(font_groTesk);
+	myTFT.println("GROTESK");
+	myTFT.print(1.78);
+	DisplayReset();
+
+	myTFT.setCursor(5,5);
+	myTFT.setFont(font_sixteenSeg);
+	myTFT.print(124);
+	DisplayReset();
+	
+	// Test font seven segment 
+	myTFT.setCursor(5,5);
+	myTFT.setFont(font_sevenSeg);
+	myTFT.println(12);
+	DisplayReset();
+
+	// Test font mint
+	myTFT.setFont(font_mint);
+	myTFT.println("MINT");;
+	myTFT.print("9`C");
+	DisplayReset();
+#endif
 
 }
 
-/*!
-	@brief Test 706: Misc print class(string object, println invert, wrap, base nums
-*/
 void Test706(void)
 {
-	printf("Test 706: Misc print class(string object, println invert, wrap, base nums etc)\r\n");
-	//Inverted print fonts 1-6
+	printf("Test 706: Misc print class(string object, println invert, wrap, base nums etc)\n");
+	//Inverted print fonts
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
+	myTFT.setFont(font_default);
 
-	//size 1
-	myTFT.setTextSize(1);
-	myTFT.setCursor(5,5);
-	myTFT.print("ABCD");
-
-	//size 2
-	myTFT.setTextSize(2);
+	myTFT.setFont(font_sinclairS);
 	myTFT.setCursor(5,15);
-	myTFT.FontNum(myTFT.Font_Seven_Seg);
 	myTFT.print(-49);
+
+	myTFT.setFont(font_default);
 	myTFT.setCursor(5,35);
-	myTFT.FontNum(myTFT.Font_Default);
 	myTFT.print(112.09);
 	myTFT.setCursor(5,55);
 	myTFT.print("ABCD");
 
-	//size 3
-	myTFT.setTextSize(3);
+	myTFT.setFont(font_gll);
 	myTFT.setCursor(5,85);
-	myTFT.FontNum(myTFT.Font_Thick);
 	myTFT.print("ER");
+
 	DisplayReset();
 
-	// Inverted print fonts 7-12
+	// Inverted print fonts
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
+
+	myTFT.setFont(font_arialBold);
 	myTFT.setCursor(5,5);
-	myTFT.FontNum(myTFT.Font_ArialBold);
 	myTFT.print("INVERT");
 	myTFT.setCursor(5,25);
-	myTFT.FontNum(myTFT.Font_Mednum);
-	myTFT.print(-994.982, 2);
-	myTFT.setCursor(5,45);
-	myTFT.FontNum(myTFT.Font_Mia);
+	myTFT.print(-94.982, 2);
+
+	myTFT.setFont(font_hallfetica);
+	myTFT.setCursor(5,65);
 	myTFT.print("INVERT");
 	myTFT.setCursor(5,85);
-	myTFT.FontNum(myTFT.Font_Dedica);
-	myTFT.print(12345678);
+	myTFT.print(123456);
 	DisplayReset();
 
 
 	// Test print with DEC BIN OCT HEX
 	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
 	uint8_t numPos = 47;
-	myTFT.FontNum(myTFT.Font_HomeSpun);
-	myTFT.setTextSize(2);
+	myTFT.setFont(font_pico);
 	myTFT.setCursor(5,5);
 	myTFT.print(numPos , myTFT.DEC); // 47
 	myTFT.setCursor(5,25);
@@ -408,7 +379,7 @@ void Test706(void)
 	DisplayReset();
 
 	// Test print a string object with print
-	myTFT.FontNum(myTFT.Font_Dedica);
+	myTFT.setFont(font_default);
 	std::string timeInfo = "12:45";
 	std::string newLine = "new l";
 	myTFT.setCursor(5, 5);
@@ -424,150 +395,132 @@ void Test706(void)
 	DisplayReset();
 }
 
-/*!
-	@brief Test 707: Misc draw functions tests invert, wrap
-*/
+
 void Test707(void)
 {
-	printf("Test 707: Misc functions tests invert, wrap\r\n");
+	printf("Test 707: Misc draw functions tests wrap,  etc\n");
 
 	//wrap
 	char teststr0[] = "123456789";
 
-	myTFT.FontNum(myTFT.Font_Wide);
-	myTFT.drawText(105, 5, teststr0, myTFT.C_WHITE, myTFT.C_BLACK, 2);
-	myTFT.drawText(105, 75, teststr0, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.setFont(font_default);
+	myTFT.writeCharString(80, 5, teststr0);
+	myTFT.setFont(font_mega);
+	myTFT.writeCharString(80, 60, teststr0);
 	DisplayReset();
 
-	myTFT.FontNum(myTFT.Font_Bignum);
-	myTFT.drawText(80, 10, teststr0, myTFT.C_WHITE, myTFT.C_BLACK);
-	DisplayReset();
-
-	//invert + Numeric fonts 1-6 sprintf
+	//invert + Numeric fonts  sprintf
 	int myInt=931;
 	char myStr[5];
-	myTFT.FontNum(myTFT.Font_Seven_Seg);
+	myTFT.setFont(font_sinclairS);
 	sprintf(myStr, "%d", myInt);
-	myTFT.drawText(5, 5, myStr, myTFT.C_BLUE, myTFT.C_BLACK, 3);
+	myTFT.writeCharString(5, 5, myStr);
 
-	myTFT.FontNum(myTFT.Font_HomeSpun);
+	myTFT.setFont(font_retro);
 	float  myPI = 3.171592;
 	char myStr2[8];
 	sprintf(myStr2, "%0.3f", myPI); // 3.172
-	myTFT.drawText(5, 65, myStr2, myTFT.C_RED, myTFT.C_BLACK, 3);
+	myTFT.writeCharString(5, 65, myStr2);
 
 	DisplayReset();
 
-	//invert + Numeric fonts 7-12 sprintf
-	// Note fonts 7 and 8 are extended numeric only
-	// Note Fonts 9 and 10 are Alphanumeric
+	//invert + Numeric
 	char teststr1[] = "12:81";
 	char teststr2[] = "72:83";
 	char teststr3[] = "9 rnd";
 	char teststr4[] = "10 bold";
 
-	myTFT.FontNum(myTFT.Font_Bignum);
-	myTFT.drawChar(2, 2, '7',  myTFT.C_RED, myTFT.C_BLACK);
-	myTFT.drawText(2, 40, teststr1, myTFT.C_YELLOW, myTFT.C_RED);
+	myTFT.setFont(font_mega);
+	myTFT.setTextColor(myTFT.C_RED, myTFT.C_BLACK);
+	myTFT.writeChar(2, 2, '7');
+	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_BLACK);
+	myTFT.writeCharString(2, 40, teststr1);
 
-	myTFT.FontNum(myTFT.Font_Mednum);
-	myTFT.drawChar(2, 75, '8',  myTFT.C_WHITE, myTFT.C_BLACK);
-	myTFT.drawText(2, 100, teststr2, myTFT.C_GREEN, myTFT.C_RED);
+	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
+	myTFT.writeChar(2, 75, '8');
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_RED);
+	myTFT.writeCharString(2, 100, teststr2);
 
 	DisplayReset();
 
-	myTFT.FontNum(myTFT.Font_ArialRound);
-	myTFT.drawChar(2, 2, '9',  myTFT.C_RED, myTFT.C_BLACK);
-	myTFT.drawText(2, 26, teststr3, myTFT.C_YELLOW, myTFT.C_RED);
+	myTFT.setFont(font_arialRound);
+	myTFT.setTextColor(myTFT.C_RED, myTFT.C_BLACK);
+	myTFT.writeChar(2, 2, '9');
+	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_BLACK);
+	myTFT.writeCharString(2, 26, teststr3);
 
-	myTFT.FontNum(myTFT.Font_ArialBold);
-	myTFT.drawChar(2, 56, 'A',  myTFT.C_WHITE, myTFT.C_BLACK);
-	myTFT.drawText(2, 90, teststr4, myTFT.C_GREEN, myTFT.C_RED);
+	myTFT.setFont(font_arialBold);
+	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
+	myTFT.writeChar(2, 56, 'A');
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_RED);
+	myTFT.writeCharString(2, 90, teststr4);
 
 	DisplayReset();
 }
 
-void Test808(void) {
-	// === Setup tests ===
-	// Define the expected return values
+#ifdef dislib16_ADVANCED_FONTS_ENABLE
+
+bool Test808(void)
+{
+	// Unit testing
+	printf("==== Test 808 Start Text Unit testing ====\n");
+	myTFT.fillScreen(myTFT.C_BLACK);
+	// Define the expected return values, note the numeric are 
+	// from  print which returns num of characters it attempted to print
 	std::vector<uint8_t> expectedErrors = 
 	{
-		DisLib16::Success, 
-		DisLib16::WrongFont, DisLib16::WrongFont, DisLib16::WrongFont, DisLib16::WrongFont, 
-		DisLib16::CharFontASCIIRange, DisLib16::CharFontASCIIRange, 
-		DisLib16::CharFontASCIIRange, DisLib16::CharFontASCIIRange, 
-		DisLib16::CharFontASCIIRange, DisLib16::CharFontASCIIRange, 
-		DisLib16::CharFontASCIIRange, DisLib16::CharFontASCIIRange, 
-		DisLib16::CharScreenBounds, DisLib16::CharScreenBounds, DisLib16::CharScreenBounds, 
-		DisLib16::CharScreenBounds, DisLib16::CharScreenBounds ,DisLib16::CharScreenBounds, 
-		DisLib16::CharArrayNullptr, DisLib16::CharArrayNullptr, 
-		DisLib16::Success
+		3, DisLib16::CharFontASCIIRange, 3, DisLib16::CharFontASCIIRange, 5, DisLib16::Success, 
+		0, DisLib16::CharArrayNullptr,
+		DisLib16::Success, DisLib16::CharFontASCIIRange, DisLib16::CharFontASCIIRange,
+		DisLib16::CharFontASCIIRange, DisLib16::CharScreenBounds, DisLib16::CharScreenBounds,
+		DisLib16::CharScreenBounds, DisLib16::CharScreenBounds, DisLib16::CharArrayNullptr
 	};
+	
 	// Vector to store return values
 	std::vector<uint8_t> returnValues; 
-	// test varibles
-	char testString0[] = "123456789";
-	char testLowerCase[] = "ABC]ab";
-	char testNonNumExtend[] = "-./12:;,A";
-	char testString5[] = "Error Check: Results to Serial port";
+
+	char testlowercase[] = "ZA[ab";
+	char testNonNumExtend[] = "-;A";
 	bool errorFlag = false;
-
-	// === Tests===
-	printf("=== START Error checking. Expecting errors ===\r\n");
-	// Perform function calls and store return values
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawText(5, 55, testString5, myTFT.C_RED, myTFT.C_BLACK, 2)); 
+	myTFT.setFont(font_gll);
+	// (1) Print statement test, gll font lower case letters
+	// We check print class error flag as print statement does not return errors it returns num of characters
+	myTFT.setCursor(40,40);
+	returnValues.push_back(myTFT.print("ABc")); // Print AB , return 3 (num of characters)
+	returnValues.push_back(myTFT.getWriteError()); // return error
+	returnValues.push_back(myTFT.print("abC"));  // print C , return 3 (num of characters)
+	returnValues.push_back(myTFT.getWriteError()); // return error
+	returnValues.push_back(myTFT.print("12345")); // print 12345 , return 5 (num of characters)
+	returnValues.push_back(myTFT.getWriteError()); // return pass
+	returnValues.push_back(myTFT.print(nullptr));  // return 0 (num of characters)
+	returnValues.push_back(myTFT.getWriteError());  // return error
 	DisplayReset();
-
-	// wrong font
-	myTFT.FontNum(myTFT.Font_Bignum);
-	returnValues.push_back(myTFT.drawText(105, 55, testString0, myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	returnValues.push_back(myTFT.drawChar(105, 55, '1', myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawText(80, 55, testString0, myTFT.C_WHITE, myTFT.C_BLACK));
-	returnValues.push_back(myTFT.drawChar(105, 55, '1', myTFT.C_WHITE, myTFT.C_BLACK));
+	printf("========\r\n");
+	// (2) writeChar + writeCharString
+	// gll lower case + ] character out of font bounds
+	returnValues.push_back(myTFT.writeChar(32, 0, '!')); //success
+	returnValues.push_back(myTFT.writeCharString(5,  5, testlowercase)); //throw gll font error 2
 	DisplayReset();
-
-	// character out of font range
-	// wide & thick lower case + ]
-	myTFT.FontNum(myTFT.Font_Wide);
-	returnValues.push_back(myTFT.drawChar(5, 5, '[', myTFT.C_WHITE, myTFT.C_BLACK, 2));
-	returnValues.push_back(myTFT.drawText(5, 5, testLowerCase, myTFT.C_WHITE, myTFT.C_BLACK, 2));
-	myTFT.FontNum(myTFT.Font_Thick);
-	returnValues.push_back(myTFT.drawChar(5, 5, '[', myTFT.C_WHITE, myTFT.C_BLACK, 2));
-	returnValues.push_back(myTFT.drawText(5, 25, testLowerCase, myTFT.C_WHITE, myTFT.C_BLACK, 2));
-	myTFT.FontNum(myTFT.Font_Bignum);
-	returnValues.push_back(myTFT.drawChar(5, 5, ',', myTFT.C_WHITE, myTFT.C_BLACK));
-	returnValues.push_back(myTFT.drawText(5, 45, testNonNumExtend, myTFT.C_WHITE, myTFT.C_BLACK));
-	myTFT.FontNum(myTFT.Font_Mednum);
-	returnValues.push_back(myTFT.drawChar(5, 5, ';', myTFT.C_WHITE, myTFT.C_BLACK));
-	returnValues.push_back(myTFT.drawText(5, 75, testNonNumExtend, myTFT.C_WHITE, myTFT.C_BLACK));
+	// Numeric extended bounds ; , A errors
+	myTFT.setFont(font_sixteenSeg);
+	returnValues.push_back(myTFT.writeCharString(0, 0, testNonNumExtend)); //throw font error 2
+	returnValues.push_back(myTFT.writeChar(32, 0, ',')); //throw error 2
 	DisplayReset();
-
+	printf("========\r\n");
 	// screen out of bounds
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawChar(0, 170, 'e', myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	returnValues.push_back(myTFT.drawChar(170, 0, 'f', myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	returnValues.push_back(myTFT.drawText(170, 75, testNonNumExtend, myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	myTFT.FontNum(myTFT.Font_ArialBold);
-	returnValues.push_back(myTFT.drawChar(0, 170, 'A', myTFT.C_WHITE, myTFT.C_BLACK));
-	returnValues.push_back(myTFT.drawChar(170, 0, 'B', myTFT.C_WHITE, myTFT.C_BLACK));
-	returnValues.push_back(myTFT.drawText(170, 75, testString0, myTFT.C_WHITE, myTFT.C_BLACK));
+	myTFT.setFont(font_default);
+	returnValues.push_back(myTFT.writeChar(0, 400, 'e')); //throw error 1
+	returnValues.push_back(myTFT.writeChar(400, 0, 'f')); //throw error 1
 	DisplayReset();
-
-	// nullptr 
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawText(40, 75, nullptr, myTFT.C_WHITE, myTFT.C_BLACK, 1));
-	myTFT.FontNum(myTFT.Font_ArialBold);
-	returnValues.push_back(myTFT.drawText(40, 75, nullptr, myTFT.C_WHITE, myTFT.C_BLACK));
+	myTFT.setFont(font_orla);
+	returnValues.push_back(myTFT.writeChar(0, 400, 'A')); //throw error 1
+	returnValues.push_back(myTFT.writeChar(400, 0, 'B')); //throw error 1
 	DisplayReset();
-
-	// font disabled 11_DISPLAY_OPTIONAL_FONT_11  returns ZERO by default, 6 if setup
-	myTFT.FontNum(myTFT.Font_Mia);
-	returnValues.push_back(myTFT.drawText(40, 75, testString0, myTFT.C_WHITE, myTFT.C_BLACK));
+	
+	returnValues.push_back(myTFT.writeCharString(5, 5, nullptr)); //throw error 
 	
 	//== SUMMARY SECTION===
-	printf("\nError Checking Summary.\n");
+	printf("\nUnit testing Summary.\n");
 	// Check return values against expected errors
 	for (size_t i = 0; i < returnValues.size(); ++i) {
 		if (i >= expectedErrors.size() || returnValues[i] != expectedErrors[i]) {
@@ -576,8 +529,7 @@ void Test808(void) {
 				returnValues[i], i + 1, (i < expectedErrors.size() ? expectedErrors[i] : -1));
 		}
 	}
-
-	// Print all expectedErrors for summary
+		// Print all expectedErrors for summary
 	for (uint8_t value : expectedErrors ) 
 	{
 		printf("%d ", value);
@@ -589,12 +541,14 @@ void Test808(void) {
 		printf("%d ", value);
 	}
 	if (errorFlag == true ){
-		printf("\nError Checking has FAILED.\n");
+		printf("\nUnit testing Text has FAILED.\n");
 	}else{
-		printf("\nError Checking has PASSED.\n");
+		printf("\nUnit testing Text has PASSED.\n");
 	}
-	printf("\n=== STOP Error checking. ===\r\n");
+	printf("=== End of Test 808 ===\r\n");
+	return !errorFlag;
 }
+#endif
 
 void DisplayReset(void)
 {
@@ -602,16 +556,16 @@ void DisplayReset(void)
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
 
-
 /*!
 	@brief  Stop testing and shutdown the TFT
 */
 void EndTests(void)
 {
 	char teststr1[] = "Tests over";
-	myTFT.FontNum(myTFT.Font_Default);
+	myTFT.setFont(font_default);
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.drawText(5, 50, teststr1, myTFT.C_GREEN, myTFT.C_BLACK, 2);
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	myTFT.writeCharString(5, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTPowerDown();
 	printf("TFT :: Tests Over");

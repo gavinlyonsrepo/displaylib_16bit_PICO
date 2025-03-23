@@ -1,6 +1,6 @@
 # ST7735 Readme
 
-[![Website](https://img.shields.io/badge/Website-Link-blue.svg)](https://gavinlyonsrepo.github.io/)  [![Rss](https://img.shields.io/badge/Subscribe-RSS-yellow.svg)](https://gavinlyonsrepo.github.io//feed.xml)  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
 
 ![ ig ](https://github.com/gavinlyonsrepo/pic_16F18346_projects/blob/master/images/st7735/pcb.jpg)
 
@@ -19,23 +19,7 @@
 * Name: ST7735_TFT_PICO
 * Description:
 
-0. Library for a TFT SPI LCD, ST7735 Driver
-1. Raspberry pi PICO RP2040 library.
-2. Inverse colour, rotate, sleep, idle  & vertical scroll modes supported.
-3. 12 fonts included
-4. Graphics + print class included.
-5. Sprites, 1,16 and 24 bit colour Bitmaps supported.
-6. Hardware and software  SPI
-
-* Version:  1.7.2
-* Author: Gavin Lyons
-* Developed on Toolchain:
-	1. Raspberry pi PICO RP2040
-	2. SDK(2.1.0) C++
-	3. compiler G++ for arm-none-eabi(13.2.1)
-	4. CMAKE(VERSION 3.18) , VScode(1.95.3)
-	5. Linux Mint 22.1
-
+C++ Raspberry pi PICO  library for a TFT SPI LCD, ST7735 Driver
 
 ## Test
 
@@ -45,12 +29,12 @@ Comment in one path and one path only.
 
 | Filename  | Function  | Note |
 | --- | --- | --- |
-| HELLO | Hello world  | --- |
-| TEXT | Text  + fonts | --- |
+| hello | Hello world  | --- |
+| text | Text  + fonts | --- |
 | graphics| Graphics | --- |
-| FUNCTIONS_FPS| Functions(like rotate scroll) + FPS test 702| --- |
-| BMP_DATA | 1,16 & 24 bit bitmaps tests + FPS test 701| Bitmap data is stored in arrays on PICO |
-
+| functions_fps| Functions(like rotate, scroll) + FPS tests| --- |
+| bmp_data| 1,16 & 24 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
+| demos| A demo showing a gauge | ---|
 
 ## Software
 
@@ -111,17 +95,16 @@ Functions to support drawing bitmaps, icons & sprites.
 | ------ | ------ | ------ | ------ | ------ |
 | 1 | drawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
 | 2 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 4 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color | 
-| 5 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color tranparent | 
+| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO |
+| 4 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
+| 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color | 
+| 6 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
 
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
 3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
 4. The data array for 3 - 5  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
-
-These functions will return error codes in event of an error, see  API docs for details.
 
 ## Hardware
 
@@ -146,18 +129,6 @@ Connections as setup in main.cpp  test file.
 
 ## Output
 
-Output of some of the test routine's. Left to right
-
-1. Bitmap (bi-color) A background and a foreground, 128 X 128 pixels.
-2. Different sizes of default font. Size 2 3 4 & 5 shown.
-3. Different Fonts at font size 2, fonts 1-6 All these fonts are scale-able
-4. Graphics.
-5. Clock Demo Test 11,  showing icons, and font 7 "BigNums"
-6. 24 bit RGB test image displayed from a data array  ,  128 X 128 pixels.
-7. 16 bit 565 test image displayed from a data array , 128 X 128 pixels.
-8. Fonts 7-12 
-
-![ pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_PICO/blob/main/extra/doc/images/row1.jpg)
-![ pic1 ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
-![ p2](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/5.jpg)
+[![ Demo pic ](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)](https://github.com/gavinlyonsrepo/ST7735_TFT_RPI/blob/main/extra/images/4.jpg)
+[![ demo pic 2](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/st7735output.jpg)](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/st7735output.jpg)
 

@@ -1,10 +1,10 @@
 /*!
-	@file     main.cpp
-	@author   Gavin Lyons
-	@brief Example cpp file for st7789 driver. Tests  Hello World
-	@note  See USER OPTIONS 0-2 in SETUP function
+	@file   main.cpp
+	@author Gavin Lyons
+	@brief  Example cpp file for st7789 driver. Test Hello World.
+	@note   See USER OPTIONS 0-2 in SETUP function
 	@test
-		-# Test100 Print out Hello world  
+		-# Test 101 Print out Hello world  
 */
 
 // Section ::  libraries 
@@ -12,6 +12,8 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "displaylib_16/st7789.hpp"
+
+///@cond
 
 // Section :: Defines   
 //  Test timing related defines 
@@ -40,14 +42,11 @@ int main(void)
 
 //  Section ::  Function Space 
 
-/*!
-	@brief setup the TFT :: user options 0-3
-*/
 void Setup(void)
 {
 	stdio_init_all(); // optional for error messages , Initialize chosen serial port, default 38400 baud
 	MILLISEC_DELAY(TEST_DELAY1);
-	printf("TFT :: Start\r\n");
+	printf("TFT: Start\r\n");
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
 	bool bhardwareSPI = true; // true for hardware spi, false for software
@@ -75,35 +74,29 @@ void Setup(void)
 	uint16_t OFFSET_COL = 0;  // 2, These offsets can be adjusted for any issues->
 	uint16_t OFFSET_ROW = 0; // 3, with screen manufacture tolerance/defects
 	uint16_t TFT_WIDTH = 240;// Screen width in pixels
-	uint16_t TFT_HEIGHT = 280; // Screen height in pixels
+	uint16_t TFT_HEIGHT = 320; // Screen height in pixels
 	myTFT.TFTInitScreenSize(OFFSET_COL, OFFSET_ROW , TFT_WIDTH , TFT_HEIGHT);
 // ******************************************
 
 	myTFT.TFTST7789Initialize(); 
 }
 
-/*!
-	@brief print out hello world on TFT
-*/
 void Test100(void) {
-
-	char teststr1[] = "Hello World";
 	printf("Version %u \n",DisLib16::LibraryVersion());
-	myTFT.fillScreen(myTFT.C_RED);
-	myTFT.FontNum(myTFT.Font_Default);
-	myTFT.drawText(15, 55, teststr1, myTFT.C_WHITE, myTFT.C_RED, 2);
+	myTFT.fillScreen(myTFT.C_BLACK);
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	myTFT.setCursor(15,50);
+	myTFT.setFont(font_groTesk);
+	myTFT.print("Hello World");
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 	MILLISEC_DELAY(TEST_DELAY1);
 }
 
-/*!
-	@brief  Stop testing and shutdown the TFT
-*/
 void EndTests(void)
 {
 	myTFT.TFTPowerDown(); 
-	printf("TFT :: Tests Over \n");
+	printf("TFT: End\n");
 }
-
+///@endcond
 // *************** EOF ****************

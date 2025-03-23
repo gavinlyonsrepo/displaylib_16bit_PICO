@@ -5,7 +5,7 @@
 	@note   See USER OPTIONS 0-3 in SETUP function
 	@test
 		-# Test 300 Sprite 
-		-# Test 301 "clock demo" , icons, , font 7
+		-# Test 301 icons
 		-# Test 302 bi-color small image
 		-# Test 303 bi-color full screen image 128x128
 		-# Test 304 16 bit color image from a data array
@@ -40,7 +40,7 @@ std::span<const uint8_t> emptyBitmap{};
 
 void Setup(void);	// setup + user options
 void Test300(void); // sprite
-void Test301(void); // "clock demo" , icons, , font 7
+void Test301(void); // icons
 void Test302(void); // bi-color small image
 void Test303(void); // bi-color full screen image 128x128
 void Test304(void); // 16 bit color image from a data array
@@ -145,83 +145,22 @@ void Test300(void)
 }
 
 /*!
-	@brief  "clock demo" , icons, , font 7
+	@brief  icons,
 */
 void Test301(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
-
-	// Test variables
-	uint16_t count = CLOCK_DISPLAY_TIME;
-	char strCount[6];
-	char strTime[12];
-	char strName[8] = "G Lyons";
-	uint8_t Hour = 10;
-	uint8_t Min = 59;
-	uint8_t Sec = 45;
-	unsigned long previousMillis = 0; // will store last time display was updated
-	const long interval = 1000;		  //   interval at which to update display (milliseconds)
-
-	// TOP icons box
 	myTFT.drawIcon(2, 2, 16, myTFT.C_BLACK, myTFT.C_WHITE, SignalIcon);
 	myTFT.drawIcon(20, 2, 16, myTFT.C_BLACK, myTFT.C_WHITE, MsgIcon);
 	myTFT.drawIcon(40, 2, 8, myTFT.C_BLACK, myTFT.C_WHITE, AlarmIcon);
-	myTFT.drawIcon(102, 2, 16, myTFT.C_BLACK, myTFT.C_WHITE, BatIcon);
-	// second box
+	myTFT.drawIcon(80, 2, 16, myTFT.C_BLACK, myTFT.C_WHITE, BatIcon);
 	myTFT.drawIcon(5, 20, 12, myTFT.C_GREEN, myTFT.C_BLACK, powerIcon);
 	myTFT.drawIcon(20, 20, 12, myTFT.C_RED, myTFT.C_YELLOW, speedIcon);
-	myTFT.drawText(80, 20, strName, myTFT.C_BLUE, myTFT.C_BLACK, 1);
+	myTFT.setCursor(5,40);
+	myTFT.print("Test 301");
 
-	// RED section lines
-	myTFT.drawFastHLine(0, 17, 127, myTFT.C_RED);
-	myTFT.drawFastHLine(0, 32, 127, myTFT.C_RED);
-	myTFT.drawFastHLine(0, 80, 127, myTFT.C_RED);
-	myTFT.drawFastHLine(0, 118, 127, myTFT.C_RED);
-
-	myTFT.FontNum(myTFT.Font_Bignum);
-	while (1)
-	{
-		unsigned long currentMillis = to_ms_since_boot(get_absolute_time());
-
-		if (currentMillis - previousMillis >= interval)
-		{
-			previousMillis = currentMillis;
-			Sec++;
-			if (Sec == 60)
-			{
-				Min++;
-				Sec = 0;
-				if (Min == 60)
-				{
-					Hour++;
-					Min = 0;
-					if (Hour == 24)
-					{
-						Hour = 0;
-					}
-				}
-			}
-			// display Clock
-			myTFT.FontNum(myTFT.Font_Bignum);
-			snprintf(strTime, sizeof(strTime), "%02u:%02u:%02u", Hour, Min, Sec);
-			myTFT.drawText(0, 45, strTime, myTFT.C_GREEN, myTFT.C_BLACK);
-			// display counter
-			myTFT.FontNum(myTFT.Font_Mednum);
-			snprintf(strCount, sizeof(strCount), "%03d", count);
-			myTFT.drawText(0, 85, strCount, myTFT.C_YELLOW, myTFT.C_RED);
-			count--;
-			// Display the Libary version number
-			myTFT.setCursor(60, 85);
-			myTFT.print(DisLib16::LibraryVersion());
-		} // if every second
-
-		if (count == 1)
-			break;
-	} // end of while
-
-	MILLISEC_DELAY(TEST_DELAY2);
+	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.FontNum(myTFT.Font_Default);
 } // end of Test 301
 
 /*!
@@ -232,7 +171,7 @@ void Test302(void)
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	char teststr1[] = "Test 302";
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	myTFT.drawBitmap(80, 20, 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(20, 40, 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(30, 70, 40, 16, myTFT.C_YELLOW, myTFT.C_RED, sSunTextImage);
@@ -246,7 +185,7 @@ void Test302(void)
 void Test303(void)
 {
 	char teststr1[] = "Test 303";
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 
 	myTFT.drawBitmap(0, 0, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage);
@@ -260,7 +199,7 @@ void Test303(void)
 void Test304(void)
 {
 	char teststr1[] = "Test 304";
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 
 	myTFT.drawBitmap16Data(0, 0, sMotorImage, 128, 128);
@@ -275,7 +214,7 @@ void Test305(void)
 {
 	char teststr1[] = "Test 305";
 	myTFT.fillScreen(myTFT.C_WHITE);
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 
 	myTFT.drawBitmap24Data(20, 20, sPosterImage, 80, 48);
@@ -289,9 +228,9 @@ void Test305(void)
 void Test306(void)
 {
 	char teststr1[] = "Test 306";
-	myTFT.drawText(50, 50, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
-	myTFT.drawBitmap8Data(65, 65, sColorTestImage, 96,96);
+	myTFT.drawBitmap8Data(20, 20, sColorTestImage, 96,96);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -311,7 +250,7 @@ void Test601(void)
 	uint16_t fps = 0;
 
 	char teststr1[] = "Test 601 FPS, Output Results to USB Serial port";
-	myTFT.drawText(5, 5, teststr1, myTFT.C_WHITE, myTFT.C_BLACK, 1);
+	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
 
@@ -366,10 +305,11 @@ void Test802(void)
 	{
 		DisLib16::Success, 
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::IconScreenWidth, //icon
-		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, //sprite
+		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize, //sprite
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapHorizontalSize, //1-bit bitmap
-		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, //16-bit bitmap
-		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty  //24-bit bitmap
+		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize,//8-bit bitmap
+		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize,//16-bit bitmap
+		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize//24-bit bitmap
 	};
 	// Vector to store return values
 	std::vector<uint8_t> returnValues; 
@@ -382,8 +322,8 @@ void Test802(void)
 	// Perform function calls and store return values
 
 	// Print message + sanity check for success
-	myTFT.FontNum(myTFT.Font_Default);
-	returnValues.push_back(myTFT.drawText(5, 55, testString5, myTFT.C_RED, myTFT.C_BLACK, 2)); 
+	myTFT.setFont(font_default);
+	returnValues.push_back(myTFT.writeCharString(5, 55, testString5)); 
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 	//drawIcon
@@ -395,19 +335,27 @@ void Test802(void)
 	returnValues.push_back(myTFT.drawSpriteData(180, 50, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false));
 	returnValues.push_back(myTFT.drawSpriteData(40, 180, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false));
 	returnValues.push_back(myTFT.drawSpriteData(40, 180, emptyBitmap, 32, 32, myTFT.C_LBLUE, false));
+	returnValues.push_back(myTFT.drawSpriteData(40, 40, sSpriteTest16, 48, 32, myTFT.C_LBLUE, false));
 	//drawBitmap
 	returnValues.push_back(myTFT.drawBitmap(180, 65, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage));
 	returnValues.push_back(myTFT.drawBitmap(50, 180, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage));
 	returnValues.push_back(myTFT.drawBitmap(50, 65, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, emptyBitmap));
 	returnValues.push_back(myTFT.drawBitmap(20, 20, 70, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage));
+	//drawBitmap8Data
+	returnValues.push_back(myTFT.drawBitmap8Data(400, 50, sColorTestImage, 96, 96));
+	returnValues.push_back(myTFT.drawBitmap8Data(40, 400, sColorTestImage, 96, 96));
+	returnValues.push_back(myTFT.drawBitmap8Data(40, 40, emptyBitmap, 32, 32));
+	returnValues.push_back(myTFT.drawBitmap8Data(40, 40, sColorTestImage, 128, 96));
 	//drawBitmap16Data
 	returnValues.push_back(myTFT.drawBitmap16Data(180, 50, sSpriteTest16, 32, 32));
 	returnValues.push_back(myTFT.drawBitmap16Data(40, 180, sSpriteTest16, 32, 32));
 	returnValues.push_back(myTFT.drawBitmap16Data(40, 180, emptyBitmap, 32, 32));
+	returnValues.push_back(myTFT.drawBitmap16Data(40, 40,  sSpriteTest16, 50, 32));
 	//drawBitmap24Data
 	returnValues.push_back(myTFT.drawBitmap24Data(180, 50, sSpriteTest16, 32, 32));
 	returnValues.push_back(myTFT.drawBitmap24Data(40, 180, sSpriteTest16, 32, 32));
 	returnValues.push_back(myTFT.drawBitmap24Data(40, 180, emptyBitmap, 32, 32));
+	returnValues.push_back(myTFT.drawBitmap24Data(40, 40,  sPosterImage, 80, 60));
 	
 	//== SUMMARY SECTION===
 	printf("\nError Checking Summary.\n");
@@ -446,7 +394,7 @@ void EndTests(void)
 {
 	char teststr1[] = "Tests over";
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.drawText(5, 50, teststr1, myTFT.C_GREEN, myTFT.C_BLACK, 2);
+	myTFT.writeCharString(15, 15, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTPowerDown();
 	printf("TFT :: Tests Over\r\n");
