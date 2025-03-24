@@ -251,7 +251,7 @@ void ST7789_TFT  :: TFTInitScreenSize(uint16_t colOffset, uint16_t rowOffset, ui
 */
 void ST7789_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t* spi_interface) 
 {
-	 _pspiInterface = spi_interface;
+	_pspiInterface = spi_interface;
 	_speedSPIKHz = speed_Khz;
 	_hardwareSPI = true;
 }

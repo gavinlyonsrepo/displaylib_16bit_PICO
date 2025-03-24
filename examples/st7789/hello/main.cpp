@@ -8,7 +8,6 @@
 */
 
 // Section ::  libraries 
-#include "pico/time.h"
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "displaylib_16/st7789.hpp"

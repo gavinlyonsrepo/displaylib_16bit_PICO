@@ -16,14 +16,14 @@
 
 ## Overview
 
-* Name: ST7735_TFT_PICO
+* Name: ST7735
 * Description:
 
 C++ Raspberry pi PICO  library for a TFT SPI LCD, ST7735 Driver
 
 ## Test
 
-There are  example files included. User picks the one they want 
+There are example files included. User picks the one they want 
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
 Comment in one path and one path only.
 
@@ -54,7 +54,9 @@ where user can make adjustments to select for SPI type used, PCB type used and s
 *USER OPTION 0 SPI SPEED* 
 
 Here the user can pass the SPI Bus freq in kiloHertz, Currently set to 8 Mhz.
-Max SPI speed on the PICO is 62.5Mhz. There is a file with SPI test results for the FPS tests in extra/doc folder. "nd parameter is the SPI interface(spi0 spi1 etc). 
+Max SPI speed on the PICO is 62.5Mhz. 
+There is a file with SPI test results for the FPS tests in extra/doc folder. 
+2nd parameter is the SPI interface(spi0 spi1 etc). 
 
 If users wants software SPI just call this method 
 with just one argument for the optional GPIO software uS delay,
@@ -95,7 +97,7 @@ Functions to support drawing bitmaps, icons & sprites.
 | ------ | ------ | ------ | ------ | ------ |
 | 1 | drawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
 | 2 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO |
+| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
 | 4 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
 | 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color | 
 | 6 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
@@ -104,7 +106,7 @@ Functions to support drawing bitmaps, icons & sprites.
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
 2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
 3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 3 - 5  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+4. The data array for 3 - 6  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 

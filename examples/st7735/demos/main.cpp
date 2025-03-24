@@ -3,6 +3,7 @@
 	@author Gavin Lyons
 	@brief  Example cpp file for st7735 library. demo
 	@note   See USER OPTIONS 0-3 in SETUP function
+			If dislib16_ADVANCED_GRAPHICS_ENABLE  is not enabled it will not compile
 	@test
 		-# Test 408 gauge demo 
 */

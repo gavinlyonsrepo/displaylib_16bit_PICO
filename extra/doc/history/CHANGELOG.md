@@ -27,6 +27,6 @@
 * Version 2.0.0 Mar 2025
 	* Changed project name from ST7735_TFT_PICO to displaylib_16_PICO
 	* The project will now support any 16-bit graphic display that can be added.
-	* Added Support for ST7789 TFT LCD.
+	* Added Support for ST7789 TFT LCD , SSD1331 OLED
 	* Added new font system. 
 	* Added Advanced graphics mode. 

@@ -34,7 +34,7 @@ Comment in one path and one path only.
 | graphics| Graphics | --- |
 | functions_fps| Functions(like rotate scroll) + FPS test | --- |
 | bmp_data | 1, 16 & 24 bit colour bitmaps tests + bitmap FPS test | Bitmap data is stored in arrays on PICO |
-
+| demos| A demo  | --- |
 
 ## Software
 
@@ -82,9 +82,9 @@ Functions to support drawing bitmaps,
 | ------ | ------ | ------ | ------ | ------ |
 | 1 | drawIcon | bi-colour | (8 x (0-Max_y))  | Data vertically addressed |
 | 2 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO |
+| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
 | 4 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color  |
+| 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color|
 | 6 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
 
 
@@ -102,9 +102,9 @@ Connections as setup in main.cpp  test file.
 | 1 | LED | VCC |   
 | 2 | SCLK | GPIO18 |
 | 3 | SDA | GPIO19 |
-| 4 | A0/DC |  GPIO3  |
-| 5 | RESET |   GPIO17 |
-| 6 | SS/CS |  GPIO2 |
+| 4 | A0/DC | GPIO3  |
+| 5 | RESET | GPIO17 |
+| 6 | SS/CS | GPIO2 |
 | 7 | GND | GND |
 | 8 | VCC |  VCC  |
 
