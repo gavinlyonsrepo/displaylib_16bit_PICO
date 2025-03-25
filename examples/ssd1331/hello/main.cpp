@@ -1,8 +1,8 @@
 /*! 
-	@file main.cpp
-	@brief Hello World hardware SPI test, ssd1331 OLED
+	@file   main.cpp
+	@brief  Hello World hardware SPI test, ssd1331 OLED
 	@author Gavin Lyons.
-	@note See USER OPTIONS 0-2 in SETUP function and in myOLED constructor
+	@note   See USER OPTIONS 0-2 in SETUP function and in myOLED constructor
 	@test 
 		-# 101 Hello World Hardware SPI
 */
@@ -63,7 +63,7 @@ void SetupHWSPI(void)
 	int8_t SCLK_OLED = 18; 
 	int8_t DC_OLED = 3;
 	int8_t CS_OLED = 2 ;  
-	int8_t RST_OLED = 17;
+	int8_t RST_OLED = 4;
 	myOLED.SetupGPIO(RST_OLED, DC_OLED, CS_OLED, SCLK_OLED, SDIN_OLED);
 	//**********************************************************
 

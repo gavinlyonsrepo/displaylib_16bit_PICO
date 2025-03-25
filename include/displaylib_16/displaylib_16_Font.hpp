@@ -1,9 +1,11 @@
 /*!
-	@file     displaylib_16_Font.hpp
-	@author   Gavin Lyons
-	@brief    Library header file for  font data
-			  This file contains the font definitions and data.
-			  see main readme file for details. font data is in cpp file.
+	@file    displaylib_16_Font.hpp
+	@author  Gavin Lyons
+	@brief   Library header file for  font data
+			This file contains the font definitions and data.
+			see main readme file for details. font data is in cpp file.
+	@details fonts 1-11 enabled by default, fonts 12-16 enabled by define 
+		 	 dislib16_ADVANCED_FONTS_ENABLE dislib16_ADVANCED_FONTS_ENABLE see USER OPTION
 */
 
 #pragma once
@@ -21,8 +23,6 @@
 // ==========================================================
 
 ///@cond
-
-
 // ==========================================================
 // ===============Font Extern declaration section ===========
 // Font data is in the cpp file accessed thru extern.

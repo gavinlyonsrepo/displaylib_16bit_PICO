@@ -35,7 +35,13 @@ where user can make adjustments. The constructor also takes a number of argument
  * User Option Setup()       Setup the GPIO
  * User Option Setup()       Screen Setup 
 
-*User Option SPI type and speed * 
+*User Option  Color and contrast settings*
+
+Here the user can select RGB or BGR mode depending on type of display, They can also
+set the color contrast levels for the 3 channels (A B and C) for normal and Dim mode.
+The range is 0-255. 
+
+*User Option SPI Settings * 
 
 Here the user can pass the SPI Bus freq in kiloHertz.
 Max SPI speed on the PICO is 62.5Mhz. 2nd parameter is the SPI interface(spi0 spi1 etc). 
@@ -43,12 +49,6 @@ If users wants software SPI just call this method
 with just one argument for the optional GPIO software uS delay,
 which by default is zero. Setting this higher can be used to slow down Software SPI 
 which may be beneficial in some setups.  
-
-*User Option  Color and contrast settings*
-
-Here the user can select RGB or BGR mode depending on type of display, They can also
-set the color contrast levels for the 3 channels (A B and C) for normal and Dim mode.
-The range is 0-255. 
 
 *User Option Setup the GPIO pins
 

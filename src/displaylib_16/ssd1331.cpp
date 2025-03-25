@@ -18,24 +18,35 @@ SSD1331_OLED::SSD1331_OLED(color_order_e colororder, const Constrast_values_t& c
 }
 
 /*!
-	@brief Call when powering down OLED
+	@brief Call when powering down OLED, turns off display and  deinits SPI & GPIO.
 */
 void  SSD1331_OLED ::PowerDown(void)
 {
 	sleepDisplay();
+
 	DISPLAY_DC_SetLow;
 	DISPLAY_RST_SetLow;
 	DISPLAY_CS_SetLow;
+
+	DISPLAY_DC_DEINIT;
+	DISPLAY_RST_DEINIT;
+	DISPLAY_CS_DEINIT;
 	if (_hardwareSPI == true) {
+		DISPLAY_SCLK_SPI_FUNC_OFF;
+		DISPLAY_SDATA_SPI_FUNC_OFF;
 		spi_deinit(_pspiInterface);
+		DISPLAY_SCLK_DEINIT;
+		DISPLAY_SDATA_DEINIT;
 	}else{
 		DISPLAY_SCLK_SetLow;
 		DISPLAY_SDATA_SetLow;
+		DISPLAY_SCLK_DEINIT;
+		DISPLAY_SDATA_DEINIT;
 	}
 }
 
 /*!
-	@brief Method for Hardware Reset pin control
+	@brief For Hardware Reset pin control
 */
 void SSD1331_OLED::ResetPin() {
 	const uint8_t OLEDResetDelay = 10; /**< Reset delay in mS*/
@@ -46,30 +57,6 @@ void SSD1331_OLED::ResetPin() {
 	MILLISEC_DELAY(OLEDResetDelay);
 	DISPLAY_RST_SetHigh;
 	MILLISEC_DELAY(OLEDResetDelay);
-}
-
-/*!
-	@brief: Method for Data or Command pin setup
-*/
-void SSD1331_OLED::DataCommandPin(void) {
-
-	// Claim GPIO as outputs for DC line
-	DISPLAY_DC_SetDigitalOutput;
-	DISPLAY_DC_SetLow;
-}
-
-/*!
-	@brief: Method for Clock, data and chip select  pin setup routine for software SPI.
-*/
-void SSD1331_OLED::Clock_Data_ChipSelect_Pins(void)
-{
-	DISPLAY_CS_SetDigitalOutput;
-	DISPLAY_SCLK_SetDigitalOutput;
-	DISPLAY_SDATA_SetDigitalOutput;
-
-	DISPLAY_CS_SetHigh;
-	DISPLAY_SCLK_SetLow;
-	DISPLAY_SDATA_SetLow;
 }
 
 /*!
@@ -100,10 +87,16 @@ void SSD1331_OLED::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8
 */
 void SSD1331_OLED::SSD1331Initialize() {
 	ResetPin();
-	DataCommandPin();
+	DISPLAY_DC_SetDigitalOutput;
+	DISPLAY_DC_SetLow;
+	DISPLAY_CS_SetDigitalOutput;
+	DISPLAY_CS_SetHigh;
 if (_hardwareSPI == false)
 {
-	Clock_Data_ChipSelect_Pins();
+	DISPLAY_SCLK_SetDigitalOutput;
+	DISPLAY_SDATA_SetDigitalOutput;	
+	DISPLAY_SCLK_SetLow;
+	DISPLAY_SDATA_SetLow;
 }else{
 	HWSPIInitialize();
 }
@@ -272,7 +265,6 @@ void  SSD1331_OLED::InitSPIType(uint32_t speed_Khz, spi_inst_t *spiInterface)
 	_hardwareSPI = true;
 }
 
-
 /*!
 	@brief intialise SW SPI set
 	@param CommDelay SW SPI GPIO delay uS
@@ -385,7 +377,6 @@ void SSD1331_OLED::ConfigueDimMode(void)
 	writeCommand(DimContrastValues.Dim_ContrastColorC);
 	writeCommand(0x0F);
 }
-
 
 /*!
 	@brief Command sequence for configure  contrast

@@ -46,6 +46,14 @@ uint16_t LibraryVersion(void);
 #define DISPLAY_CS_INIT gpio_init(_display_CS)
 #define DISPLAY_SCLK_INIT gpio_init(_display_SCLK)
 #define DISPLAY_SDATA_INIT gpio_init(_display_SDATA)
+#define DISPLAY_MISO_INIT gpio_init(_display_MISO)
+
+#define DISPLAY_DC_DEINIT gpio_deinit(_display_DC)
+#define DISPLAY_RST_DEINIT gpio_deinit(_display_RST)
+#define DISPLAY_CS_DEINIT gpio_deinit(_display_CS)
+#define DISPLAY_SCLK_DEINIT gpio_deinit(_display_SCLK)
+#define DISPLAY_SDATA_DEINIT gpio_deinit(_display_SDATA)
+#define DISPLAY_MISO_DEINIT gpio_deinit(_display_MISO)
 
 #define DISPLAY_DC_SetHigh gpio_put(_display_DC, true)
 #define DISPLAY_DC_SetLow gpio_put(_display_DC, false)
@@ -66,6 +74,8 @@ uint16_t LibraryVersion(void);
 
 #define DISPLAY_SCLK_SPI_FUNC gpio_set_function(_display_SCLK, GPIO_FUNC_SPI)
 #define DISPLAY_SDATA_SPI_FUNC gpio_set_function(_display_SDATA, GPIO_FUNC_SPI)
+#define DISPLAY_SCLK_SPI_FUNC_OFF gpio_set_function(_display_SCLK, GPIO_FUNC_NULL)
+#define DISPLAY_SDATA_SPI_FUNC_OFF gpio_set_function(_display_SDATA, GPIO_FUNC_NULL)
 
 // Delays
 #define MILLISEC_DELAY busy_wait_ms

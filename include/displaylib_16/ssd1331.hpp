@@ -1,7 +1,7 @@
 /*!
-	@file     ssd1331.hpp
-	@author   Gavin Lyons
-	@brief    Library header file for ssd1331 OLED library.
+	@file   ssd1331.hpp
+	@author Gavin Lyons
+	@brief  Library header file for ssd1331 OLED library display.
 */
 
 #pragma once
@@ -88,7 +88,6 @@ public:
 	uint16_t HighFreqDelayGet(void) const;
 	void HighFreqDelaySet(uint16_t);
 	void PowerDown(void);
-
 	// Screen related
 	void setRotation(display_rotate_e r);
 	void changeDisplayMode(display_mode_e);
@@ -107,12 +106,9 @@ private:
 
 	void ConfigueDimMode(void);
 	void ConfigueContrast(void);
-	void DataCommandPin(void);
-	void Clock_Data_ChipSelect_Pins(void);
 	void HWSPIInitialize(void);
 	void cmdBegin(void);
 	void WriteColor16(uint16_t colorWrite);
-
 	// Screen
 	uint16_t _widthStartOLED = 96;  /**<  never change after first init */
 	uint16_t _heightStartOLED = 64; /**< never change after first init */
@@ -120,7 +116,6 @@ private:
 	display_rotate_e _displayRotate = Degrees_0; /**< Enum to hold rotation */
 	Constrast_values_t ContrastValues  = { 0x7D, 0x7D, 0x7D }; /**< struct to hold normal mode contrast colors ABC */
 	Dim_Constrast_values_t DimContrastValues{ 0x1E, 0x1E, 0x1E }; /**< struct to hold dim mode contrast colors ABC */
-
 	// SSD1331 Commands & registers
 	static constexpr uint8_t  _CMD_DRAWLINE = 0x21       ; /**< Draw line Command*/
 	static constexpr uint8_t  _CMD_DRAWRECT = 0x22       ; /**< Draw rectangle command */

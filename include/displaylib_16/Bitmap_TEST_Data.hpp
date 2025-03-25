@@ -1,7 +1,7 @@
 /*!
 	@file    Bitmap_TEST_Data.hpp
 	@author  Gavin Lyons
-	@brief   Library header file for test bitmap, Data file to hold bitmap data.
+	@brief   Library header file for test bitmap data, holds bitmap data.
 	@note    NOT part of core library only used for holding test data, 
 			 can be omitted in project use or port.
 */
@@ -27,4 +27,3 @@ extern const std::array< uint8_t, 16> SignalIcon;     /**< Mobile icon, 16x8 */
 extern const std::array< uint8_t, 16> MsgIcon;        /**< Message icon, 16x8 */
 extern const std::array< uint8_t, 8>  AlarmIcon;      /**< Alarm icon, 8x8 */
 extern const std::array< uint8_t, 16> BatIcon;        /**< Battery icon, 16x8 */
-

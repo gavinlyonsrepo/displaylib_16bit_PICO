@@ -101,7 +101,7 @@ void Setup(void)
 	int8_t SCLK_TFT = 18;
 	int8_t DC_TFT = 3;
 	int8_t CS_TFT = 2;
-	int8_t RST_TFT = 17;
+	int8_t RST_TFT = 4;
 	myTFT.setupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 	//**********************************************************
 

@@ -40,11 +40,20 @@ void ST7789_TFT ::TFTPowerDown(void)
 	DISPLAY_DC_SetLow;
 	DISPLAY_RST_SetLow;
 	DISPLAY_CS_SetLow;
+	DISPLAY_DC_DEINIT;
+	DISPLAY_RST_DEINIT;
+	DISPLAY_CS_DEINIT;
 	if (_hardwareSPI == true) {
+		DISPLAY_SCLK_SPI_FUNC_OFF;
+		DISPLAY_SDATA_SPI_FUNC_OFF;
 		spi_deinit(_pspiInterface);
+		DISPLAY_SCLK_DEINIT;
+		DISPLAY_SDATA_DEINIT;
 	}else{
 		DISPLAY_SCLK_SetLow;
 		DISPLAY_SDATA_SetLow;
+		DISPLAY_SCLK_DEINIT;
+		DISPLAY_SDATA_DEINIT;
 	}
 }
 
@@ -242,16 +251,15 @@ void ST7789_TFT  :: TFTInitScreenSize(uint16_t colOffset, uint16_t rowOffset, ui
 	_heightStartTFT = height_TFT;
 }
 
-
 /*!
 	@brief intialise HW SPI setup
 	@param speed_Khz SPI baudrate in Khz , 1000 = 1 Mhz
-	@param spi_interface Spi interface, spi0 spi1 etc
+	@param spiInterface Spi interface, spi0 spi1 etc
 	@note method overload used , method 1 hardware SPI 
 */
-void ST7789_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t* spi_interface) 
+void ST7789_TFT  :: TFTInitSPIType(uint32_t speed_Khz,  spi_inst_t* spiInterface) 
 {
-	_pspiInterface = spi_interface;
+	_pspiInterface = spiInterface;
 	_speedSPIKHz = speed_Khz;
 	_hardwareSPI = true;
 }

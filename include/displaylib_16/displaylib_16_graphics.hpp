@@ -2,6 +2,8 @@
 	@file    displaylib_16_graphics.hpp
 	@author  Gavin Lyons
 	@brief   header file for graphics library. This file handles the graphic methods
+	@details Define dislib16_ADVANCED_GRAPHICS_ENABLE enables advanced graphic 
+		functions added in V2.0.0, see readme for more details.
 */
 
 #pragma once
@@ -156,7 +158,8 @@ protected:
 	int8_t _display_RST;   /**< GPIO Reset line */
 	int8_t _display_CS;	   /**< GPIO Chip select line */
 	int8_t _display_SCLK;  /**< GPIO Clock SPI Line */
-	int8_t _display_SDATA; /**< GPIO MOSI data in  SPI Line */
+	int8_t _display_SDATA; /**< GPIO MOSI data into display SPI Line */
+	int8_t _display_MISO; /**< GPIO  MISO data out SPI Line */
 
 	bool _hardwareSPI;			  /**< True for Hardware SPI on , false fpr Software SPI on*/
 	spi_inst_t *_pspiInterface;	  /**< SPI instance pointer*/

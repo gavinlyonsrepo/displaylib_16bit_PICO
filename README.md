@@ -50,6 +50,7 @@
 | ST7789 |16 bit Colour Graphic TFT LCD|SPI HW & SW| [Readme](extra/doc/st7789/README.md)|
 | ST7735 |16 bit Colour Graphic TFT LCD|SPI HW & SW| [Readme](extra/doc/st7735/README.md)|
 | SSD1331|16 bit Colour Graphic OLED |SPI HW & SW  | [Readme](extra/doc/ssd1331/README.md)|
+| ili9341 |16 bit Colour Graphic TFT LCD |SPI HW & SW  | [Readme](extra/doc/ili9341/README.md)|
 
 ### API Documentation
 

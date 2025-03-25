@@ -1,101 +1,97 @@
-/*!
+/*! 
 	@file   main.cpp
-	@author Gavin Lyons
-	@brief  Example cpp file for st7789 driver. Test Hello World.
+	@brief  Hello World basic use case
+	@author Gavin Lyons.
 	@note   See USER OPTIONS 0-2 in SETUP function
-	@test
-		-# Test 101 Print out Hello world  
+	@test 
+		-# 101 Hello World Hardware SPI
 */
 
-// Section ::  libraries 
+// Section ::  libraries
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
-#include "displaylib_16/st7789.hpp"
+#include "displaylib_16/ili9341.hpp"
 
-///@cond
-
-// Section :: Defines   
-//  Test timing related defines 
-#define TEST_DELAY1 1000 // mS
-#define TEST_DELAY2 2000 // mS
-#define TEST_DELAY5 5000 // mS
+/// @cond
 
 // Section :: Globals 
-ST7789_TFT myTFT;
+ILI9341_TFT myTFT;
 
 //  Section ::  Function Headers 
 
-void Setup(void);  // setup + user options
-void Test100(void);  
+void Setup(void); // setup + user options for hardware SPI
+void HelloWorld(void);
 void EndTests(void);
 
 //  Section ::  MAIN loop
 
-int main(void) 
+int main() 
 {
 	Setup();
-	Test100();
+	HelloWorld();
 	EndTests();
+	return 0;
 }
 // *** End OF MAIN **
+
 
 //  Section ::  Function Space 
 
 void Setup(void)
 {
 	stdio_init_all(); // optional for error messages , Initialize chosen serial port, default 38400 baud
-	MILLISEC_DELAY(TEST_DELAY1);
-	printf("TFT: Start\r\n");
-	
+	MILLISEC_DELAY(1000);
+	printf("Start\r\n");
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
 	bool bhardwareSPI = true; // true for hardware spi, false for software
 	
 	if (bhardwareSPI == true) { // hw spi
 		uint32_t TFT_SCLK_FREQ =  8000 ; // Spi freq in KiloHertz , 1000 = 1Mhz
-		myTFT.TFTInitSPIType(TFT_SCLK_FREQ, spi0); 
+		myTFT.SetupSPI(TFT_SCLK_FREQ, spi0); 
 	} else { // sw spi
 		uint16_t SWSPICommDelay = 0; // optional SW SPI GPIO delay in uS
-		myTFT.TFTInitSPIType(SWSPICommDelay);
+		myTFT.SetupSPI(SWSPICommDelay);
 	}
 //*********************************************************
 // ******** USER OPTION 1 GPIO *********
 // NOTE if using Hardware SPI clock and data pins will be tied to 
-// the chosen interface eg Spi0 CLK=18 DIN=19)
+// the chosen interface eg Spi0 CLK=18 DIN=19 MISO = 17)
 	int8_t SDIN_TFT = 19; 
 	int8_t SCLK_TFT = 18; 
+	int8_t RST_TFT = 5;
 	int8_t DC_TFT = 3;
-	int8_t CS_TFT = 2 ;  
-	int8_t RST_TFT = 4;
-	myTFT.setupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
+	int8_t CS_TFT = 2;  
+	myTFT.SetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 //**********************************************************
 
 // ****** USER OPTION 2 Screen Setup ****** 
-	uint16_t OFFSET_COL = 0;  // 2, These offsets can be adjusted for any issues->
-	uint16_t OFFSET_ROW = 0; // 3, with screen manufacture tolerance/defects
 	uint16_t TFT_WIDTH = 240;// Screen width in pixels
 	uint16_t TFT_HEIGHT = 320; // Screen height in pixels
-	myTFT.TFTInitScreenSize(OFFSET_COL, OFFSET_ROW , TFT_WIDTH , TFT_HEIGHT);
+	myTFT.SetupScreenSize(TFT_WIDTH , TFT_HEIGHT);
 // ******************************************
 
-	myTFT.TFTST7789Initialize(); 
+	myTFT.ILI9341Initialize(); 
 }
 
-void Test100(void) {
-	printf("Version %u \n",DisLib16::LibraryVersion());
+
+void HelloWorld(void) 
+{
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
-	myTFT.setCursor(15,50);
 	myTFT.setFont(font_groTesk);
-	myTFT.print("Hello World");
-	MILLISEC_DELAY(TEST_DELAY5);
-	myTFT.fillScreen(myTFT.C_BLACK);
-	MILLISEC_DELAY(TEST_DELAY1);
+	myTFT.setCursor(0,15);
+	myTFT.println(" Hello ");
+	myTFT.print(" World!");
+	busy_wait_ms(7000);
 }
 
 void EndTests(void)
 {
-	myTFT.TFTPowerDown(); 
-	printf("TFT: End\n");
+	myTFT.fillScreen(myTFT.C_BLACK);
+	myTFT.PowerDown(); // Power down device
+	printf("End\r\n");
 }
-///@endcond
+
 // *************** EOF ****************
+
+/// @endcond

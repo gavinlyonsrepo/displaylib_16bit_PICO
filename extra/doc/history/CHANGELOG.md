@@ -7,10 +7,10 @@
 * Version 1.6 April 2023
 	* Minor update.
 	* Doxygen Style Comments added, so an automated API can be created.
-	* Refactor , Enums placed inside the  relevant Class. Font and BMP data moved to cpp files.
+	* Refactor, Enums placed inside the  relevant Class. Font and BMP data moved to cpp files.
 
 * Version 1.7 November 2023
-	* Github pull request no 1 merged. 
+	* Github pull request no 1 merged.
 	* Hello world example added.
 	* Font's number 9 & 10 added.
 
@@ -21,12 +21,15 @@
 	
 * Version 1.7.2 Dec 2024
 	* Added Sprite function as per github issue 5.
-	* Replaced use of Malloc with row by row buffer writes. 
+	* Replaced use of Malloc with row by row buffer writes.
 	* Refactored fillRectangle to fillRectBuffer.
 
 * Version 2.0.0 Mar 2025
-	* Changed project name from ST7735_TFT_PICO to displaylib_16_PICO
-	* The project will now support any 16-bit graphic display that can be added.
-	* Added Support for ST7789 TFT LCD , SSD1331 OLED
-	* Added new font system. 
-	* Added Advanced graphics mode. 
+	* Changed project name from ST7735_TFT_PICO to displaylib_16_PICO.
+		The project will now support any 16-bit graphic display, that can be added.
+	* Added support for ILI9341 & ST7789 TFT LCD , SSD1331 OLED.
+	* Added new font system, see font readme for details.
+	* Added advanced graphics mode.
+	* Added support for 8-bit images(RRRGGGBB). These take up much less space
+		in memory at expense of color resolution.
+

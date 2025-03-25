@@ -3,8 +3,7 @@
 	@brief Library test file, tests text & fonts.
 	@author Gavin Lyons.
 	@note See USER OPTIONS 0-2 in SETUP function, output to serial port 38400 baud
-	@details For this test file to work fully macrodislib16_ADVANCED_FONTS_ENABLE
- 
+	@details For this test file to work fully macro dislib16_ADVANCED_FONTS_ENABLE
 			at top of  file displaylib_16_Font.hpp MUST be commented in.
 	@test
 	-# Test 701 Print out all fonts with writeCharString
@@ -92,7 +91,7 @@ void Setup(void)
 	int8_t SCLK_TFT = 18;
 	int8_t DC_TFT = 3;
 	int8_t CS_TFT = 2;
-	int8_t RST_TFT = 17;
+	int8_t RST_TFT = 4;
 	myTFT.setupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 	//**********************************************************
 
