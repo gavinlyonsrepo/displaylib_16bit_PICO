@@ -55,7 +55,7 @@ void ILI9341_TFT::SetupScreenSize(uint16_t width_TFT, uint16_t height_TFT)
 	@brief intialise  SPI, Hardware SPI
 	@param speed_Khz SPI baudrate in Khz , 1000 = 1 Mhz
 	@param spiInterface Spi interface, spi0 spi1 etc
-	@note method overload 	@param gpioDev The device number of a gpiochip.  used , method 1 hardware SPI 
+	@note overloaded 2 off, 1 for HW SPI , 1 for SW SPI
 */
 void ILI9341_TFT::SetupSPI(uint32_t speed_Khz , spi_inst_t *spiInterface)
 {
