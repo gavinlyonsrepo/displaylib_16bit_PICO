@@ -63,7 +63,8 @@ which may be beneficial in  some setups.
 *USER OPTION 1 GPIO*
 
 The 5 GPIO pins used, the clock and data lines must be the clock and data lines 
-of spi interface chosen in option 0 if using hardware SPI.
+of spi interface chosen in option 0 if using hardware SPI. If no reset pin on display or hat, 
+pass -1 as argument to disable reset pin.
 
 *USER OPTION 2 Screen size  + Offsets*
 
@@ -98,21 +99,22 @@ Functions to support drawing bitmaps,
 Connections as setup in main.cpp  test file.
 
 | TFT PinNum | Pindesc |  HW SPI |
-| --- | --- | --- | 
-| 1 | LED | VCC |   
+| --- | --- | --- |
+| 1 | LED | VCC |
 | 2 | SCLK | GPIO18 |
 | 3 | SDA | GPIO19 |
 | 4 | A0/DC | GPIO3  |
-| 5 | RESET | GPIO17 |
+| 5 | RESET | GPIO4 |
 | 6 | SS/CS | GPIO2 |
 | 7 | GND | GND |
-| 8 | VCC |  VCC  |
+| 8 | VCC |  VCC |
 
 1. NOTE connect LED backlight pin 1 thru a resistor to 3.3/5V VCC.
 2. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 3. You can connect VCC to 5V if there is a 3.3 volt regulator on back of TFT module.
 4. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 5. Backlight on/off control is left to user.
+6. If no reset pin on display or hat, pass -1 as argument to disable.
 
 ## Output
 

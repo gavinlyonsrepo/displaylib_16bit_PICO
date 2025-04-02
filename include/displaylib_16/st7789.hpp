@@ -21,7 +21,7 @@ public:
 
 	virtual void setAddrWindow(uint16_t, uint16_t, uint16_t, uint16_t) override;
 
-	void setupGPIO(int8_t, int8_t, int8_t, int8_t, int8_t);
+	void setupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_t din);
 	void TFTInitScreenSize(uint16_t xOffset, uint16_t yOffset, uint16_t w, uint16_t h);
 	void TFTST7789Initialize(void);
 	void TFTInitSPIType(uint32_t baudrate, spi_inst_t *spi);
@@ -49,6 +49,8 @@ private:
 	void cmd89(void);
 	void AdjustWidthHeight(void);
 
+	// SPI
+	bool _resetPinOn = true; /**< reset pin? true:hw rst pin, false:sw rt*/
 	// Screen
 	uint8_t _colstart = 0;          /**< Used to offset column in the event of defect at edge of screen */
 	uint8_t _rowstart = 0;          /**< Used to offset row in the event of defect at edge of screen */

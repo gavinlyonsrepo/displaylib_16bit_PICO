@@ -23,6 +23,7 @@ void ILI9341_TFT::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_
 	{
 		_display_RST= rst;
 		_resetPinOn = true;
+		DISPLAY_RST_INIT;
 	}else{
 		_resetPinOn  = false;
 	}
@@ -35,7 +36,6 @@ void ILI9341_TFT::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_
 	DISPLAY_CS_INIT; 
 	DISPLAY_SCLK_INIT; 
 	DISPLAY_SDATA_INIT; 
-	DISPLAY_RST_INIT;
 }
 
 /*!

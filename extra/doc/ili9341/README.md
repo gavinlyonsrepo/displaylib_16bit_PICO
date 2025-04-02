@@ -44,7 +44,8 @@ which may be beneficial in some setups.
 *User Option Setup the GPIO pins
 
 Set the five GPIO pins if using Hardware SPI clock and data pins will be tied to 
-the chosen interface eg Spi0 CLK=18 DIN=19)
+the chosen interface eg Spi0 CLK=18 DIN=19). The reset pin is optional if your display/hat uses
+software reset , set to -1 to 'disable'.
 
 *User Option Screen size *
 

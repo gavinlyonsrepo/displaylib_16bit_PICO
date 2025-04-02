@@ -644,50 +644,6 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::writeChar(int16_t x, int16_t y, ch
 		setAddrWindow(x, y, x + _Font_X_Size - 1, y + _Font_Y_Size - 1);
 		spiWriteDataBuffer(buffer, bufferIndex);
 	}
-	// // Create character buffer
-	// uint8_t buffer[_Font_X_Size * _Font_Y_Size * 2];
-	// uint16_t ltextcolor = 0;
-	// uint16_t ltextbgcolor = 0;
-	// if (getInvertFont()== true)
-	// {
-	// 	ltextbgcolor = _textcolor;
-	// 	ltextcolor = _textbgcolor;
-	// }else
-	// {
-	// 	ltextbgcolor = _textbgcolor;
-	// 	ltextcolor = _textcolor;
-	// }
-	// uint16_t fontIndex = 0;
-	// uint32_t bufferIndex = 0; // Index into the display buffer
-	// int16_t colByte, cx, cy;
-	// int16_t colbit;
-	// fontIndex = ((value - _FontOffset)*((_Font_X_Size * _Font_Y_Size) / 8)) + 4;
-	// colByte = _FontSelect[fontIndex];
-	// colbit = 7;
-	// for (cx = 0; cx < _Font_X_Size; cx++)
-	// {
-	// 	for (cy = 0; cy < _Font_Y_Size; cy++)
-	// 	{
-	// 		if ((colByte & (1 << colbit)) != 0) {
-	// 			buffer[bufferIndex++] = (ltextcolor >> 8) & 0xFF; // High byte
-	// 			buffer[bufferIndex++] = ltextcolor & 0xFF;    // Low byte
-	// 		} else {
-	// 			buffer[bufferIndex++] = (ltextbgcolor >> 8) & 0xFF; // High byte
-	// 			buffer[bufferIndex++] = ltextbgcolor & 0xFF;    // Low byte
-	// 		}
-	// 		colbit--;
-	// 		if (colbit < 0) {
-	// 			colbit = 7;
-	// 			fontIndex++;
-	// 			colByte = _FontSelect[fontIndex];
-	// 		}
-	// 	}
-	// }
-
-	// // Set window and write buffer
-	// setAddrWindow(x, y, x + _Font_X_Size - 1, y +_Font_Y_Size - 1);;
-	// spiWriteDataBuffer(buffer, bufferIndex);
-
 	return DisLib16::Success;
 }
 

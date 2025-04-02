@@ -37,11 +37,13 @@ void ST7789_TFT::TFTHWSPIInitialize(void)
 void ST7789_TFT ::TFTPowerDown(void)
 {
 	TFTenableDisplay(false);
+	if (_resetPinOn == true) {
+		DISPLAY_RST_SetLow;
+		DISPLAY_RST_DEINIT;
+	}
 	DISPLAY_DC_SetLow;
-	DISPLAY_RST_SetLow;
 	DISPLAY_CS_SetLow;
 	DISPLAY_DC_DEINIT;
-	DISPLAY_RST_DEINIT;
 	DISPLAY_CS_DEINIT;
 	if (_hardwareSPI == true) {
 		DISPLAY_SCLK_SPI_FUNC_OFF;
@@ -58,62 +60,73 @@ void ST7789_TFT ::TFTPowerDown(void)
 }
 
 /*!
-	@brief: Method for Hardware Reset pin control
+	@brief Method for Hardware Reset pin control
 */
 void ST7789_TFT ::TFTResetPIN() {
+	if (_resetPinOn == false) return;
+	const uint16_t resetDelay = 10; /**< Hardware reset delay in milliseconds  */
 	DISPLAY_RST_SetDigitalOutput;
 	DISPLAY_RST_SetHigh;
-	MILLISEC_DELAY(10);
+	MILLISEC_DELAY(resetDelay);
 	DISPLAY_RST_SetLow;
-	MILLISEC_DELAY(10);
+	MILLISEC_DELAY(resetDelay);
 	DISPLAY_RST_SetHigh;
-	MILLISEC_DELAY(10);
+	MILLISEC_DELAY(resetDelay);
 }
 
 /*!
 	@brief  sets up TFT GPIO
-	@param rst reset GPIO 
+	@param rst reset GPIO, optional pass -1 to disable, see note
 	@param dc data or command GPIO.
 	@param cs chip select GPIO 
 	@param sclk Data clock GPIO  
 	@param din Data to TFT GPIO 
+	@note if -1 is passed for reset pin, software reset is used, if LCD has optional reset pin
 */
 void ST7789_TFT ::setupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_t din)
 {
-	_display_SDATA = din;
-	_display_SCLK = sclk;
 	_display_RST= rst;
 	_display_DC = dc;
 	_display_CS = cs;
+	_display_SDATA = din;
+	_display_SCLK = sclk;
 
-	DISPLAY_SDATA_INIT; 
-	DISPLAY_SCLK_INIT; 
-	DISPLAY_RST_INIT;
+	if (_display_RST == -1 ){
+		_resetPinOn = false;
+	}else{
+		_resetPinOn = true;
+		DISPLAY_RST_INIT;
+	}
 	DISPLAY_DC_INIT; 
 	DISPLAY_CS_INIT; 
+	DISPLAY_SDATA_INIT; 
+	DISPLAY_SCLK_INIT; 
 }
 
 /*!
 	@brief init routine for ST7789 controller
 */
-void ST7789_TFT::TFTST7789Initialize() {
-	TFTResetPIN();
+void ST7789_TFT::TFTST7789Initialize() 
+{
+	if (_resetPinOn == true) TFTResetPIN();
+
 	DISPLAY_DC_SetDigitalOutput;
 	DISPLAY_DC_SetLow;
 	DISPLAY_CS_SetDigitalOutput;
 	DISPLAY_CS_SetHigh;
-if (_hardwareSPI == false)
-{
-	DISPLAY_SCLK_SetDigitalOutput;
-	DISPLAY_SDATA_SetDigitalOutput;
-	DISPLAY_SCLK_SetLow;
-	DISPLAY_SDATA_SetLow;
-}else{
-	TFTHWSPIInitialize();
-}
-	cmd89();
-	AdjustWidthHeight();
-	setRotation(Degrees_0);
+
+	if (_hardwareSPI == false)
+	{
+		DISPLAY_SCLK_SetDigitalOutput;
+		DISPLAY_SDATA_SetDigitalOutput;
+		DISPLAY_SCLK_SetLow;
+		DISPLAY_SDATA_SetLow;
+	}else{
+		TFTHWSPIInitialize();
+	}
+		cmd89();
+		AdjustWidthHeight();
+		setRotation(Degrees_0);
 }
 
 
@@ -294,8 +307,8 @@ void  ST7789_TFT::TFTSwSpiGpioDelaySet(uint16_t CommDelay){_SWSPIGPIODelay = Com
 */
 void ST7789_TFT::cmd89(void)
 {
-	uint8_t CASETsequence[] {0x00, 0x00, uint8_t(_widthStartTFT  >> 8),  uint8_t(_widthStartTFT  & 0xFF)};
-	uint8_t RASETsequence[] {0x00, 0x00, uint8_t(_heightStartTFT >> 8) , uint8_t(_heightStartTFT & 0XFF)};
+	uint8_t CASETsequence[] {0x00, 0x00, 0,  240};
+	uint8_t RASETsequence[] {0x00, 0x00, 320 >> 8 , 320 & 0xFF};
 	
 	writeCommand(ST7789_SWRESET);
 	MILLISEC_DELAY (150);

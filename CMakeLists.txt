@@ -17,7 +17,7 @@ add_compile_options(-Wall -Wextra)
 
 # Tell CMake where to find the executable source file
 add_executable(${PROJECT_NAME} 
-  examples/st7735/hello/main.cpp
+  #examples/st7735/hello/main.cpp
   #examples/st7735/graphics/main.cpp
   #examples/st7735/functions_fps/main.cpp
   #examples/st7735/text/main.cpp
@@ -31,7 +31,7 @@ add_executable(${PROJECT_NAME}
   #examples/st7789/bmp_data/main.cpp
   #examples/st7789/demos/main.cpp
 
-  #examples/ili9341/hello/main.cpp
+  examples/ili9341/hello/main.cpp
   #examples/ili9341/text_graphics_functions/main.cpp
   #examples/ili9341/bmp_data/main.cpp
   #examples/ili9341/demo/main.cpp
