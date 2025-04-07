@@ -10,7 +10,7 @@ mode have some form of local buffered writes already.
 Some examples of SRAM usage for selected display sizes and PICO's. 
 
 | Display size bytes | SRAM PICO | SRAM % used | 
-| ---- | --- | --- | ---- |
+| ---- | --- | --- |
 | 96x64 12,288 | RP2040 264 KB| 5 | 
 | 96x64 12,288 | RP2350 512 KB| 2 | 
 | 240x320 153,600| RP2040 264 KB| 57| 
