@@ -5,9 +5,14 @@
 */
 
 #include <cstdint>
+#include <cstdio>
 
 #pragma once
 
+extern "C" char* sbrk(int incr);
+extern char __StackTop;		// Provided by linker
+
+extern char __bss_end__;	// End of .bss segment
 /*! namespace for common functions and data*/
 namespace DisLib16{
 /*! Enum to define a standard return code for most functions that return failures*/
@@ -29,14 +34,18 @@ enum Ret_Codes_e : uint8_t
 	BitmapSize = 13,             /**< Size of the Bitmap is incorrect: BitmapSize(vertical)!=(w*(h/8),BitmapSize(horizontal)!=(w/8)*h*/
 	BufferSize = 14,             /**< Size of the Buffer is incorrect: BufferSize(vertical)!=(w*(h/8)*/
 	BufferNullptr = 15,          /**< The Buffer data array is an invalid pointer object*/
-	ShapeScreenBounds = 16,      /**< Shape is outside screen bounds, check x and y */
-	IconScreenWidth = 17,        /**< Icon is greater than screen width , check width w value */
-	BitmapDataEmpty = 18,        /**< Empty bitmap span object  */
-	GenericError = 19,           /**< Generic Error */
-	FontDataEmpty = 20,          /**< There is no data in selected font. */
-	MemoryAError = 21           /**<  Memory allocation failure*/
+	BufferEmpty = 16,            /**< Empty buffer object */
+	ShapeScreenBounds = 17,      /**< Shape is outside screen bounds, check x and y */
+	IconScreenWidth = 18,        /**< Icon is greater than screen width , check width w value */
+	BitmapDataEmpty = 19,        /**< Empty bitmap span object  */
+	GenericError = 20,           /**< Generic Error */
+	FontDataEmpty = 21,          /**< There is no data in selected font. */
+	MemoryAError = 22            /**<  Memory allocation failure*/
 };
 
+bool isDebugMode(void);
+void setDebugMode(bool mode);
+void printMemoryUsage(void);
 uint16_t LibraryVersion(void);
 }
 

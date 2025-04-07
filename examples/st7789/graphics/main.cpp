@@ -1,8 +1,8 @@
 /*!
-	@file     main.cpp
-	@author   Gavin Lyons
-	@brief Example cpp file for st7789 library. Graphics methods testing
-	@note  See USER OPTIONS 0-2 in SETUP function
+	@file   main.cpp
+	@author Gavin Lyons
+	@brief  Example cpp file for st7789 library. Graphics methods testing
+	@note   See USER OPTIONS 0-2 in SETUP function
 	@test
 		-# Test901  pixels and lines
 		-# Test902  rectangles
@@ -11,7 +11,7 @@
 		-# Test 906 Dot Grid
 		-# Test 907 Quadrilateral
 		-# Test 908 Ellipse
-		-# Test 909 Draw Arc and draw simple arc
+		-# Test 909 Draw Arc
 		-# Test 910 Draw Line at angle function
 */
 
@@ -279,7 +279,7 @@ void Test908(void) {
 }
 
 void Test909(void) {
-	printf("Test 909 : Drawing Arc: drawArc and drawSimpleArc\n");
+	printf("Test 909 : Drawing Arc: drawArc\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	int16_t centerX = 120;  // X-coordinate of the circle center
 	int16_t centerY = 160;  // Y-coordinate of the circle center
@@ -305,11 +305,6 @@ void Test909(void) {
 	// Draw the fourth quarter (270° to 360°)
 	myTFT.drawArc(centerX, centerY, radius, 5, 270.0f, 360.0f, myTFT.C_MAGENTA);
 	busy_wait_ms(TEST_DELAY5);
-	myTFT.fillScreen(myTFT.C_BLACK);
-
-	// drawSimpleArc :: Draw an arc with a radius of 50, from 0 to 300 degrees
-	myTFT.drawSimpleArc(120, 160, 50, 0.0f, 300.0f, myTFT.C_GREEN);
-	busy_wait_ms(TEST_DELAY2);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
 

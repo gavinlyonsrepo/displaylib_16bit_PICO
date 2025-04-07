@@ -33,8 +33,10 @@ Comment in one path and one path only.
 | text | Text  + fonts | --- |
 | graphics| Graphics | --- |
 | functions_fps| Functions(like rotate, scroll) + FPS tests| --- |
-| bmp_data| 1,16 & 24 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
+| bmp_data| 1,8 16 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
 | demos| A demo showing a gauge | ---|
+| frame_buffer | Testing frame Buffer mode | dislib16_ADVANCED_SCREEN_BUFFER_ENABLE must be enabled user option 2 |
+
 
 ## Software
 
@@ -91,22 +93,20 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 
 ### Bitmap
 
-Functions to support drawing bitmaps, icons & sprites.
+Functions to support drawing bitmaps & sprites.
 
 | Num | Function Name | Colour support | bitmap size Max |  Note |
 | ------ | ------ | ------ | ------ | ------ |
-| 1 | drawIcon | bi-colour | (8 x (0-Max_y)) 128 bytes max  | Data vertically addressed |
-| 2 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
-| 4 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color | 
-| 6 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
+| 1 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally addressed |
+| 2 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
+| 3 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
+| 4 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
 
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
-2. Math in bitmap size column 2-5  assumes 128x128 pixel screen.
-3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 3 - 6  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+2. Math in bitmap size column 1-4 assumes 128x128 pixel screen.
+3. The data array for 1 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
+4. The data array for 2-4  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 
@@ -118,7 +118,7 @@ Connections as setup in main.cpp  test file.
 | 2 | SCLK | GPIO18 |
 | 3 | SDA | GPIO19 |
 | 4 | A0/DC |  GPIO3  |
-| 5 | RESET |   GPIO17 |
+| 5 | RESET |   GPIO4 |
 | 6 | SS/CS |  GPIO2 |
 | 7 | GND | GND |
 | 8 | VCC |  VCC  |

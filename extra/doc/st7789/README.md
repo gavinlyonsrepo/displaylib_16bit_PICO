@@ -33,7 +33,7 @@ Comment in one path and one path only.
 | text | Text  + fonts | --- |
 | graphics| Graphics | --- |
 | functions_fps| Functions(like rotate scroll) + FPS test | --- |
-| bmp_data | 1, 16 & 24 bit colour bitmaps tests + bitmap FPS test | Bitmap data is stored in arrays on PICO |
+| bmp_data | 1,8 16 bit colour bitmaps tests + bitmap FPS test | Bitmap data is stored in arrays on PICO |
 | demos| A demo  | --- |
 
 ## Software
@@ -81,18 +81,16 @@ Functions to support drawing bitmaps,
 
 | Num | Function Name | Colour support | test bitmap data size |  Note |
 | ------ | ------ | ------ | ------ | ------ |
-| 1 | drawIcon | bi-colour | (8 x (0-Max_y))  | Data vertically addressed |
-| 2 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
-| 4 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 5 | drawBitmap24Data  | 24 bit color  | 49152  | Data from array on PICO, Converted by software to 16-bit color|
-| 6 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
+| 1 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally  addressed |
+| 2 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
+| 3 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
+| 4 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
 
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
-2. Math in bitmap size column 2-5  assumes 128x128 bitmap.
-3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 3 and 5 is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+2. Math in bitmap size column assumes 128x128 bitmap.
+3. The data array for 1 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
+4. The data array for 2-4 is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 

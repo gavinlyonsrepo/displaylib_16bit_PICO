@@ -15,6 +15,12 @@
 
 /// @cond
 
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
+#ifndef dislib16_ADVANCED_GRAPHICS_ENABLE 
+	#pragma message("gll: dislib16_ADVANCED_GRAPHICS_ENABLE is not defined. it is required for this demo")
+#endif
 // Section :: setup device
 // Set contrast values at startup, range 0-0xFF
 SSD1331_OLED::Constrast_values_t userContrast = { 0x7A, 0x7A, 0x7A };        //normal mode
@@ -29,9 +35,6 @@ void DemoRadar(uint16_t sweeps);
 //  *** Main ***
 int main() 
 {
-#ifndef dislib16_ADVANCED_GRAPHICS_ENABLE 
-	#pragma message("gll: dislib16_ADVANCED_GRAPHICS_ENABLE is not defined. it is required for this demo")
-#endif
 	SetupHWSPI();
 	DemoRadar(15);
 	EndTests();

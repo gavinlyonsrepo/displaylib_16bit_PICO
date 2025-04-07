@@ -13,15 +13,19 @@
 #include "hardware/spi.h"
 #include "displaylib_16/st7735.hpp"
 
+
 /// @cond
 
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 
 // Section :: Globals 
 ST7735_TFT myTFT;
 
 //  Section ::  Function Headers 
 void Setup(void);  // setup + user options
-void Test100(void);  
+void Test100(void);
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -35,14 +39,11 @@ int main(void)
 
 //  Section ::  Function Space 
 
-/*!
-	@brief setup the TFT :: user options 0-3
-*/
 void Setup(void)
 {
 	stdio_init_all(); // optional for error messages , Initialize chosen serial port, default 38400 baud
 	MILLISEC_DELAY(1000);
-	printf("TFT :: Start\r\n");
+	printf("TFT Start\r\n");
 	
 //*************** USER OPTION 0 SPI_SPEED + TYPE ***********
 	bool bhardwareSPI = true; // true for hardware spi, false for software
@@ -79,9 +80,6 @@ void Setup(void)
 //**********************************************************
 }
 
-/*!
-	@brief print out hello world on TFT
-*/
 void Test100(void) {
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
@@ -93,15 +91,11 @@ void Test100(void) {
 	MILLISEC_DELAY(1000);
 }
 
-/*!
-	@brief  Stop testing and shutdown the TFT
-*/
 void EndTests(void)
 {
 	myTFT.TFTPowerDown(); 
-	printf("TFT :: Tests Over");
+	printf("TFT: Tests Over");
 }
 
-// *************** EOF ****************
 
 /// @endcond

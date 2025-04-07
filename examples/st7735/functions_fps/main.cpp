@@ -6,9 +6,9 @@
 			Also FPS frame rate per second test.
 	@note  See USER OPTIONS 0-3 in SETUP function
 	@test
-		-# Test501  Color
-		-# Test502  scroll
-		-# Test503  Rotate
+		-# Test501 Color
+		-# Test502 scroll
+		-# Test503 Rotate
 		-# Test504 change modes test -> Invert, display on/off and Sleep.
 		-# Test602 FPS frame rate per second test , text
 		-# Test603 FPS frame rate per second test , graphics
@@ -27,6 +27,9 @@
 #define TEST_DELAY1 1000	  // mS
 #define TEST_DELAY2 2000	  // mS
 #define TEST_DELAY5 5000	  // mS
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 
 // Section :: Globals
 ST7735_TFT myTFT;
@@ -47,7 +50,6 @@ void EndTests(void);
 int main(void)
 {
 	Setup();
-	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
 	Test501();
 	Test502();
 	Test503();
@@ -107,6 +109,7 @@ void Setup(void)
 	// ******** USER OPTION 3 PCB_TYPE  **************************
 	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,4 choices,see README
 	//**********************************************************
+	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
 }
 
 void Test501(void)
@@ -222,7 +225,7 @@ void Test504()
 	printf("Test 504-6: Mode Sleep on\r\n");
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTchangeMode(myTFT.TFT_Normal_mode);
-	printf("Test 504-7 Mode Normal\r\n");
+	printf("Test 504-7: Mode Normal\r\n");
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -272,7 +275,6 @@ void Test602(void)
 		// print count
 		myTFT.println("Count:");
 		myTFT.println(count);
-
 		myTFT.println("Testing!");
 		myTFT.println(DisLib16::LibraryVersion());
 		//  ****

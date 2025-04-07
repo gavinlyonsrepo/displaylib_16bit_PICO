@@ -77,18 +77,16 @@ Functions to support drawing bitmaps, icons & sprites.
 
 | Num | Function Name | Colour support | bitmap size Max |  Note |
 | ------ | ------ | ------ | ------ | ------ |
-| 1 | drawIcon | bi-colour | (8 x (0-Max_y)) --  | Data vertically addressed |
-| 2 | drawBitmap | bi-colour | 768 bytes  | Data horizontally  addressed |
-| 3 | drawBitmap8Data | 8 bit color RRRGGGBB  | 6144  | Data from array on PICO, Converted by software to 16-bit color |
-| 4 | drawBitmap16Data | 16 bit color 565  | 12288  | Data from array on PICO |
-| 5 | drawBitmap24Data  | 24 bit color  | 18432  | Data from array on PICO, Converted by software to 16-bit color | 
-| 6 | drawSpriteData  | 16 bit color  565 | 12288 | Data from array on PICO, Draws background color transparent | 
+| 1 | drawBitmap | bi-colour | 768 bytes  | Data horizontally addressed |
+| 2 | drawBitmap8Data | 8 bit color RRRGGGBB  | 6144  | Data from array on PICO, Converted by software to 16-bit color |
+| 3 | drawBitmap16Data | 16 bit color 565  | 12288  | Data from array on PICO |
+| 4 | drawSpriteData  | 16 bit color  565 | 12288 | Data from array on PICO, Draws background color transparent | 
 
 
 1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
-2. Math in bitmap size column 2-6  assumes 96x64 pixel screen.
-3. The data array for 1 and 2 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 3 - 6  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
+2. Math in bitmap size column assumes 96x64 pixel screen.
+3. The data array for 1  is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
+4. The data array for 2-4  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 
 

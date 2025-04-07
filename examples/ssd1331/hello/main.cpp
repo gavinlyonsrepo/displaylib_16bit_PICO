@@ -13,7 +13,9 @@
 #include "displaylib_16/ssd1331.hpp"
 
 /// @cond
-
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 // Section :: setup device
 // Set contrast values at startup, range 0-0xFF
 SSD1331_OLED::Constrast_values_t userContrast = { 0x7D, 0x7D, 0x7D };        //normal mode

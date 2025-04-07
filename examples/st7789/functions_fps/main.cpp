@@ -27,6 +27,9 @@
 #define TEST_DELAY1 1000	  // mS
 #define TEST_DELAY2 2000	  // mS
 #define TEST_DELAY5 5000	  // mS
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 
 // Section :: Globals
 ST7789_TFT myTFT;

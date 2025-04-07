@@ -4,8 +4,8 @@
 	@author Gavin Lyons.
 	@note   See USER OPTIONS 0-2 in SETUP function and in myOLED constructor
 	@test 
-		-# Test 300 Sprites, icons, small bitmap
-		-# Test 303 24 bit color image bitmap from data array
+		-# Test 300 Sprites, small bitmaps
+		-# Test 303 16 bit color image bitmap from data array
 		-# Test 500 RGB color OK?
 		-# Test 501 change modes test -> Invert, display on/off and Sleep.
 		-# Test 502 Rotate
@@ -31,11 +31,13 @@ SSD1331_OLED myOLED(SSD1331_OLED::COLORORDER_RGB, userContrast, userDimContrast)
 #define TEST_DELAY5 5000
 #define TEST_DELAY2 2000
 #define TEST_DELAY  1000
-
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 //  Section ::  Function Headers 
 void SetupHWSPI(void); // setup + user options for hardware SPI
 void Test300(void);
-void Test303(void); // 24 color bitmap
+void Test303(void);
 void Test500(void);
 void Test501(void);
 void Test502(void);
@@ -104,12 +106,12 @@ void SetupHWSPI(void)
 
 void Test300(void){
 	myOLED.fillScreen(myOLED.C_BLACK);
-	myOLED.drawIcon(2, 2, 16, myOLED.C_BLACK, myOLED.C_WHITE, SignalIcon);
-	myOLED.drawIcon(20, 2, 16, myOLED.C_BLACK, myOLED.C_WHITE, MsgIcon);
-	myOLED.drawIcon(40, 2, 8, myOLED.C_BLACK, myOLED.C_WHITE, AlarmIcon);
-	myOLED.drawIcon(80, 2, 16, myOLED.C_BLACK, myOLED.C_WHITE, BatIcon);
-	myOLED.drawIcon(5, 20, 12, myOLED.C_GREEN, myOLED.C_BLACK, powerIcon);
-	myOLED.drawIcon(20, 20, 12, myOLED.C_RED, myOLED.C_YELLOW, speedIcon);
+	myOLED.drawBitmap(2,  2,  16, 8, myOLED.C_BLACK, myOLED.C_WHITE,  SignalIcon);
+	myOLED.drawBitmap(20, 2,  16, 8, myOLED.C_BLACK, myOLED.C_WHITE,  MsgIcon);
+	myOLED.drawBitmap(40, 2,  8,  8, myOLED.C_BLACK, myOLED.C_WHITE,  AlarmIcon);
+	myOLED.drawBitmap(80, 2,  16, 8, myOLED.C_BLACK, myOLED.C_WHITE,  BatIcon);
+	myOLED.drawBitmap(5,  20, 16, 8, myOLED.C_GREEN, myOLED.C_BLACK,  powerIcon);
+	myOLED.drawBitmap(20, 20, 16, 8, myOLED.C_RED,   myOLED.C_YELLOW, speedIcon);
 	MILLISEC_DELAY(5000);
 
 	myOLED.drawSpriteData(5, 5, sSpriteTest16, 32, 32, myOLED.C_LBLUE, false);
@@ -126,7 +128,7 @@ void Test300(void){
 }
 
 void Test303(void){
-	myOLED.drawBitmap24Data(0, 0, sPosterImage, 80, 48);
+	myOLED.drawBitmap16Data(0, 0, sPosterImage, 80, 48);
 	MILLISEC_DELAY(5000);
 	myOLED.fillScreen(myOLED.C_BLACK);
 }

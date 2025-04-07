@@ -12,7 +12,7 @@
 		-# Test 906 Dot Grid
 		-# Test 907 Quadrilateral
 		-# Test 908 Ellipse
-		-# Test 909 Draw Arc and draw simple arc
+		-# Test 909 Draw Arc
 		-# Test 910 Draw Line at angle function
 */
 
@@ -29,12 +29,14 @@
 #define TEST_DELAY1 1000	  // mS
 #define TEST_DELAY2 2000	  // mS
 #define TEST_DELAY5 5000	  // mS
-
-	uint16_t TFT_WIDTH = 128;  // Screen width in pixels
-	uint16_t TFT_HEIGHT = 128; // Screen height in pixels
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 
 // Section :: Globals
 ST7735_TFT myTFT;
+uint16_t TFT_WIDTH = 128;  // Screen width in pixels
+uint16_t TFT_HEIGHT = 128; // Screen height in pixels
 
 //  Section ::  Function Headers
 
@@ -231,7 +233,7 @@ void Test908(void) {
 }
 
 void Test909(void) {
-	printf("Test 909 : Drawing Arc: drawArc and drawSimpleArc\n");
+	printf("Test 909 : Drawing Arc: drawArc \n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	int16_t centerX = 50;  // X-coordinate of the circle center
 	int16_t centerY = 50;  // Y-coordinate of the circle center
@@ -257,11 +259,6 @@ void Test909(void) {
 	// Draw the fourth quarter (270° to 360°)
 	myTFT.drawArc(centerX, centerY, radius, 5, 270.0f, 360.0f, myTFT.C_MAGENTA);
 	busy_wait_ms(TEST_DELAY5);
-	myTFT.fillScreen(myTFT.C_BLACK);
-
-	// drawSimpleArc :: Draw an arc with a radius of 50, from 0 to 300 degrees
-	myTFT.drawSimpleArc(50, 50, 45, 0.0f, 300.0f, myTFT.C_GREEN);
-	busy_wait_ms(TEST_DELAY2);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
 

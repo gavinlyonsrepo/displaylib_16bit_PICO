@@ -13,6 +13,7 @@
     * [Advanced Graphics](#advanced-graphics)
     * [Test](#test)
     * [Print](#print)
+    * [Advanced buffer mode](#Advanced-buffer-mode)
     * [File-system](#file-system)
     * [Error Codes](#error-codes)
   * [Notes](#notes)
@@ -50,7 +51,7 @@
 | ST7789 |16 bit Colour Graphic TFT LCD|SPI HW & SW| [Readme](extra/doc/st7789/README.md)|
 | ST7735 |16 bit Colour Graphic TFT LCD|SPI HW & SW| [Readme](extra/doc/st7735/README.md)|
 | SSD1331|16 bit Colour Graphic OLED |SPI HW & SW  | [Readme](extra/doc/ssd1331/README.md)|
-| ili9341 |16 bit Colour Graphic TFT LCD |SPI HW & SW  | [Readme](extra/doc/ili9341/README.md)|
+| ILI9341 |16 bit Colour Graphic TFT LCD |SPI HW & SW  | [Readme](extra/doc/ili9341/README.md)|
 
 ### API Documentation
 
@@ -76,6 +77,11 @@ comment out line 19 #define ADVANCED_GRAPHICS_ENABLE in displaylib_16_graphics.h
 This will disable advanced graphics mode. If this is disabled some examples and demos 
 may not work fully or even compile. 
 
+### Advanced buffer mode
+
+Advanced buffer mode. There is advanded buffer mode where the code writes to a global screen buffer instead of the VRAM of display. It is off by default more details at readme, 
+which is in the 'doc' folder [at link.](extra/doc/buffer_mode/README.md)
+
 ### Test
 
 There are multiple examples for each device,
@@ -89,6 +95,8 @@ The print class can print integers, floats, characters, character arrays
 and C++ std::strings. It can also format floating point numbers to a number of 
 decimal places. and format integers in different base number systems.
 Support for other data types can be added. 
+
+
 
 ### File system
 

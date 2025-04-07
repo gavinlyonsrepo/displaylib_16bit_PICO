@@ -33,3 +33,5 @@
 	* Added support for 8-bit images(RRRGGGBB). These take up much less space
 		in memory at expense of color resolution.
 
+* Version 2.1.0 April 2025
+	* Added Frame buffer mode

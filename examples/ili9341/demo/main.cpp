@@ -14,6 +14,10 @@
 
 /// @cond
 
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
+
 // Section :: Globals 
 ILI9341_TFT myTFT;
 

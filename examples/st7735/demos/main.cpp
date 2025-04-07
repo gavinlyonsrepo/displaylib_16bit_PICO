@@ -18,7 +18,12 @@
 
 /// @cond
 
-
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
+#ifndef dislib16_ADVANCED_GRAPHICS_ENABLE 
+#pragma message("gll: dislib16_ADVANCED_GRAPHICS_ENABLE is not defined. it is required for this demo")
+#endif
 // Section :: Globals 
 ST7735_TFT myTFT;
 
@@ -34,9 +39,7 @@ void drawPointer(int16_t &val, int16_t &oldVal , uint8_t x, uint8_t y, uint8_t r
 //  Section ::  MAIN loop
 int main(void) 
 {
-	#ifndef dislib16_ADVANCED_GRAPHICS_ENABLE 
-		#pragma message("gll: dislib16_ADVANCED_GRAPHICS_ENABLE is not defined. it is required for this demo")
-	#endif
+
 	Setup();
 	arcGauge(200);
 	EndTests();
@@ -102,6 +105,7 @@ void EndTests(void)
 //demo 4
 void arcGauge(uint16_t countLimit)
 {
+	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_BLACK);
 	printf("Arc Demo ends at : %u\n", countLimit);
 	int16_t currentValue = 150;
@@ -173,7 +177,6 @@ void drawGaugeMarkers(uint8_t centerX, uint8_t centerY, uint8_t radius, int star
 void drawPointer(int16_t &currentValue, int16_t &oldValue, uint8_t x, uint8_t y, uint8_t r, uint16_t colour, uint16_t bcolour) 
 {
 	uint8_t i;
-	// If the current value is increasing
 	if (currentValue > oldValue) 
 	{
 		// Incrementally move the pointer from oldValue to currentValue
@@ -191,7 +194,7 @@ void drawPointer(int16_t &currentValue, int16_t &oldValue, uint8_t x, uint8_t y,
 			}
 		}
 	}
-	else // If the current value is decreasing
+	else 
 	{
 		// Decrementally move the pointer from oldValue to currentValue
 		for (i = oldValue; i >= currentValue; i--) 
@@ -215,9 +218,8 @@ void drawPointerHelper(int16_t value, uint8_t centerX, uint8_t centerY, uint8_t 
 	float angleRad, pointerX, pointerY;
 	int16_t minValue = 0;
 	int16_t maxValue = 255;
-	int startAngle = 150; // Gauge starting angle in degrees
-	int endAngle = 240;   // Gauge ending angle in degrees
-	// Ensure the value stays within the valid range
+	int startAngle = 150;
+	int endAngle = 240;
 	if (value > maxValue) value = maxValue;
 	if (value < minValue) value = minValue;
 	// Map value to an angle in radians based on the gauge range
@@ -228,7 +230,6 @@ void drawPointerHelper(int16_t value, uint8_t centerX, uint8_t centerY, uint8_t 
 	pointerY = sin(angleRad) * (radius / 1.35);
 	// Draw the pointer line from the center to the calculated tip position
 	myTFT.drawLine(centerX, centerY, 1 + centerX + pointerX, 1 + centerY + pointerY, pointerColor);
-	// Draw a small circle to represent the pointer base
 	myTFT.fillCircle(centerX, centerY, 2, pointerColor);
 }
 /// @endcond

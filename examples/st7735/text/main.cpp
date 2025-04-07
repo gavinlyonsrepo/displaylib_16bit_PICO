@@ -2,14 +2,8 @@
 	@file main.cpp
 	@brief Library test file, st7735,  tests text & fonts.
 	@author Gavin Lyons.
-	@note See USER OPTIONS 0-3 in SETUP function
-	@details For this test file to work fully the optional fonts 9-12 
-		must be enabled which they are by default.
-		User can disable these fonts by commenting out the following defines
-		-# _font.hpp file_DISPLAY_OPTIONAL_FONT_9 for font 9
-		-# _font.hpp file_DISPLAY_OPTIONAL_FONT_10 for font 10
-		-# _font.hpp file_DISPLAY_OPTIONAL_FONT_11 for font 11
-		-# _font.hpp file_DISPLAY_OPTIONAL_FONT_12 for font 12
+	@note See USER OPTIONS 0-3 in SETUP function, 
+		to enable all tests , comment in define dislib16_ADVANCED_FONTS_ENABLE in *Font.hpp
 	@test
 	-# Test 701 print out fonts 1-12
 	-# Test 702 defined 16-bit Colors, text
@@ -36,7 +30,9 @@
 #define TEST_DELAY1 1000	  // mS
 #define TEST_DELAY2 2000	  // mS
 #define TEST_DELAY5 5000	  // mS
-
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+#pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
+#endif
 // Section :: Globals
 ST7735_TFT myTFT;
 
