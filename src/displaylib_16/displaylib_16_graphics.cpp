@@ -1854,7 +1854,7 @@ float displaylib_16_graphics::sineFromDegrees(float angle)
 	@brief Allocates memory for the screen buffer based on display resolution.
 		The buffer size is calculated as width × height × 2 bytes (RGB565 format).
 		If allocation fails, it returns a memory allocation error.
-		In debug mode, it prints the allocated buffer size and current memory usage.
+		In debug mode, it prints the allocated buffer size.
 	@return DisLib16::Success on successful allocation,
 			DisLib16::MemoryAError if allocation fails.
 */
