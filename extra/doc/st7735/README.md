@@ -33,7 +33,7 @@ Comment in one path and one path only.
 | text | Text  + fonts | --- |
 | graphics| Graphics | --- |
 | functions_fps| Functions(like rotate, scroll) + FPS tests| --- |
-| bmp_data| 1,8 16 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
+| bmp_data| 1,8 & 16 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
 | demos| A demo showing a gauge | ---|
 | frame_buffer | Testing frame Buffer mode | dislib16_ADVANCED_SCREEN_BUFFER_ENABLE must be enabled user option 2 |
 

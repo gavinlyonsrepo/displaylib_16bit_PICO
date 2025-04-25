@@ -1,4 +1,4 @@
-[![Used in Super-Mario-Pico](https://img.shields.io/badge/Used%20by-Super--Mario--Pico-red)](https://github.com/tansiret/Super-Mario-Pico)
+
 [![Website](https://img.shields.io/badge/Website-Link-blue.svg)](https://gavinlyonsrepo.github.io/)  [![Rss](https://img.shields.io/badge/Subscribe-RSS-yellow.svg)](https://gavinlyonsrepo.github.io//feed.xml)  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
 
 # Display Library for 16-bit color graphic displays for Raspberry PI PICO
@@ -116,7 +116,6 @@ Error messages are outputted to console at 38400 baud.
 
 * [**Super-Mario-Pico**](https://github.com/tansiret/Super-Mario-Pico):  
 	A Super Mario Bros demo game for the Raspberry Pi Pico that uses this library to drive a 16-bit TFT display.
-
 
 ### Older versions
 

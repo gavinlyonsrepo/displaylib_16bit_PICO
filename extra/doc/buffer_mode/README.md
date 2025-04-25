@@ -1,5 +1,7 @@
 # Advanced Buffer Mode Readme
 
+This mode was added in Version 2.1.0. 
+
 Advanced buffer mode allows the library to write to a global screen buffer (`_screenBuffer`) instead of directly writing to the VRAM of the display. This mode is off by default but can be enabled for specific use cases where buffering is advantageous.
 
 Advanced buffer mode offers several key benefits. It enables double buffering, where all drawing operations are first performed in memory and then written to the display in a single operation. With batch drawing, multiple graphics operations can be completed before updating the screen, improving rendering efficiency. The memory-resident buffer also allows for custom effects like fading or blending to be applied before display. Additionally, since memory operations are faster than direct display writes, this approach leads to optimized performance for applications with frequent updates.
@@ -34,7 +36,7 @@ VRAM of display.
 
 1. drawPixel()
 2. All Bitmap functions.
-3. All Draw text functions IF **textCharPixelOrBuffer = true** 
+3. All Draw text functions only IF **textCharPixelOrBuffer = true** 
 
 The situation with graphic functions is complicated as some use 
 fast draw methods of drawFastVLine() and drawFastHLine().

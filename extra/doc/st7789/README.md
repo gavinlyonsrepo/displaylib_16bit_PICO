@@ -33,7 +33,7 @@ Comment in one path and one path only.
 | text | Text  + fonts | --- |
 | graphics| Graphics | --- |
 | functions_fps| Functions(like rotate scroll) + FPS test | --- |
-| bmp_data | 1,8 16 bit colour bitmaps tests + bitmap FPS test | Bitmap data is stored in arrays on PICO |
+| bmp_data | 1,8 & 16 bit colour bitmaps tests + bitmap FPS test | Bitmap data is stored in arrays on PICO |
 | demos| A demo  | --- |
 
 ## Software
