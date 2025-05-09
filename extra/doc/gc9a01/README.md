@@ -1,4 +1,4 @@
-# ST7735 Readme
+# GC9A01A Readme
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
 
@@ -98,7 +98,7 @@ Functions to support drawing bitmaps & sprites.
 
 ## Hardware
 
-[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/images/gc.png)
+[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc.png)
 
 Connections as setup in main.cpp test file.
 
@@ -119,4 +119,4 @@ Connections as setup in main.cpp test file.
 
 ## Output
 
-[![ Demo pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/images/gc2.jpg)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)
+[![ Demo pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)
