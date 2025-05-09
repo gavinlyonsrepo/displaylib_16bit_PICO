@@ -1,8 +1,8 @@
 /*!
 	@file   main.cpp
 	@author Gavin Lyons
-	@brief  Example cpp file for ili9341library. Tests  frame buffer mode
-	@note   See USER OPTIONS 0-3 in SETUP function
+	@brief  Example cpp file for ili9341 library. Tests  frame buffer mode
+	@note   See USER OPTIONS 0-2 in SETUP function
 			dislib16_ADVANCED_SCREEN_BUFFER_ENABLE must be enabled for this example
 			or it will not compile 
 	@test

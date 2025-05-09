@@ -34,4 +34,7 @@
 		in memory at expense of color resolution.
 
 * Version 2.1.0 April 2025
-	* Added Frame buffer mode
+	* Added Frame buffer mode, see github issue 8 for more details.
+
+* Version 2.2.0 May 2025
+	* Added support for GC9A01 TFT LCD.

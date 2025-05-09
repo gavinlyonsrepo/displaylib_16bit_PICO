@@ -44,3 +44,6 @@ and fillRectBuffer uses a local buffer in function to write to display VRAM.
 So depending on the graphic function code may write to screenBuffer and/or VRAM. 
 Note fillRectBuffer is wrapped by fillScreen.
 
+## Examples
+
+There are examples for Advanced buffer mode for st7735 , gc9a01 and ili9341. There are called "frame_buffer".

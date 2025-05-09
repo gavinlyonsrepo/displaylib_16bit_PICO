@@ -43,6 +43,13 @@ add_executable(${PROJECT_NAME}
   #examples/ssd1331/hello/main.cpp
   #examples/ssd1331/demo/main.cpp
   #examples/ssd1331/bitmap_functions/main.cpp
+
+  #examples/gc9a01/hello/main.cpp
+  #examples/gc9a01/frame_buffer/main.cpp
+  #examples/gc9a01/demos/main.cpp
+  #examples/gc9a01/bmp_data/main.cpp
+  #examples/gc9a01/text_graphics_functions/main.cpp
+  
 )
 
 # Create map/bin/hex/uf2 files
@@ -55,6 +62,7 @@ target_sources(pico_displaylib_16 INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/st7789.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/ili9341.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/ssd1331.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/gc9a01.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_graphics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_Print.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_Font.cpp

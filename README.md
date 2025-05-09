@@ -1,4 +1,3 @@
-
 [![Website](https://img.shields.io/badge/Website-Link-blue.svg)](https://gavinlyonsrepo.github.io/)  [![Rss](https://img.shields.io/badge/Subscribe-RSS-yellow.svg)](https://gavinlyonsrepo.github.io//feed.xml)  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/whitelight976)
 
 # Display Library for 16-bit color graphic displays for Raspberry PI PICO
@@ -12,9 +11,9 @@
     * [Fonts](#fonts)
   * [Software](#software)
     * [Advanced Graphics](#advanced-graphics)
-    * [Advanced buffer mode](#Advanced-buffer-mode)
     * [Test](#test)
     * [Print](#print)
+    * [Advanced buffer mode](#Advanced-buffer-mode)
     * [File-system](#file-system)
     * [Error Codes](#error-codes)
   * [Notes](#notes)
@@ -54,6 +53,7 @@
 | ST7735 |16 bit Colour Graphic TFT LCD|SPI HW & SW| [Readme](extra/doc/st7735/README.md)|
 | SSD1331|16 bit Colour Graphic OLED |SPI HW & SW  | [Readme](extra/doc/ssd1331/README.md)|
 | ILI9341 |16 bit Colour Graphic TFT LCD |SPI HW & SW  | [Readme](extra/doc/ili9341/README.md)|
+| GC9A01 |16 bit Colour Graphic TFT LCD |SPI HW & SW  | [Readme](extra/doc/gc9a01/README.md)|
 
 ### API Documentation
 
@@ -69,7 +69,7 @@ The font system readme is in the 'doc' folder [at link.](extra/doc/fonts/README.
 ### Advanced Graphics
 
 There is an advanced graphics modes in library.
-Standard graphics supports drawing lines, pixels  
+Standard graphics supports drawing lines, pixels
 rectangles, triangles, circles and rounded rectangles.
 Advanced graphics supports drawing polygons, dot grid, quadrilaterals, 
 arcs, ellipses and lines at an angle. 
@@ -81,7 +81,7 @@ may not work fully or even compile.
 
 ### Advanced buffer mode
 
-Advanced buffer mode. There is advanded buffer mode where the code writes to a global screen buffer instead of the VRAM of display. It is off by default more details at readme, 
+Advanced buffer mode. There is advanced buffer mode where the code writes to a global screen buffer instead of the VRAM of display. It is off by default more details at readme, 
 which is in the 'doc' folder [at link.](extra/doc/buffer_mode/README.md)
 
 ### Test
@@ -97,6 +97,8 @@ The print class can print integers, floats, characters, character arrays
 and C++ std::strings. It can also format floating point numbers to a number of 
 decimal places. and format integers in different base number systems.
 Support for other data types can be added. 
+
+
 
 ### File system
 

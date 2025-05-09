@@ -360,27 +360,30 @@ void ST7789_TFT::AdjustWidthHeight() {
   @brief SPI displays set an address window rectangle for blitting pixels
   @param  x0 Top left corner x coordinate
   @param  y0  Top left corner y coordinate
-  @param  x1  Width of window
-  @param  y1  Height of window
+  @param  x1  Bottom-right x coordinate
+  @param  y1  Bottom-right y coordinate
   @note https://en.wikipedia.org/wiki/Bit_blit
  */
 void ST7789_TFT::setAddrWindow(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
 {
-	uint8_t x0Higher = (x0 >> 8) + _XStart;
-	uint8_t x0Lower  = (x0 &  0xFF) + _XStart;
-	uint8_t y0Higher = (y0 >> 8) + _YStart;
-	uint8_t y0Lower  = (y0 &  0xFF) + _YStart;
-	uint8_t x1Higher = (x1 >> 8) + _XStart;
-	uint8_t x1Lower  = (x1 &  0xFF) + _XStart;
-	uint8_t y1Higher = (y1 >> 8) + _YStart;
-	uint8_t y1Lower  = (y1 &  0xFF) + _YStart;
-	uint8_t seqCASET[]    {x0Higher ,x0Lower,x1Higher,x1Lower};
-	uint8_t seqRASET[]    {y0Higher,y0Lower,y1Higher,y1Lower};
-	writeCommand(ST7789_CASET); //Column address set
+	uint16_t x0_ = x0 + _XStart;
+	uint16_t x1_ = x1 + _XStart;
+	uint16_t y0_ = y0 + _YStart;
+	uint16_t y1_ = y1 + _YStart;
+	uint8_t seqCASET[] = {
+		(uint8_t)(x0_ >> 8), (uint8_t)(x0_ & 0xFF),
+		(uint8_t)(x1_ >> 8), (uint8_t)(x1_ & 0xFF)
+	};
+	uint8_t seqRASET[] = {
+		(uint8_t)(y0_ >> 8), (uint8_t)(y0_ & 0xFF),
+		(uint8_t)(y1_ >> 8), (uint8_t)(y1_ & 0xFF)
+	};
+
+	writeCommand(ST7789_CASET); // Column address set
 	spiWriteDataBuffer(seqCASET, sizeof(seqCASET));
-	writeCommand(ST7789_RASET); //Row address set
+	writeCommand(ST7789_RASET); // Row address set
 	spiWriteDataBuffer(seqRASET, sizeof(seqRASET));
-	writeCommand(ST7789_RAMWR); // Write to RAM*/
+	writeCommand(ST7789_RAMWR); // Write to RAM
 }
 
 /*!
