@@ -98,19 +98,19 @@ Functions to support drawing bitmaps & sprites.
 
 ## Hardware
 
-[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc.png)
+[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc1.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc1.png)
 
 Connections as setup in main.cpp test file.
 
 | Pin desc |  HW SPI |
 | --- | --- |
-| VCC |  3.3 VCC  |
 | GND Ground | GND |
-| SDA Data in | GPIO 19 |
+| VCC |  3.3 VCC  |
 | SCL Clock | GPIO 18 |
-| CS Chip select | GPIO 2 |
-| DC Data or command | GPIO 3  |
+| SDA Data in | GPIO 19 |
 | RST Reset| GPIO 4 |
+| DC Data or command | GPIO 3  |
+| CS Chip select | GPIO 2 |
 | BL Backlight  | VCC |
 
 1. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
