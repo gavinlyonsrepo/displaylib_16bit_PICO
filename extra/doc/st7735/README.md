@@ -128,6 +128,8 @@ Connections as setup in main.cpp  test file.
 3. You can connect VCC to 5V if there is a 3.3 volt regulator on back of TFT module.
 4. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 5. Backlight on/off control is left to user.
+6. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO() function
+   and ground the CS pin on device side.
 
 ## Output
 

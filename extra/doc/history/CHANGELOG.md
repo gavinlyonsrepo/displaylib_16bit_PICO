@@ -38,3 +38,6 @@
 
 * Version 2.2.0 May 2025
 	* Added support for GC9A01 TFT LCD.
+
+* Version 2.3.0 June 2025
+	* Added support for optional CS pin on displays, see github issue 9 for more details.

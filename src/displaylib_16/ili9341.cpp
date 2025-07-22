@@ -97,11 +97,19 @@ void ILI9341_TFT::ILI9341Initialize()
 		DISPLAY_SDATA_SPI_FUNC;
 		DISPLAY_SCLK_SPI_FUNC;
 		// Set SPI format
-		spi_set_format( _pspiInterface,   // SPI instance
-						8,      // Number of bits per transfer
-						SPI_CPOL_0,      // Polarity (CPOL)
-						SPI_CPHA_0,      // Phase (CPHA)
-						SPI_MSB_FIRST);
+		if(_display_CS > -1) {
+			spi_set_format( _pspiInterface,   // SPI instance
+							8,      // Number of bits per transfer
+							SPI_CPOL_0,      // Polarity (CPOL)
+							SPI_CPHA_0,      // Phase (CPHA)
+							SPI_MSB_FIRST);
+		} else {
+			spi_set_format( _pspiInterface,   // SPI instance
+							8,      // Number of bits per transfer
+							SPI_CPOL_1,      // Polarity (CPOL)
+							SPI_CPHA_1,      // Phase (CPHA)
+							SPI_MSB_FIRST);
+		}
 	}
 	cmdInit();
 }

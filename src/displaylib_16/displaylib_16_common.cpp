@@ -13,7 +13,7 @@ namespace DisLib16
 	@brief  get the library version number
 	@return the library version number eg 120 = 1.2.0
 */
-uint16_t LibraryVersion(void){return 220;}
+uint16_t LibraryVersion(void){return 230;}
 
 bool _debugMode = false; /**< false default , true debug on  */
 

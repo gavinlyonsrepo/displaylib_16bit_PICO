@@ -98,7 +98,7 @@ Connections as setup in main.cpp test file.
 | --- | --- | --- | --- |
 | 1 | VCC | VCC | 3.3 or 5V ,CAUTION your display must have 3.3V regulator on back to connect to 5V |
 | 2 | GND | GND | |
-| 3 | CS | SPICE0 |TFT Chip select |
+| 3 | CS | SPICE0 |TFT Chip select , see point 4 at bottom of table |
 | 4 | RESET | GPIO25 |Reset, Use any GPIO for this, If no reset pin, pass -1 in here & display will use software rst|
 | 5 | DC | GPIO24 | Data or command, Use any GPIO for this line |
 | 6 | SDI(MOSI) | SPIMOSI | |
@@ -116,7 +116,9 @@ Connections as setup in main.cpp test file.
 2. LED Backlight control is left to user.
 3. Pins marked with T_ prefix are related to the touchscreen IC XP2046 if user is not using the touch
 screen do not connect these. The touch screen and TFT share the SPI bus but have different chip select lines. TFT SPI settings(Speed, active chip select) should be refreshed after ever read cycle of XPT2046 sensor, see example.
-
+4. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()functions
+   and ground the CS pin on device side.
+ 
 ## Output
 
 Four-Byte Burger 240x320 16-bit bitmap test image, Credits [Ahoy](https://www.youtube.com/watch?v=i4EFkspO5p4)

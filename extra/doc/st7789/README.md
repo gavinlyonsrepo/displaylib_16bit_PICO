@@ -113,9 +113,22 @@ Connections as setup in main.cpp  test file.
 4. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 5. Backlight on/off control is left to user.
 6. If no reset pin on display or hat, pass -1 as argument to disable.
+7. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()function
+   and ground the CS pin on device side.
 
 ## Output
 
 [![output pic](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/st7789output.jpg)](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/st7789output.jpg)
 
+## Notes
 
+### Display offsets
+
+The display initialisation requires an offset calculation which differs for different size and resolution displays.
+This is in the code(Function AdjustWidthHeight()) but the many different size displays are not available for testing or dealt with.
+If using a display other than 240x320(the default and size of ST7789 VRAM) and if user finds they cannot address all screen
+or their data is offset. Try Setting the pixel width and height of your screen to 240X320 and do not write as 
+much as possible to the part of the Video RAM you cannot see.
+For example  if you have a 240X280 display in 0 degree rotation
+1. Set pixel Width = 240 and pixel height = 320
+2. Do not write to the missing 40 pixels in the Y-axis, you still can but it is inefficient.

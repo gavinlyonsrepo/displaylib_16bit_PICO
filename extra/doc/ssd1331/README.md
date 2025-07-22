@@ -106,6 +106,8 @@ Connections as setup in main.cpp test file.
 
 1. Pick any GPIO you want for SW SPI,  for HW SPI: reset and DC lines are flexible.
 2. User can select  SPI_CE0  or SPI_CE1 for HW SPI
+3. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()function
+   and ground the CS pin on device side.
 
 [![Image SSD](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/ssd1331.jpg)](https://github.com/gavinlyonsrepo/Display_Lib_RPI/blob/main/extra/images/ssd1331.jpg)
 

@@ -52,14 +52,14 @@ uint16_t LibraryVersion(void);
 // GPIO	Abstractions , for portability purposes
 #define DISPLAY_DC_INIT gpio_init(_display_DC)
 #define DISPLAY_RST_INIT gpio_init(_display_RST)
-#define DISPLAY_CS_INIT gpio_init(_display_CS)
+#define DISPLAY_CS_INIT if(_display_CS > -1) { gpio_init(_display_CS); }
 #define DISPLAY_SCLK_INIT gpio_init(_display_SCLK)
 #define DISPLAY_SDATA_INIT gpio_init(_display_SDATA)
 #define DISPLAY_MISO_INIT gpio_init(_display_MISO)
 
 #define DISPLAY_DC_DEINIT gpio_deinit(_display_DC)
 #define DISPLAY_RST_DEINIT gpio_deinit(_display_RST)
-#define DISPLAY_CS_DEINIT gpio_deinit(_display_CS)
+#define DISPLAY_CS_DEINIT if(_display_CS > -1) { gpio_deinit(_display_CS); }
 #define DISPLAY_SCLK_DEINIT gpio_deinit(_display_SCLK)
 #define DISPLAY_SDATA_DEINIT gpio_deinit(_display_SDATA)
 #define DISPLAY_MISO_DEINIT gpio_deinit(_display_MISO)
@@ -68,8 +68,8 @@ uint16_t LibraryVersion(void);
 #define DISPLAY_DC_SetLow gpio_put(_display_DC, false)
 #define DISPLAY_RST_SetHigh gpio_put(_display_RST, true)
 #define DISPLAY_RST_SetLow gpio_put(_display_RST, false)
-#define DISPLAY_CS_SetHigh gpio_put(_display_CS, true)
-#define DISPLAY_CS_SetLow gpio_put(_display_CS, false)
+#define DISPLAY_CS_SetHigh if(_display_CS > -1) { gpio_put(_display_CS, true); }
+#define DISPLAY_CS_SetLow if(_display_CS > -1) { gpio_put(_display_CS, false); }
 #define DISPLAY_SCLK_SetHigh gpio_put(_display_SCLK, true)
 #define DISPLAY_SCLK_SetLow gpio_put(_display_SCLK, false)
 #define DISPLAY_SDATA_SetHigh gpio_put(_display_SDATA, true)
@@ -77,7 +77,7 @@ uint16_t LibraryVersion(void);
 
 #define DISPLAY_DC_SetDigitalOutput gpio_set_dir(_display_DC, GPIO_OUT)
 #define DISPLAY_RST_SetDigitalOutput gpio_set_dir(_display_RST, GPIO_OUT)
-#define DISPLAY_CS_SetDigitalOutput gpio_set_dir(_display_CS, GPIO_OUT)
+#define DISPLAY_CS_SetDigitalOutput if(_display_CS > -1) { gpio_set_dir(_display_CS, GPIO_OUT); }
 #define DISPLAY_SCLK_SetDigitalOutput gpio_set_dir(_display_SCLK, GPIO_OUT)
 #define DISPLAY_SDATA_SetDigitalOutput gpio_set_dir(_display_SDATA, GPIO_OUT)
 

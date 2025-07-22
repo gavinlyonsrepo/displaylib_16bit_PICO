@@ -116,7 +116,9 @@ Connections as setup in main.cpp test file.
 1. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 2. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 3. Backlight on/off control is left to user.
-
+4. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()functions
+   and ground the CS pin on device side.
+   
 ## Output
 
 [![ Demo pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)
