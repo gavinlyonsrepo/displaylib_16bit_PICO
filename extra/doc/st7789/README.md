@@ -13,6 +13,8 @@
       * [Bitmap](#bitmap)
   * [Hardware](#hardware)
   * [Output](#output)
+  * [Notes](#notes)
+     * [Display offsets](#display-offsets)
 
 ## Overview
 
@@ -126,9 +128,15 @@ Connections as setup in main.cpp  test file.
 
 The display initialisation requires an offset calculation which differs for different size and resolution displays.
 This is in the code(Function AdjustWidthHeight()) but the many different size displays are not available for testing or dealt with.
-If using a display other than 240x320(the default and size of ST7789 VRAM) and if user finds they cannot address all screen
+If using a display other than 240x320(the default and size of ST7789 video ram , VRAM) and if user finds they cannot address all screen
 or their data is offset. Try Setting the pixel width and height of your screen to 240X320 and do not write as 
-much as possible to the part of the Video RAM you cannot see.
-For example  if you have a 240X280 display in 0 degree rotation
+much as possible to the part of the VRAM you cannot see.
+For example  if you have a 240X280 display in 0 degree rotation, the VRAM is same for ALL displays sizes.
 1. Set pixel Width = 240 and pixel height = 320
 2. Do not write to the missing 40 pixels in the Y-axis, you still can but it is inefficient.
+
+[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/offset_st7789.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/offset_st7789.png)
+
+Also if you have a 240x135 size display and you see the issue described in 
+[github issue 10 ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/issues/10) 
+You can alternately apply the fix there to function AdjustWidthHeight().
