@@ -42,8 +42,9 @@ The situation with graphic functions is complicated as some use
 fast draw methods of drawFastVLine() and drawFastHLine().
 and fillRectBuffer uses a local buffer in function to write to display VRAM.
 So depending on the graphic function code may write to screenBuffer and/or VRAM. 
-Note fillRectBuffer is wrapped by fillScreen.
+Note fillRectBuffer is wrapped by fillScreen. Bear in mind that advanced buffer mode is not default mode
+and has added in in version 2.1.0.
 
 ## Examples
 
-There are examples for Advanced buffer mode for st7735 , gc9a01 and ili9341. There are called "frame_buffer".
+There are examples for Advanced buffer mode. There are called "frame_buffer".

@@ -34,6 +34,24 @@
 
 ---
 
+###  ST7789 `frame_buffer` (HW SPI 8 MHz) 240x320 screen
+
+#### Bitmap test
+
+| Metric  | Value  |
+|---------|--------|
+| Seconds | 20     |
+| Count   | 229   |
+| FPS     | 7 FPS |
+
+#### text test
+
+| Metric  | Value  |
+|---------|--------|
+| Seconds | 85     |
+| FPS     | 6 FPS |
+---
+
 ### ST7735 `fps_functions` (HW SPI 8 MHz)
 
 #### Text Mode

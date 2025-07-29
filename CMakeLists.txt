@@ -33,6 +33,7 @@ add_executable(${PROJECT_NAME}
   #examples/st7789/text/main.cpp
   #examples/st7789/bmp_data/main.cpp
   #examples/st7789/demos/main.cpp
+ #examples/st7789/frame_buffer/main.cpp
 
   #examples/ili9341/hello/main.cpp
   #examples/ili9341/text_graphics_functions/main.cpp
@@ -43,6 +44,7 @@ add_executable(${PROJECT_NAME}
   #examples/ssd1331/hello/main.cpp
   #examples/ssd1331/demo/main.cpp
   #examples/ssd1331/bitmap_functions/main.cpp
+  #examples/ssd1331/frame_buffer/main.cpp
 
   #examples/gc9a01/hello/main.cpp
   #examples/gc9a01/frame_buffer/main.cpp

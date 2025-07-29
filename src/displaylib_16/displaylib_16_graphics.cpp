@@ -1901,18 +1901,31 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::clearBuffer(uint16_t color)
 	@brief Writes the contents of the screen buffer to the display.
 		This function assumes the buffer has already been allocated and filled.
 		It sets the address window for the entire screen and writes the buffer data.
+	@param bufferMode If 0(default), writes the entire buffer at once; otherwise, writes row by row.
+			Row-by-row writing is used by displays like SSD1331 that require it.
 	@return DisLib16::Success on completion.
 			DisLib16::BufferEmpty if the buffer is empty.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::writeBuffer(void)
+DisLib16::Ret_Codes_e displaylib_16_graphics::writeBuffer(uint8_t bufferMode )
 {
 	if (_screenBuffer.empty())
 	{
 		fprintf(stderr, "Error: writeBuffer: Buffer is empty\n");
 		return DisLib16::BufferEmpty;
 	}
-	setAddrWindow(0, 0, _width -1, _height);
-	spiWriteDataBuffer(const_cast<uint8_t *>(_screenBuffer.data()),_screenBuffer.size());
+	if (bufferMode == 0){
+		//  write the entire buffer at once, default mode
+		setAddrWindow(0, 0, _width-1 , _height);
+		spiWriteDataBuffer(const_cast<uint8_t *>(_screenBuffer.data()),_screenBuffer.size());
+	} else {
+		// Write the buffer row by row
+		for (uint16_t row = 0; row < _height; ++row)
+		{
+			setAddrWindow(0, row, _width - 1, row);
+			const uint8_t* rowPtr = _screenBuffer.data() + row * _width * 2;
+			spiWriteDataBuffer(const_cast<uint8_t*>(rowPtr), _width * 2);
+		}
+	}
 	return DisLib16::Success;
 }
 

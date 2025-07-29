@@ -78,7 +78,7 @@ public:
 #ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 	DisLib16::Ret_Codes_e setBuffer(void);
 	DisLib16::Ret_Codes_e clearBuffer(uint16_t color = C_BLACK);
-	DisLib16::Ret_Codes_e writeBuffer(void);
+	DisLib16::Ret_Codes_e writeBuffer(uint8_t bufferMode = 0);
 	DisLib16::Ret_Codes_e destroyBuffer(void);
 #endif 
 	// Screen functions
