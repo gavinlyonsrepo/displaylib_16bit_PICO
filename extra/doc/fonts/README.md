@@ -85,6 +85,8 @@ static const std::array<uint8_t, 20> FontBinaryExample =
 
 ## Sources
 
+Fonts can be made from ttf files using [this tool](https://github.com/gavinlyonsrepo/Colossus_LTSM) also written by author.
+
 Some of the fonts packaged with library came from [rinky dink electronics ](http://rinkydinkelectronics.com/)
 
 ## Font Images

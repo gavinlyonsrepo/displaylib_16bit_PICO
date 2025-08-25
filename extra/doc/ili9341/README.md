@@ -63,6 +63,8 @@ Comment in one path and one path ONLY.
 | 2 | text_graphic_functions | Tests text,graphics & function testing  |
 | 3 | bmp_data | bitmap + FPS testing |
 | 4 | demo | A demo |
+| 5 | read_diag | Read diagnostic registers from ILI9341, needs extra GPIO: MISO |
+| 6 | frame_buffer | Demo of advanced frame buffer mode |
 
 ### Bitmap
 
@@ -92,25 +94,24 @@ Tested and developed on:
 * Logic voltage 3.3V
 * Touch panel with XPT2046 IC
 
-Connections as setup in main.cpp test file.
+Connections as setup in main.cpp hello world test file.
 
-| PinNum | Pin description | RPI | note |
+| PinNum | Pin description | PICO| note |
 | --- | --- | --- | --- |
 | 1 | VCC | VCC | 3.3 or 5V ,CAUTION your display must have 3.3V regulator on back to connect to 5V |
 | 2 | GND | GND | |
-| 3 | CS | SPICE0 |TFT Chip select , see point 4 at bottom of table |
-| 4 | RESET | GPIO25 |Reset, Use any GPIO for this, If no reset pin, pass -1 in here & display will use software rst|
-| 5 | DC | GPIO24 | Data or command, Use any GPIO for this line |
-| 6 | SDI(MOSI) | SPIMOSI | |
-| 7 | SCLK | SPICLK | | 
+| 3 | CS | GPIO2 |Chip select,Use any GPIO for this,  see point 4 at bottom of table |
+| 4 | RESET | GPIO3 |Reset, Use any GPIO for this, If no reset pin, pass -1 in here & display will use software rst|
+| 5 | DC | GPIO4 | Data or command, Use any GPIO for this line |
+| 6 | SDI(MOSI) | SPI_MOSI (Spi0 GPIO18)| HW SPI tied to interface, SW SPI any GPIO |
+| 7 | SCLK | SPI_CLK (Spi0 GPIO19) | HW SPI tied to interface, SW SPI any GPIO |
 | 8 | LED | VCC |CAUTION Your display may need current limit resistor|
-| 9 | SDO(MISO) | nc |Only needed to read diagnostics from TFT (not implemented yet) |
-| 10| T_CLK | SPICLK | Only needed to read for xpt2046 touchscreen(not implemented yet) |
-| 11| T_CS | SPICE1 |Only needed to read for xpt2046 touchscreen(not implemented yet)XPT2046 Chip select |
-| 12| T_DIN | SPIMOSI | Only needed to read for xpt2046 touchscreen(not implemented yet)|
-| 13 | T_DO | SPIMISO | Only needed to read for xpt2046 touchscreen(not implemented yet)|
-| 14 | T_IRQ | GPIO22 |Only needed to read for xpt2046 touchscreen(not implemented yet) |
-
+| 9 | SDO(MISO) | SPI_MISO (spi0 GPIO16) |HW SPI tied to interface, SW SPI any GPIO, Only needed to read diagnostics from TFT|
+| 10| T_CLK | SPICLK | Only needed for xpt2046 touchscreen(not implemented yet) |
+| 11| T_CS | SPICE1 |Only needed for xpt2046 touchscreen(not implemented yet)XPT2046 Chip select |
+| 12| T_DIN | SPIMOSI |Only needed for xpt2046 touchscreen(not implemented yet)|
+| 13 | T_DO | SPIMISO |Only needed for xpt2046 touchscreen(not implemented yet)|
+| 14 | T_IRQ | GPIO22 |Only needed for xpt2046 touchscreen(not implemented yet) |
 
 1. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 2. LED Backlight control is left to user.
@@ -118,7 +119,7 @@ Connections as setup in main.cpp test file.
 screen do not connect these. The touch screen and TFT share the SPI bus but have different chip select lines. TFT SPI settings(Speed, active chip select) should be refreshed after ever read cycle of XPT2046 sensor, see example.
 4. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()functions
    and ground the CS pin on device side.
- 
+
 ## Output
 
 Four-Byte Burger 240x320 16-bit bitmap test image, Credits [Ahoy](https://www.youtube.com/watch?v=i4EFkspO5p4)

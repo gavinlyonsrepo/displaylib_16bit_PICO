@@ -16,7 +16,7 @@ displaylib_16_graphics::displaylib_16_graphics() {}
 	@param x  Column co-ord
 	@param y  row co-ord
 	@param color 565 16-bit
-	@note   By default uses spiWriteBuffer method to write each pixel as a buffer for speed.
+	@note   By default uses spiWriteDataBuffer method to write each pixel as a buffer for speed.
 			Much faster than pixel by pixel spi byte writes
 			If dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined then the function 
 			will use the screen buffer to draw the pixel.
@@ -49,14 +49,14 @@ void displaylib_16_graphics ::drawPixel(uint16_t x, uint16_t y, uint16_t color)
 	@return
 		-# Display_Success for success
 		-# Display_ShapeScreenBounds out of screen bounds
-	@note  uses spiWriteBuffer method
+	@note  uses spiWriteDataBuffer method
 */
 DisLib16::Ret_Codes_e displaylib_16_graphics::fillRectBuffer(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
 	// Check bounds
 	if ((x >= _width) || (y >= _height))
 	{
-		printf("Error fillRectangle 2: Out of screen bounds\r\n");
+		printf("Error fillRectBuffer 2: Out of screen bounds\r\n");
 		return DisLib16::ShapeScreenBounds;
 	}
 	if ((x + w - 1) >= _width)
@@ -542,15 +542,15 @@ void displaylib_16_graphics ::fillTriangle(int16_t x0, int16_t y0, int16_t x1, i
 }
 
 /*!
-	@brief turn on or off screen wrap of the text (fonts 1-6)
-	@param w TRUE on
+	@brief turn on or off screen wrap of the text
+	@param w TRUE wrap on, false warp off 
 */
 void displaylib_16_graphics ::setTextWrap(bool w) { _textwrap = w; }
 
 /*!
 	@brief Write 1 character on Display
-	@param  x character starting position on x-axis. Valid values
-	@param  y character starting position on x-axis. Valid values
+	@param  x character starting position on x-axis.
+	@param  y character starting position on y-axis.
 	@param  value Character to be written.
 	@note uses spiWriteDataBuffer method to write each character as a buffer for speed.
 			Much faster than pixel by pixel spi byte writes,
@@ -559,7 +559,6 @@ void displaylib_16_graphics ::setTextWrap(bool w) { _textwrap = w; }
 		-# DisLib16::Success  success
 		-# DisLib16::CharScreenBounds co-ords out of bounds check x and y
 		-# DisLib16::CharFontASCIIRange Character out of ASCII Font bounds, check Font range
-		-# DisLib16::MemoryAError Could not assign memory for character buffer
  */
 DisLib16::Ret_Codes_e displaylib_16_graphics::writeChar(int16_t x, int16_t y, char value)
 {
@@ -570,13 +569,13 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::writeChar(int16_t x, int16_t y, ch
 		((x + _Font_X_Size + 1) < 0) || // Clip left
 		((y + _Font_Y_Size) < 0))		// Clip top
 	{
-		printf("Error 1: writeChar16 : Co-ordinates out of bounds\n");
+		printf("Error 1: writeChar : Co-ordinates out of bounds\n");
 		return DisLib16::CharScreenBounds;
 	}
 	// 2. Check for character out of font range bounds
 	if (value < _FontOffset || value >= (_FontOffset + _FontNumChars + 1))
 	{
-		printf("Error 2: writeChar16 : Character out of Font bounds %c : %u  <--> %u \n", value, _FontOffset, (unsigned int)(_FontOffset + _FontNumChars));
+		printf("Error 2: writeChar : Character out of Font bounds %c : %u  <--> %u \n", value, _FontOffset, (unsigned int)(_FontOffset + _FontNumChars));
 		return DisLib16::CharFontASCIIRange;
 	}
 
@@ -1052,6 +1051,28 @@ void displaylib_16_graphics::spiWrite(uint8_t spiData)
 	{
 		spi_write_blocking(_pspiInterface, &spiData, 1);
 	}
+}
+
+/*!
+	@brief  Shifts in a byte of data using software SPI
+	@details uses _SWSPIGPIODelay to slowdown software SPI if CPU frequency too fast
+	@return  Data byte
+*/
+uint8_t displaylib_16_graphics::spiReadSoftware(void)
+{
+	uint8_t value = 0;
+	uint8_t i = 0;
+	for (i = 0; i < 8; ++i)
+	{
+		DISPLAY_SCLK_SetHigh;
+		if (_SWSPIGPIODelay > 0)
+			MICROSEC_DELAY(_SWSPIGPIODelay);
+		value |= DISPLAY_MISO_Read << (7 - i);
+		DISPLAY_SCLK_SetLow;
+		if (_SWSPIGPIODelay > 0)
+			MICROSEC_DELAY(_SWSPIGPIODelay);
+	}
+	return value;
 }
 
 /*!
@@ -1889,10 +1910,12 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::clearBuffer(uint16_t color)
 		fprintf(stderr, "Error: clearBuffer: Buffer is empty\n");
 		return DisLib16::BufferEmpty;
 	}
-	for (size_t i = 0; i < _screenBuffer.size(); i += 2)
-	{
-		_screenBuffer[i] = color >> 8;
-		_screenBuffer[i + 1] = color;
+	
+	uint8_t high = color >> 8;
+	uint8_t low  = color & 0xFF;
+	for (size_t i = 0; i < _screenBuffer.size(); i += 2) {
+		_screenBuffer[i] = high;
+		_screenBuffer[i + 1] = low;
 	}
 	return DisLib16::Success;
 }

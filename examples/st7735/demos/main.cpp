@@ -102,7 +102,6 @@ void EndTests(void)
 	printf("TFT :: Tests Over");
 }
 
-//demo 4
 void arcGauge(uint16_t countLimit)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);

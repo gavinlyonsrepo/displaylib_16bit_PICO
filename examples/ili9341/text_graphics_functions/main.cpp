@@ -10,6 +10,7 @@
 
 	@test 
 	-# Test 500 RGB color OK?
+	-# Test 501 Scroll
 	-# Test 502 Rotate
 	-# Test 503 change modes test -> Invert, display on/off and Sleep.
 	-# Test 701 Print out all fonts with writeCharString
@@ -400,7 +401,7 @@ void Test702(void)
 void Test703(void)
 {
 	printf("Test 703: Misc print class(string object, println invert, wrap, base nums etc)\n");
-	//Inverted print fonts 1-6
+	//Inverted print
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
 	myTFT.setFont(font_default);
 
@@ -420,7 +421,7 @@ void Test703(void)
 
 	DisplayReset();
 
-	// Inverted print fonts 7-12
+	// Inverted print
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
 
 	myTFT.setFont(font_arialBold);

@@ -2,7 +2,6 @@
 	@file   ili9341.hpp
 	@author Gavin Lyons
 	@brief  header file to manage hardware interface with ILI9341 display
-	@todo   Add support for print diagnostics and MISO pin , xpt2046
 	@todo   Add support for touch pad controller xpt2046 IC.
 */
 
@@ -20,10 +19,27 @@ public:
 	ILI9341_TFT();
 	~ILI9341_TFT(){};
 
+	/*!
+		@brief  Register addresses for ILI9341 diagnostic read commands.
+	 			These constants can be used with readDiagByte() to query
+				the controller for internal status and diagnostic information.
+				See datasheet section 8.2.3 for more details
+	 */
+	enum ILI9341_ReadRegister_e : uint8_t {
+		ILI9341_RDID        = 0x04, /**< Read Display Identification Information, 3 bytes*/
+		ILI9341_RDSTATUS    = 0x09, /**< Read Display Status, 4 bytes */
+		ILI9341_RDMODE      = 0x0A, /**< Read Display Power Mode */
+		ILI9341_RDMADCTL    = 0x0B, /**< Read MADCTL */
+		ILI9341_RDPIXFMT    = 0x0C, /**< Read Display Pixel Format */
+		ILI9341_RDIMGFMT    = 0x0D, /**< Read Display Image Mode */
+		ILI9341_RDSIGNAL    = 0x0E, /**< Read Display Signal Mode */
+		ILI9341_RDSELFDIAG  = 0x0F  /**< Read Display Self-Diagnostic Result */
+	};
+
 	//Functions
 	virtual void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) override;
 	//Init Setup related
-	void SetupGPIO(int8_t RST, int8_t DC, int8_t CS, int8_t SCLK, int8_t MOSI);
+	void SetupGPIO(int8_t RST, int8_t DC, int8_t CS, int8_t SCLK, int8_t MOSI, int8_t MISO = -1);
 	void SetupScreenSize(uint16_t w, uint16_t h);
 	void SetupSPI(uint16_t CommDelay); // SW SPI
 	void SetupSPI(uint32_t baudrate, spi_inst_t *spi); // HW SPI
@@ -40,7 +56,7 @@ public:
 	void setScrollMargins(uint16_t top, uint16_t bottom);
 	void NormalMode(void);
 	void ResetPin(void);
-	//void PrintDiagnostic(void); // @todo not working
+	uint8_t readDiagByte(ILI9341_ReadRegister_e cmd, uint8_t index );
 
 protected:
 
@@ -49,6 +65,7 @@ private:
 
 	// SPI
 	bool _resetPinOn = true; /**< reset pin? true:hw rst pin, false:sw rt*/
+	bool _MISOPinOn = false; /**< MISO pin used? true:use MISO pin, false: not used*/
 	// Screen 
 	uint16_t _widthStartTFT = 240;  /**< never change after first init */
 	uint16_t _heightStartTFT = 320; /**< never change after first init */

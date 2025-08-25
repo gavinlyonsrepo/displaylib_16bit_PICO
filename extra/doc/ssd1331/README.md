@@ -7,7 +7,6 @@
       * [User Options](#user-options)
       * [File system](#file-system)
       * [Bitmap](#bitmap)
-      * [Color codes](#color-codes)
   * [Hardware](#hardware)
   * [Output](#output)
 

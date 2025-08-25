@@ -16,8 +16,9 @@ ILI9341_TFT::ILI9341_TFT(){}
 	@param cs chip select GPIO
 	@param sclk Data clock GPIO
 	@param mosi Data to TFT GPIO
+	@param miso Data from TFT GPIO, -1 if not used
 */
-void ILI9341_TFT::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_t mosi)
+void ILI9341_TFT::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_t mosi, int8_t miso)
 {
 	if(rst != -1)
 	{
@@ -26,6 +27,14 @@ void ILI9341_TFT::SetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int8_
 		DISPLAY_RST_INIT;
 	}else{
 		_resetPinOn  = false;
+	}
+	if (miso != -1)
+	{
+		_display_MISO = miso;
+		_MISOPinOn = true;
+		DISPLAY_MISO_INIT;
+	}else{
+		_MISOPinOn = false;
 	}
 	_display_DC = dc;
 	_display_CS = cs;
@@ -91,11 +100,19 @@ void ILI9341_TFT::ILI9341Initialize()
 		DISPLAY_SDATA_SetDigitalOutput;
 		DISPLAY_SCLK_SetLow;
 		DISPLAY_SDATA_SetLow;
+		if (_MISOPinOn == true)
+		{
+			DISPLAY_MISO_SetDigitalInput;
+		}
 	}else{
 		spi_init(_pspiInterface, _speedSPIKHz * 1000); // Initialize SPI port 
 		// Initialize SPI pins : clock and data
 		DISPLAY_SDATA_SPI_FUNC;
 		DISPLAY_SCLK_SPI_FUNC;
+		if (_MISOPinOn == true)
+		{
+			DISPLAY_MISO_SPI_FUNC;
+		}
 		// Set SPI format
 		if(_display_CS > -1) {
 			spi_set_format( _pspiInterface,   // SPI instance
@@ -146,14 +163,26 @@ void  ILI9341_TFT::PowerDown(void)
 	if (_hardwareSPI == true) {
 		DISPLAY_SCLK_SPI_FUNC_OFF;
 		DISPLAY_SDATA_SPI_FUNC_OFF;
+		if(_MISOPinOn == true)
+		{
+			DISPLAY_MISO_SPI_FUNC_OFF;
+		}
 		spi_deinit(_pspiInterface);
 		DISPLAY_SCLK_DEINIT;
 		DISPLAY_SDATA_DEINIT;
+		if(_MISOPinOn == true)
+		{
+			DISPLAY_MISO_DEINIT;
+		}
 	}else{
 		DISPLAY_SCLK_SetLow;
 		DISPLAY_SDATA_SetLow;
 		DISPLAY_SCLK_DEINIT;
 		DISPLAY_SDATA_DEINIT;
+		if(_MISOPinOn == true)
+		{
+			DISPLAY_MISO_DEINIT;
+		}
 	}
 }
 
@@ -200,7 +229,7 @@ void ILI9341_TFT::cmdInit(void)
 	writeData(0x86);
 	writeCommand(ILI9341_MADCTL); //  Memory Access Control
 	writeData(0x48);
-	writeCommand(ILI9341_VSCRSADD); // // Vertical scroll zero
+	writeCommand(ILI9341_VSCRSADD); // Vertical scroll zero
 	writeData(0x00);
 	writeCommand(ILI9341_PIXFMT);// COLMOD: Pixel Format Set
 	writeData(0x55);
@@ -375,57 +404,56 @@ void ILI9341_TFT::ResetPin()
 }
 
 /*!
-	@brief: Print out diagnostics
-	@note not working TODO
-	@todo Not working, reading back 00 and 255 instead of valid values.
-*/
-// void  ILI9341_TFT::PrintDiagnostic(void) 
-// {
-	
-// 	/*! Enum to hold Read diagnostics commands */
-// 	enum ILI9341_Read_diags_e : uint8_t{
-// 		ILI9341_RDMODE     = 0x0A, /**< Read the power mode */
-// 		ILI9341_RDMADCTL   = 0x0B, /**< Read MADCTL */
-// 		ILI9341_RDPIXFMT   = 0x0C, /**< Read pixel Format */
-// 		ILI9341_RDIMGFMT   = 0x0D, /**< Read image format */
-// 		ILI9341_RDSELFDIAG = 0x0F /**< Read self-diagnostic result */
-// 	};
-
-// 	if (_hardwareSPI == false)
-// 	{
-// 		// Software SPI
-// 	} else 
-// 	{
-// 		// List of command bytes
-// 		const uint8_t commandList[] = {
-// 			ILI9341_RDMODE,     // 0x0A
-// 			ILI9341_RDMADCTL,   // 0x0B
-// 			ILI9341_RDPIXFMT,   // 0x0C
-// 			ILI9341_RDIMGFMT,   // 0x0D
-// 			ILI9341_RDSELFDIAG  // 0x0F
-// 		};
-		
-// 		// Iterate over each command
-// 		for (int i = 0; i < 5; i++) 
-// 		{
-// 			uint8_t commandByte = commandList[i];
-// 			int SPINumOfBytes = 0;
-// 			uint8_t RxBuffer[1] = {0x00};
-// 			// Send the sequence of commands and data
-// 			writeCommand(0xD9);    //  register access
-// 			writeData(0x10 + 0);       // Set index
-// 			writeCommand(commandByte); // Send the command byte
-// 			// Read the response
-// 			//DISPLAY_DC_SetHigh;    // Set DC to high for reading data
-// 			//SPINumOfBytes = Display_SPI_READ(_spiHandle, RxBuffer, 1);
-// 			DISPLAY_CS_SetLow;
-// 			SPINumOfBytes = spi_read_blocking(_pspiInterface, 0, RxBuffer, sizeof(RxBuffer));
-// 			DISPLAY_CS_SetHigh;
-// 			// Print the results
-// 			printf("Command Sent: 0x%X\n", commandByte);
-// 			printf("SPI Number of bytes received: %d\n", SPINumOfBytes);
-// 			printf("Byte received 0x%0X\n", RxBuffer[0]);
-// 		}
-		
-// 	}
-// }
+	@brief  Read a single diagnostic byte from the ILI9341 controller.
+			This function sends a diagnostic read command and retrieves
+			the corresponding status or mode byte from the display controller.
+	@param reg The diagnostic register to read
+	@param index Optional index offset (usually zero).
+	@return The diagnostic byte read from the specified register. Will
+			return early in software SPI if MISO pin not set.
+	@note This is primarily intended for debugging and testing.
+ */
+uint8_t ILI9341_TFT::readDiagByte(ILI9341_ReadRegister_e reg, uint8_t index) {
+	uint8_t result = 0;
+	uint8_t spiData ;
+	if (_hardwareSPI) {
+		DISPLAY_CS_SetLow;
+		// 1) Set read index/preamble
+		DISPLAY_DC_SetLow;
+		spiData = 0xD9;
+		spi_write_blocking(_pspiInterface, &spiData, 1);
+		DISPLAY_DC_SetHigh;
+		spiData = uint8_t(0x10 + index);
+		spi_write_blocking(_pspiInterface, &spiData, 1);
+		// 2) Issue the read command
+		DISPLAY_DC_SetLow;
+		spiData = reg;
+		// 3) Read response byte 
+		spi_write_blocking(_pspiInterface, &spiData, 1);
+		DISPLAY_DC_SetHigh;
+		uint8_t txData[] = {0x00};
+		spi_write_read_blocking(_pspiInterface, txData, &result,1);
+		DISPLAY_CS_SetHigh;
+	} else {
+		if (!_MISOPinOn) 	// check if MISO pin set 
+		{
+			if(DisLib16::isDebugMode())
+				printf("Error: MISO not set for SW SPI, exiting");
+			return result;
+		}
+		DISPLAY_CS_SetLow;
+		// 1) Set read index
+		DISPLAY_DC_SetLow;
+		spiWriteSoftware(0xD9);
+		DISPLAY_DC_SetHigh;
+		spiWriteSoftware(uint8_t(0x10 + index));
+		// 2) Issue the read command
+		DISPLAY_DC_SetLow;
+		spiWriteSoftware(reg);
+		// 3) Read response byte
+		DISPLAY_DC_SetHigh;
+		result = spiReadSoftware();
+		DISPLAY_CS_SetHigh;
+	}
+	return result;
+}

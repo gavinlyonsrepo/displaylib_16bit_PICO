@@ -134,6 +134,7 @@ protected:
 	void writeData(uint8_t);
 	void spiWrite(uint8_t);
 	void spiWriteSoftware(uint8_t spidata);
+	uint8_t spiReadSoftware(void);
 	void spiWriteDataBuffer(uint8_t *spidata, uint32_t len);
 	bool _hardwareSPI;			  /**< True for Hardware SPI on , false for Software SPI on*/
 	spi_inst_t *_pspiInterface;	  /**< SPI instance pointer*/

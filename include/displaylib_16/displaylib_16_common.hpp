@@ -75,16 +75,21 @@ uint16_t LibraryVersion(void);
 #define DISPLAY_SDATA_SetHigh gpio_put(_display_SDATA, true)
 #define DISPLAY_SDATA_SetLow gpio_put(_display_SDATA, false)
 
+#define DISPLAY_MISO_Read gpio_get(_display_MISO)
+
 #define DISPLAY_DC_SetDigitalOutput gpio_set_dir(_display_DC, GPIO_OUT)
 #define DISPLAY_RST_SetDigitalOutput gpio_set_dir(_display_RST, GPIO_OUT)
 #define DISPLAY_CS_SetDigitalOutput if(_display_CS > -1) { gpio_set_dir(_display_CS, GPIO_OUT); }
 #define DISPLAY_SCLK_SetDigitalOutput gpio_set_dir(_display_SCLK, GPIO_OUT)
 #define DISPLAY_SDATA_SetDigitalOutput gpio_set_dir(_display_SDATA, GPIO_OUT)
+#define DISPLAY_MISO_SetDigitalInput gpio_set_dir(_display_MISO, GPIO_IN)
 
 #define DISPLAY_SCLK_SPI_FUNC gpio_set_function(_display_SCLK, GPIO_FUNC_SPI)
 #define DISPLAY_SDATA_SPI_FUNC gpio_set_function(_display_SDATA, GPIO_FUNC_SPI)
+#define DISPLAY_MISO_SPI_FUNC gpio_set_function(_display_MISO, GPIO_FUNC_SPI)
 #define DISPLAY_SCLK_SPI_FUNC_OFF gpio_set_function(_display_SCLK, GPIO_FUNC_NULL)
 #define DISPLAY_SDATA_SPI_FUNC_OFF gpio_set_function(_display_SDATA, GPIO_FUNC_NULL)
+#define DISPLAY_MISO_SPI_FUNC_OFF gpio_set_function(_display_MISO, GPIO_FUNC_NULL)
 
 // Delays
 #define MILLISEC_DELAY busy_wait_ms

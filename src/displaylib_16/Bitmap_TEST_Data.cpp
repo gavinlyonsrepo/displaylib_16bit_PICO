@@ -9,7 +9,7 @@
     -#  SunTextImage  : bi-colour (40x16)  
     -#  motorImage    : 16 bit color 565,  32768 bytes (128x128)
     -#  posterImage   : 16 bit color, 7680 bytes (80x48)  
-    -#  SpriteTest16  : 16 bit color 565 2048 bytes (32x32) with background 0x7E5F or ST7735_LBLUE
+    -#  SpriteTest16  : 16 bit color 565 2048 bytes (32x32) with background 0x7E5F
 
 */
 

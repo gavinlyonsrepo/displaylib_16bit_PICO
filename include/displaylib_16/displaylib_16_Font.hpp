@@ -90,7 +90,7 @@ class display_Fonts
 		uint8_t _Font_X_Size = 0x08; /**< Width Size of a Font character */
 		uint8_t _Font_Y_Size = 0x08; /**< Height Size of a Font character */
 		uint8_t _FontOffset = 0x20; /**< Offset in the ASCII table 0x00 to 0xFF, where font begins */
-		uint8_t _FontNumChars = 0x5F; /**< Number of characters in font (0x00 to 0xFE) -1 */
+		uint8_t _FontNumChars = 0x5E; /**< Number of characters in font (0x00 to 0xFE) -1 */
 	private:
 		bool _FontInverted = false; /**< display font inverted? , False = no invert , true = invert*/
 };
