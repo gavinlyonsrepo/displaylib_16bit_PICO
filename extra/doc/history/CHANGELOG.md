@@ -43,5 +43,6 @@
   * Added support for optional CS pin on displays, see github issue 9 for more details.
   * Added frame buffer example for SSD1331 OLED & ST7789 TFT LCD.
 
-* Version 2.3.1 August 2025
+* Version 2.3.2 September 2025
   * Added read diagnostic function for ILI9341 display.
+  * Fixed a minor bug in the ST7735 demo example.

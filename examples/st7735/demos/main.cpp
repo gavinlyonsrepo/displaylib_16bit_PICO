@@ -107,8 +107,8 @@ void arcGauge(uint16_t countLimit)
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_BLACK);
 	printf("Arc Demo ends at : %u\n", countLimit);
-	int16_t currentValue = 150;
-	int16_t oldValue = 150;
+	int16_t currentValue = 140;
+	int16_t oldValue = 140;
 	myTFT.setFont(font_default);
 	char buffer[10];
 	// Draw Gauge
@@ -118,7 +118,6 @@ void arcGauge(uint16_t countLimit)
 	uint8_t radius = 48;
 	const int16_t minValue = 1;
 	const int16_t maxValue = 255;
-	//myTFT.drawArc(centerX, centerY, radius, 10, 180.0f, 360.0f, myTFT.C_BLUE);
 	myTFT.drawArc(x, y, radius, 11,  150.0f, 180.0f, myTFT.C_RED);
 	myTFT.drawArc(x, y, radius, 11,  181.0f, 250.0f, myTFT.C_ORANGE);
 	myTFT.drawArc(x, y, radius, 11,  251.0f, 320.0f, myTFT.C_YELLOW);
@@ -175,7 +174,8 @@ void drawGaugeMarkers(uint8_t centerX, uint8_t centerY, uint8_t radius, int star
 
 void drawPointer(int16_t &currentValue, int16_t &oldValue, uint8_t x, uint8_t y, uint8_t r, uint16_t colour, uint16_t bcolour) 
 {
-	uint8_t i;
+	uint16_t i;
+
 	if (currentValue > oldValue) 
 	{
 		// Incrementally move the pointer from oldValue to currentValue
