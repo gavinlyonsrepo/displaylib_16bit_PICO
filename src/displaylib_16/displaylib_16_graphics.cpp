@@ -105,11 +105,19 @@ void displaylib_16_graphics ::fillScreen(uint16_t color)
 */
 void displaylib_16_graphics ::drawFastVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t color)
 {
-	uint8_t hi, lo;
+
 	if ((x >= _width) || (y >= _height))
 		return;
 	if ((y + h - 1) >= _height)
 		h = _height - y;
+
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+	for (uint16_t i = 0; i < h; i++)
+	{
+		drawPixel(x, y + i, color);
+	}
+#else
+	uint8_t hi, lo;
 	hi = color >> 8;
 	lo = color;
 	setAddrWindow(x, y, x, y + h - 1);
@@ -122,6 +130,7 @@ void displaylib_16_graphics ::drawFastVLine(uint16_t x, uint16_t y, uint16_t h, 
 		spiWrite(lo);
 	}
 	DISPLAY_CS_SetHigh;
+#endif
 }
 
 /*!
@@ -133,11 +142,18 @@ void displaylib_16_graphics ::drawFastVLine(uint16_t x, uint16_t y, uint16_t h, 
 */
 void displaylib_16_graphics ::drawFastHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
 {
-	uint8_t hi, lo;
+	
 	if ((x >= _width) || (y >= _height))
 		return;
 	if ((x + w - 1) >= _width)
 		w = _width - x;
+#ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+	for (uint16_t i = 0; i < w; i++)
+	{
+		drawPixel(x+i, y, color);
+	}
+#else
+	uint8_t hi, lo;
 	hi = color >> 8;
 	lo = color;
 	setAddrWindow(x, y, x + w - 1, y);
@@ -149,6 +165,7 @@ void displaylib_16_graphics ::drawFastHLine(uint16_t x, uint16_t y, uint16_t w, 
 		spiWrite(lo);
 	}
 	DISPLAY_CS_SetHigh;
+#endif
 }
 
 /*!

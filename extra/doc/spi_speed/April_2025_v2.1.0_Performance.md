@@ -99,3 +99,14 @@
 | Metric        | Value     |
 |---------------|-----------|
 | pixelText FPS | 24 FPS    |
+
+###  GC9D01 `bmp_data tyesty6y01` (HW SPI 8 MHz) 240x320 screen
+
+#### Bitmap test
+
+| Metric  | Value  |
+|---------|--------|
+| Seconds | 20     |
+| Count   | 266   |
+| FPS     | 14 FPS |
+

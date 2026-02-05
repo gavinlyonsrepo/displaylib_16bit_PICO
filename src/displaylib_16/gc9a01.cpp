@@ -113,11 +113,8 @@ void GC9A01_TFT::TFTsetupGPIO(int8_t rst, int8_t dc, int8_t cs, int8_t sclk, int
 */
 void GC9A01_TFT::TFTGC9A01Initialize() 
 {
-	if (_resetPinOn == true) 
-	{
+	if (_resetPinOn == true) {
 		TFTResetPIN();
-	}else {
-		TFTresetSWDisplay();
 	}
 
 	DISPLAY_DC_SetDigitalOutput;
@@ -247,6 +244,10 @@ void  GC9A01_TFT::TFTSwSpiGpioDelaySet(uint16_t CommDelay){_SWSPIGPIODelay = Com
 */
 void GC9A01_TFT::cmdInitSequence(void)
 {
+	if (_resetPinOn == false){
+		TFTresetSWDisplay(); // No hardware RESET pin present; force controller into known state
+	}
+	
 	writeCommand(GC9A01_INREGEN1);
 	writeCommand(GC9A01_INREGEN2);
 

@@ -200,6 +200,14 @@ void ILI9341_TFT::cmdInit(void)
 	uint8_t seqGammaP[] {0x0F,0x31,0x2B,0x0C,0x0E,0x08,0x4E,0xF1,0x37,0x07,0x10,0x03,0x0E,0x09,0x00};
 	uint8_t seqGammaN[] {0x00,0x0E,0x14,0x03,0x11,0x07,0x31,0xC1,0x48,0x08,0x0F,0x0C,0x31,0x36,0x0F};
 
+	if (_resetPinOn == false){
+		// No hardware RESET pin present; force controller into known state
+		// Wait 5mS for software reset to complete per datasheet page 91, 120mS if in sleep Out mode
+		// When the Software Reset command is written, it causes a software reset. It resets the commands and parameters to their
+		// S/W Reset default values
+		writeCommand(ILI9341_SWRESET); 
+		busy_wait_ms(5); 
+	}
 	// Section 0
 	writeCommand(ILI9341_DISPOFF); // Display off
 	busy_wait_ms(5);
@@ -396,9 +404,6 @@ void ILI9341_TFT::ResetPin()
 		DISPLAY_RST_SetLow;
 		busy_wait_ms(20);
 		DISPLAY_RST_SetHigh;
-		busy_wait_ms(120);
-	}else{
-		writeCommand(ILI9341_SWRESET); // no hw reset pin, software reset.
 		busy_wait_ms(120);
 	}
 }

@@ -27,7 +27,6 @@ GRAM for graphic display data of 240RGBx240 dots, and power supply circuit.
 2. Hardware & software SPI
 3. Tested on 240X240 Round Display
 
-
 * [DataSheet](https://buydisplay.com/download/ic/GC9A01A.pdf)
 
 ## Test
@@ -36,13 +35,13 @@ There are example files included. User picks the one they want
 by editing the CMakeLists.txt :: add_executable(${PROJECT_NAME}  section.
 Comment in one path and one path only.
 
-| Filename  | Function  | Note |
+| Filename | Function | Note |
 | --- | --- | --- |
-| hello | Hello world  | --- |
+| hello | Hello world | --- |
 | frame_buffer | Testing frame Buffer mode | dislib16_ADVANCED_SCREEN_BUFFER_ENABLE must be enabled user option 2 |
-| bmp_data| 1,8 & 16 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
-| demos| A demo showing a round gauge | ---|
-| text_graphics_functions| Text  + Graphics + Functions | --- |
+| bmp_data | 1,8 & 16 bit bitmaps tests + bitmap FPS tests| Bitmap data is stored in arrays on PICO |
+| demos | A demo showing a round gauge | --- |
+| text_graphics_functions | Text  + Graphics + Functions | --- |
 
 ## Software
 
@@ -51,11 +50,9 @@ Comment in one path and one path only.
 In the main.cpp example files. There are four sections in "Setup()" function
 where user can make adjustments to select for SPI type used, PCB type used and screen size.
 
-
 0. USER OPTION 0 SPI_SPEED + TYPE
 1. USER OPTION 1 GPIO
 2. USER OPTION 2 SCREEN SECTION
-
 
 *USER OPTION 0 SPI SPEED*
 
@@ -102,23 +99,23 @@ Functions to support drawing bitmaps & sprites.
 
 Connections as setup in main.cpp test file.
 
-| Pin desc |  HW SPI |
+| Pin desc | HW SPI |
 | --- | --- |
 | GND Ground | GND |
-| VCC |  3.3 VCC  |
+| VCC | 3.3 VCC |
 | SCL Clock | GPIO 18 |
 | SDA Data in | GPIO 19 |
-| RST Reset| GPIO 4 |
-| DC Data or command | GPIO 3  |
+| RST Reset | GPIO 4 |
+| DC Data or command | GPIO 3 |
 | CS Chip select | GPIO 2 |
-| BL Backlight  | VCC |
+| BL Backlight | VCC |
 
 1. This is a 3.3V logic device do NOT connect the I/O logic lines to 5V logic device.
 2. SW SPI pick any GPIO you like , HW SPI SCLK and SDA will be tied to spio interface.
 3. Backlight on/off control is left to user.
-4. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()functions
-   and ground the CS pin on device side.
-   
+4. If no Reset pin present: pass -1 as argument for Reset pin number in SetupGPIO()functions
+5. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()function and ground the CS pin on device side.
+
 ## Output
 
 [![ Demo pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc2.jpg)

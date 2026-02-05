@@ -84,6 +84,7 @@ public:
 	// Screen functions
 	/*! @brief define in the sub class */
 	virtual void setAddrWindow(uint16_t, uint16_t, uint16_t, uint16_t) = 0;
+
 	void fillScreen(uint16_t color);
 	void setCursor(int16_t x, int16_t y);
 	void drawPixel(uint16_t, uint16_t, uint16_t);

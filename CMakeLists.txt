@@ -52,7 +52,12 @@ add_executable(${PROJECT_NAME}
   #examples/gc9a01/demos/main.cpp
   #examples/gc9a01/bmp_data/main.cpp
   #examples/gc9a01/text_graphics_functions/main.cpp
-  
+
+  #examples/gc9d01/hello/main.cpp
+  #examples/gc9d01/hello_40x160/main.cpp
+  #examples/gc9d01/demo/main.cpp
+  #examples/gc9d01/text_graphics_functions/main.cpp
+  #examples/gc9d01/bmp_data/main.cpp
 )
 
 # Create map/bin/hex/uf2 files
@@ -66,6 +71,7 @@ target_sources(pico_displaylib_16 INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/ili9341.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/ssd1331.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/gc9a01.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/gc9d01.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_graphics.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_Print.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/displaylib_16/displaylib_16_Font.cpp

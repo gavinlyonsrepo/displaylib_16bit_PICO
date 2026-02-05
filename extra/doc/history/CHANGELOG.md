@@ -46,3 +46,7 @@
 * Version 2.3.2 September 2025
   * Added read diagnostic function for ILI9341 display.
   * Fixed a minor bug in the ST7735 demo example.
+
+* Version 2.4.0 February 2026
+  * Added support for GC9D01 TFT LCD.
+  * Software reset bug in ili9341 fixed, see github issue 12 for more details.

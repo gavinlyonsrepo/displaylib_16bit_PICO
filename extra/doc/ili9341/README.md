@@ -119,6 +119,7 @@ Connections as setup in main.cpp hello world test file.
 screen do not connect these. The touch screen and TFT share the SPI bus but have different chip select lines. TFT SPI settings(Speed, active chip select) should be refreshed after ever read cycle of XPT2046 sensor, see example.
 4. To operate without CS pin: pass -1 as argument for CS pin number in SetupGPIO()functions
    and ground the CS pin on device side.
+5. If no Reset pin present: pass -1 as argument for Reset pin number in SetupGPIO()functions
 
 ## Output
 
