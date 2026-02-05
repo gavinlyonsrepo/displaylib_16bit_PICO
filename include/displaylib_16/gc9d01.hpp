@@ -1,5 +1,5 @@
 /*!
-	@file    GC9D01_LTSM.hpp
+	@file    gc9d01.hpp
 	@author  Gavin Lyons, LionTron Systems
 	@brief   PICO Library header file, Contains driver methods for gc9d01 display
 	@todo    gc9d01 :: investigate brightness mode, not working?

@@ -36,7 +36,6 @@ also tested by third party on 40x160 bar display by third party.
 7. Advanced frame buffer mode included.
 8. Bitmaps supported: 1, 8 and 16 bit.
 9. Sprites supported.
-10. [Project url link](https://github.com/gavinlyonsrepo/GC9D01_LTSM)
 
 * [DataSheet](https://buydisplay.com/download/ic/GC9D01N.pdf)
 
