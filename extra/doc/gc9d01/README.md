@@ -70,7 +70,7 @@ Some examples of SRAM usage for the frame buffer used in advanced buffer mode fo
 
 ## Software
 
-### User Optios
+### User Options
 
 In the main.cpp example files. There are four sections in "Setup()" function
 where user can make adjustments to select for SPI type used, PCB type used and screen size.
@@ -157,7 +157,7 @@ Functions to support drawing bitmaps & sprites.
 
 ## Hardware
 
-[![pic ](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc1.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/gc1.png)
+[![pic ](https://github.com/gavinlyonsrepo/GC9D01_LTSM/blob/main/extras/images/gc2.jpg)](https://github.com/gavinlyonsrepo/GC9D01_LTSM/blob/main/extras/images/gc2.jpg)
 
 Connections as setup in main.cpp test file.
 
