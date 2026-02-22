@@ -84,6 +84,8 @@ class display_Fonts
 		DisLib16::Ret_Codes_e  setFont(display_Font_name_e);
 		void setInvertFont(bool invertStatus);
 		bool getInvertFont(void);
+		uint8_t getFont_X(void);
+		uint8_t getFont_Y(void);
 
 	protected:
 		std::span<const uint8_t> _FontSelect = pFontDefault;  /**< Span to the active font,  Fonts Stored are Const */

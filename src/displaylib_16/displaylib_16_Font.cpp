@@ -16,6 +16,18 @@ display_Fonts::display_Fonts()
 	setFont(font_default);
 };
 
+/*! 
+	@brief get the current font character width in pixels
+	@return font character width in pixels
+*/
+uint8_t display_Fonts::getFont_X(void) {return _Font_X_Size;};
+
+/*! 
+	@brief get the current font character height in pixels
+	@return font character height in pixels
+*/
+uint8_t display_Fonts::getFont_Y(void) {return _Font_Y_Size;};
+
 /*!
 	@brief SetFont 
 	@param FontChoice SelectedFontName Select this font, pass the font enum name
