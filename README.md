@@ -9,6 +9,7 @@
     * [Supported devices](#supported-devices)
     * [API documentation](#api-documentation)
     * [Fonts](#fonts)
+    * [Bitmaps](#bitmaps)
   * [Software](#software)
     * [Advanced Graphics](#advanced-graphics)
     * [Test](#test)
