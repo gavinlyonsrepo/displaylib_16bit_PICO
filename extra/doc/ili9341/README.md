@@ -8,8 +8,6 @@
   * [Software](#software)
       * [User Options](#user-options)
       * [File system](#file-system)
-      * [Bitmap](#bitmap)
-      * [Color codes](#color-codes)
   * [Hardware](#hardware)
   * [Output](#output)
 
@@ -65,22 +63,6 @@ Comment in one path and one path ONLY.
 | 4 | demo | A demo |
 | 5 | read_diag | Read diagnostic registers from ILI9341, needs extra GPIO: MISO |
 | 6 | frame_buffer | Demo of advanced frame buffer mode |
-
-### Bitmap
-
-Functions to support drawing bitmaps
-
-| Function Name | Colour support | Pixel max size KiB |  Note |
-| ------ | ------ | ------ | ------ |
-| drawBitmap | bi-colour array |  18.75  | Data horizontally  addressed |
-| drawBitmap8Data | 8 bit color RRRGGGBB  | 75 |  Converted by software to 16-bit color |
-| drawBitmap16 | 16 bit color 565 BMP files or array |  150  | ------ |
-| drawSprite| 16 bit color 565 array |  150  | Does not use a buffer , draws pixel by pixel , ignores background chosen color|
-
-1. Bitmap Size (in KiB)= Image Width×Image Height×Bits Per Pixel(8×1024)
-2. Pixel size column assumes 240 by 320 screen.
-3. The data array for 1 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 2-4  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 

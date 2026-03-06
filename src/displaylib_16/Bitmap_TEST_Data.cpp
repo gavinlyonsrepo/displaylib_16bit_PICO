@@ -158,7 +158,7 @@ static const std::array<uint8_t, 80> SunTextImage =
   0x0C, 0x3F, 0xF1, 0xFF, 0x8C, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-// array size is 32768 (128x128x2) https://notisrac.github.io/FileToCArray/
+// array size is 32768 (128x128x2) https://github.com/gavinlyonsrepo/Guardian_LTSM
 // BITMAPV5HEADER offset 132( raw data here, -offset)
 // made in GIMP , Color space information written
 // RGB 565 16 bit color

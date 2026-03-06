@@ -50,3 +50,6 @@
 * Version 2.4.0 February 2026
   * Added support for GC9D01 TFT LCD.
   * Software reset bug in ili9341 fixed, see github issue 12 for more details.
+  
+* Version Next 
+  * Added Getters for Font width and height, see github issue 13 for more details

@@ -66,6 +66,10 @@ The application programming interface html [documentation is at link](https://ga
 
 The font system readme is in the 'doc' folder [at link.](extra/doc/fonts/README.md)
 
+### Bitmaps
+
+Bitmap readme is in the 'doc' folder [at link.](extra/doc/bitmaps/README.md)
+
 ## Software
 
 ### Advanced Graphics

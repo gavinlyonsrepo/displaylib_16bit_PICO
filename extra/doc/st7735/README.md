@@ -10,7 +10,6 @@
   * [Test](#test)
   * [Software](#software)
       * [User Options](#user-options)
-      * [Bitmap](#bitmap)
   * [Hardware](#hardware)
   * [Output](#output)
 
@@ -90,23 +89,6 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 | 3 | ST7735R "Red Tab"   | TFT_ST7735R_Red | RED PCB v1.1, 1.44 , 128 x 128 pixels |
 | 4 | ST7735S "Black Tab" | TFT_ST7735S_Black | RED PCB v1.2, 1.8 , 128 x 160 pixels |
 
-
-### Bitmap
-
-Functions to support drawing bitmaps & sprites.
-
-| Num | Function Name | Colour support | bitmap size Max |  Note |
-| ------ | ------ | ------ | ------ | ------ |
-| 1 | drawBitmap | bi-colour | 2048 bytes  | Data horizontally addressed |
-| 2 | drawBitmap8Data | 8 bit color RRRGGGBB  | 16384  | Data from array on PICO, Converted by software to 16-bit color |
-| 3 | drawBitmap16Data | 16 bit color 565  | 32768  | Data from array on PICO |
-| 4 | drawSpriteData  | 16 bit color  565 | 32768  | Data from array on PICO, Draws background color transparent | 
-
-
-1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
-2. Math in bitmap size column 1-4 assumes 128x128 pixel screen.
-3. The data array for 1 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 2-4  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 

@@ -8,7 +8,6 @@
   * [Test](#test)
   * [Software](#software)
 	  * [User Options](#user-options)
-	  * [Bitmap](#bitmap)
   * [Hardware](#hardware)
   * [Output](#output)
   * [Notes and Issues](#notes-and-issues)
@@ -136,23 +135,6 @@ rather than hard-coded due to diversity of variant modules available.
 | `120x160 Dual Gate` | TBD | TBD | Expected to require centering offsets (~20 px) depending on rotation. Not hardware tested. |
 | `80x160 Single Gate` | TBD | TBD | Expected to require centering offsets (~40 px) depending on rotation. Not hardware tested. |
 | `40x160 Single Gate` | -60 | 60 | **Tested**. Offsets required for 90° and 270° rotations due to centered 40-pixel active area. |
-
-### Bitmap
-
-Functions to support drawing bitmaps & sprites.
-
-| Num | Function Name | Colour support | bitmap size calc | Note |
-| ------ | ------ | ------ | ------ | ------ |
-| 1 | drawBitmap | bi-colour | 2048 bytes | Data horizontally addressed |
-| 2 | drawBitmap8Data | 8 bit color RRRGGGBB | 16384 | Data from array on PICO, Converted by software to 16-bit color |
-| 3 | drawBitmap16Data | 16 bit color 565 | 32768 | Data from array on PICO |
-| 4 | drawSpriteData | 16 bit color  565 | 32768 | Data from array on PICO, Draws background color transparent |
-
-
-1. Bitmap size in kiloBytes = (screenWidth * screenHeight * bitsPerPixel)/(1024 * 8)
-2. Math in bitmap size column 1-4 assumes 128x128 bitmap size.
-3. The data array for 1 is created from image files using file data conversion tool [link](https://javl.github.io/image2cpp/)
-4. The data array for 2-4  is created from BMP files using file data conversion tool [link](https://notisrac.github.io/FileToCArray/)
 
 ## Hardware
 
