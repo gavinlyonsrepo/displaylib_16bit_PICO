@@ -126,7 +126,7 @@ public:
 	bool getTextCharPixelOrBuffer() const;
 	// Bitmap functions
 	DisLib16::Ret_Codes_e drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t col, uint16_t bgcol, const std::span<const uint8_t> data);
-	DisLib16::Ret_Codes_e drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
+	DisLib16::Ret_Codes_e drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h, bool Greyscale = false);
 	DisLib16::Ret_Codes_e drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
 	DisLib16::Ret_Codes_e drawSpriteData(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h, uint16_t bgColor, bool printBg);
 protected:

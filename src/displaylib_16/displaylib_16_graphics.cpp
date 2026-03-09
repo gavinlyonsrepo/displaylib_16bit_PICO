@@ -829,12 +829,14 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 /*!
 	@brief Draws an 8-bit color bitmap (RRRGGGBB format) to the screen.
 		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each
-		pixel to 16-bit RGB565, and writes it to the display.
+		pixel to 16-bit RGB565, and writes it to the display. If Greyscale param
+		is true will display greyscale image
 	@param x X coordinate of the top-left corner of the bitmap.
 	@param y Y coordinate of the top-left corner of the bitmap.
 	@param bitmap span to the 8-bit bitmap data array.
 	@param w Width of the bitmap in pixels.
 	@param h Height of the bitmap in pixels.
+	@param greyScale false = RRRGGBBB mode , true greyscale mode
 	@return Display status code:
 			-# DisLib16::Success on success.
 			-# DisLib16::BitmapDataEmpty if bitmap is empty.
@@ -843,7 +845,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 	@note 	If dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined then the function 
 			will write to screen Buffer instead of VRAM.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h, bool greyScale )
 {
 	if (bitmap.empty()) // 1. Check for empty bitmap
 	{
@@ -867,6 +869,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 
 	// Create an iterator to traverse the bitmap
 	auto bitmapIter = bitmap.begin();
+	uint8_t g = 0;
 #ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 	uint8_t rowBuffer[w * 2]; // Allocate space for 16-bit per pixel row buffer
 	uint16_t j = 0;
@@ -877,7 +880,14 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 		// Convert 8-bit colors to 16-bit RGB565
 		for (uint16_t i = 0; i < w; i++)
 		{
-			color = convert8bitTo16bit(*bitmapIter);
+			if (greyScale == false){
+				color = convert8bitTo16bit(*bitmapIter);
+			}else{
+				// Convert 8-bit grey to RGB565
+				// R = top 5 bits, G = top 6 bits, B = top 5 bits
+				g = *bitmapIter;
+				color = ((g & 0xF8) << 8) | ((g & 0xFC) << 3) | (g >> 3);
+			}
 			rowBuffer[2 * i] = color >> 8;
 			rowBuffer[2 * i + 1] = color & 0xFF;
 			++bitmapIter;
@@ -891,7 +901,12 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			color = convert8bitTo16bit(*bitmapIter++);
+			if (greyScale == false){
+				color = convert8bitTo16bit(*bitmapIter++);
+			}else{
+				g = *bitmapIter++;
+				color = ((g & 0xF8) << 8) | ((g & 0xFC) << 3) | (g >> 3);
+			}
 			drawPixel(x + i, y + j, color);
 			//drawPixel(x + i, y + h - 1 - j, color);
 		}
@@ -1992,4 +2007,6 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::destroyBuffer(void)
 	return DisLib16::Success;
 }
 #endif
+
+
 //**************** EOF *****************
