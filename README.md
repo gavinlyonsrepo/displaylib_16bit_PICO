@@ -4,22 +4,22 @@
 
 ## Table of contents
 
-  * [Overview](#overview)
-  * [Documentation](#documentation)
-    * [Supported devices](#supported-devices)
-    * [API documentation](#api-documentation)
-    * [Fonts](#fonts)
-    * [Bitmaps](#bitmaps)
-  * [Software](#software)
-    * [Advanced Graphics](#advanced-graphics)
-    * [Test](#test)
-    * [Print](#print)
-    * [Advanced buffer mode](#Advanced-buffer-mode)
-    * [File-system](#file-system)
-    * [Error Codes](#error-codes)
-  * [Notes](#notes)
-    * [Projects using library](#projects-using-library)
-    * [Older versions](#older-versions)
+* [Overview](#overview)
+* [Documentation](#documentation)
+  * [Supported devices](#supported-devices)
+  * [API documentation](#api-documentation)
+  * [Fonts](#fonts)
+  * [Bitmaps](#bitmaps)
+* [Software](#software)
+  * [Advanced Graphics](#advanced-graphics)
+  * [Test](#test)
+  * [Print](#print)
+  * [Advanced buffer mode](#advanced-buffer-mode)
+  * [File-system](#file-system)
+  * [Error Codes](#error-codes)
+* [Notes](#notes)
+  * [Projects using library](#projects-using-library)
+  * [Older versions](#older-versions)
 
 ## Overview
 
@@ -40,7 +40,7 @@ for the Raspberry PI PICO.
 * Developed on Toolchain:
 
 1. Raspberry pi PICO RP2040
-2. SDK(1.4.0) C++20
+2. SDK(2.2.0) C++20
 3. compiler G++ for arm-none-eabi((15:10.3-2021.07-4)
 4. CMAKE(VERSION 3.18) , VScode(1.84.2)
 5. Linux Mint 22.1

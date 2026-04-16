@@ -74,6 +74,25 @@ public:
 		Degrees_270    /**< Rotation 270 degrees*/
 	};
 
+	/*! Palette for 4 bit colour conversion - look up table */
+	static constexpr uint16_t palette_4bitcolour[16] = {
+		0x0000, // 0  BLACK
+		0x0AA0, // 1  DARK_GREEN
+		0x0540, // 2  MED_GREEN
+		0x07E0, // 3  GREEN
+		0x000F, // 4  DARK_BLUE
+		0x001F, // 5  BLUE
+		0x2C1F, // 6  LIGHT_BLUE
+		0x07FF, // 7  CYAN
+		0xF800, // 8  RED
+		0xFC00, // 9  DARK_ORANGE
+		0xFD20, // 10 ORANGE
+		0xFFE0, // 11 YELLOW
+		0xF00F, // 12 MAGENTA
+		0xF81F, // 13 PINK
+		0xFC1F, // 14 LIGHT_PINK
+		0xFFFF, // 15 WHITE
+	};
 	// buffer screen mode functions
 #ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 	DisLib16::Ret_Codes_e setBuffer(void);
@@ -126,7 +145,8 @@ public:
 	bool getTextCharPixelOrBuffer() const;
 	// Bitmap functions
 	DisLib16::Ret_Codes_e drawBitmap(int16_t x, int16_t y, int16_t w, int16_t h, uint16_t col, uint16_t bgcol, const std::span<const uint8_t> data);
-	DisLib16::Ret_Codes_e drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h, bool Greyscale = false);
+	DisLib16::Ret_Codes_e drawBitmap4Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
+	DisLib16::Ret_Codes_e drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
 	DisLib16::Ret_Codes_e drawBitmap16Data(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h);
 	DisLib16::Ret_Codes_e drawSpriteData(uint16_t x, uint16_t y, const std::span<const uint8_t> data, uint16_t w, uint16_t h, uint16_t bgColor, bool printBg);
 protected:
@@ -169,6 +189,7 @@ private:
 		b = t;
 	}
 	uint16_t convert8bitTo16bit(uint8_t RRRGGGBB);
+	uint16_t convert4bitTo16bit(uint8_t XXXXRBGG);
 	void drawCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, uint16_t color);
 	void fillCircleHelper(int16_t x0, int16_t y0, int16_t r, uint8_t cornername, int16_t delta, uint16_t color);
 #ifdef dislib16_ADVANCED_GRAPHICS_ENABLE

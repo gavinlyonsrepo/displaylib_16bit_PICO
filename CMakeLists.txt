@@ -1,5 +1,6 @@
 # Set minimum required version of CMake
 cmake_minimum_required(VERSION 3.18)
+set(PICO_BOARD pico)
 
 # Include build functions from Pico SDK
 include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)

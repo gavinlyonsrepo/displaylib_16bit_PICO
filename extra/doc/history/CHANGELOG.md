@@ -51,5 +51,7 @@
   * Added support for GC9D01 TFT LCD.
   * Software reset bug in ili9341 fixed, see github issue 12 for more details.
   
-* Version Next 
+* Version 2.5.0 (work in progress)
   * Added Getters for Font width and height, see github issue 13 for more details
+  * Adjusted print usage function so works with rp2350 Risc V, see github issue 14
+  * Added 4 bit colour bitmap function

@@ -19,7 +19,7 @@ extern const std::span<const uint8_t>  sMotorImage;      /**< 16 bit color 565, 
 extern const std::span<const uint8_t>  sPosterImage;     /**< 16 bit color, (80x48x2), 7680 bytes  */
 extern const std::span<const uint8_t>  sSpriteTest16;    /**< 16 bit color (32x32x2), 2048 bytes background 0x7E5F/C_LBLUE*/
 extern const std::span<const uint8_t>  sColorTestImage;  /**< 8 bit color (96x96x1), 9216 bytes */
-
+extern const std::span<const uint8_t>  sFourBitPaletteImage;  /**< 4 bit color (128x128x0.5), 8192 bytes */
 // extern declarations to icon data arrays, data is in cpp file
 extern const std::array< uint8_t, 16> powerIcon;      /**< Power icon, 16x8 */
 extern const std::array< uint8_t, 16> speedIcon;      /**< Lighting symbol, 16x8 */

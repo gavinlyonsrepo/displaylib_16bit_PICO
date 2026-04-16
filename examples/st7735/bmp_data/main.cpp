@@ -11,6 +11,7 @@
 		-# Test 304 16 bit color image from a data array
 		-# Test 305 16 bit color image data from a data array
 		-# Test 306 8 bit color image data from a data array
+		-# Test 307 4 bit color image data from a data array
 		-# Test 601 FPS bitmap results to serial port
 		-# Test 802 Error checking bitmap functions, results to serial port
 */
@@ -47,8 +48,9 @@ void Test301(void); // bi-color small image
 void Test302(void); // bi-color small image
 void Test303(void); // bi-color full screen image 128x128
 void Test304(void); // 16 bit color image from a data array
-void Test305(void); // 16 bit color image data from a data array
+void Test305(void); // 16 bit color image from a data array
 void Test306(void); // 8 bit color image data from a data array
+void Test307(void); // 4 bit color image data from a data array
 void Test601(void); // FPS test optional , results to serial port
 void Test802(void); // bitmap error checking, results to serial port 
 void EndTests(void);
@@ -65,6 +67,7 @@ int main(void)
 	Test304();
 	Test305();
 	Test306();
+	Test307();
 	Test802();
 	Test601();
 	EndTests();
@@ -239,6 +242,19 @@ void Test306(void)
 }
 
 /*!
+	@brief Test307 4 bit color image data from a data array
+*/
+void Test307(void)
+{
+	char teststr1[] = "Test 307";
+	myTFT.writeCharString(5, 5, teststr1);
+	MILLISEC_DELAY(TEST_DELAY2);
+	myTFT.drawBitmap4Data(0, 0, sFourBitPaletteImage, 128,128);
+	MILLISEC_DELAY(TEST_DELAY5);
+	myTFT.fillScreen(myTFT.C_BLACK);
+}
+
+/*!
 	@brief  Test601 frame rate per second FPS ,results to serial port
 */
 void Test601(void)
@@ -309,6 +325,7 @@ void Test802(void)
 		DisLib16::Success, 
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize, //sprite
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapHorizontalSize, //1-bit bitmap
+		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize,//4-bit bitmap
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize,//8-bit bitmap
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize,//16-bit bitmap
 		DisLib16::BitmapScreenBounds, DisLib16::BitmapScreenBounds, DisLib16::BitmapDataEmpty, DisLib16::BitmapSize//16-bit bitmap
@@ -338,6 +355,11 @@ void Test802(void)
 	returnValues.push_back(myTFT.drawBitmap(50, 180, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage));
 	returnValues.push_back(myTFT.drawBitmap(50, 65, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, emptyBitmap));
 	returnValues.push_back(myTFT.drawBitmap(20, 20, 70, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage));
+	//drawBitmap4Data
+	returnValues.push_back(myTFT.drawBitmap4Data(140, 0, sFourBitPaletteImage, 128, 128));
+	returnValues.push_back(myTFT.drawBitmap4Data(0, 140, sFourBitPaletteImage, 128, 128));
+	returnValues.push_back(myTFT.drawBitmap4Data(0, 0, emptyBitmap, 32, 32));
+	returnValues.push_back(myTFT.drawBitmap4Data(0, 0, sFourBitPaletteImage, 128, 140));
 	//drawBitmap8Data
 	returnValues.push_back(myTFT.drawBitmap8Data(400, 50, sColorTestImage, 96, 96));
 	returnValues.push_back(myTFT.drawBitmap8Data(40, 400, sColorTestImage, 96, 96));

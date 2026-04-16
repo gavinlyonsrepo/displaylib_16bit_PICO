@@ -13,7 +13,7 @@ namespace DisLib16
 	@brief  get the library version number
 	@return the library version number eg 120 = 1.2.0
 */
-uint16_t LibraryVersion(void){return 240;}
+uint16_t LibraryVersion(void){return 250;}
 
 bool _debugMode = false; /**< false: default + debug off, true: debug on  */
 
@@ -46,7 +46,14 @@ void printMemoryUsage(void) {
 	char* bss_end = &__bss_end__;
 	char* heap_end = (char*)sbrk(0);
 	char* stack_ptr;
-	__asm volatile ("mov %0, sp" : "=r"(stack_ptr));
+	
+	#if defined(__arm__)
+		__asm volatile ("mov %0, sp" : "=r"(stack_ptr));
+	#elif defined(__riscv)
+		__asm volatile ("mv %0, sp" : "=r"(stack_ptr));
+	#else
+		#error "Unsupported architecture: cannot read stack pointer"
+	#endif
 
 	std::size_t heap_usage = heap_end - bss_end;
 	std::size_t heap_stack_gap = stack_ptr - heap_end;

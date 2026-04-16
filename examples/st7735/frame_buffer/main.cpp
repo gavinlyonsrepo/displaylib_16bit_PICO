@@ -184,6 +184,10 @@ void TestBitmap(void)
 	printf("Bitmap 1-bit\n");
 	myTFT.drawBitmap(0, 0, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage);
 	ScreenReset();
+	// Bitmap 4-bit
+	printf("Bitmap 4-bit\n");
+	myTFT.drawBitmap4Data(0, 0, sFourBitPaletteImage, 128, 128);
+	ScreenReset();
 	// Bitmap 8-bit
 	printf("Bitmap 8-bit\n");
 	myTFT.drawBitmap8Data(20, 20, sColorTestImage, 96, 96);

@@ -827,16 +827,14 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 }
 
 /*!
-	@brief Draws an 8-bit color bitmap (RRRGGGBB format) to the screen.
-		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each
-		pixel to 16-bit RGB565, and writes it to the display. If Greyscale param
-		is true will display greyscale image
+	@brief Draws an 4-bit color bitmap (RBGG format) to the screen.
+		This function reads an 4-bit bitmap stored in RBGG-RBGG format, converts each
+		byte to two 16-bit RGB565, and writes it to the display.
 	@param x X coordinate of the top-left corner of the bitmap.
 	@param y Y coordinate of the top-left corner of the bitmap.
-	@param bitmap span to the 8-bit bitmap data array.
+	@param bitmap span to the 4-bit bitmap data array.
 	@param w Width of the bitmap in pixels.
 	@param h Height of the bitmap in pixels.
-	@param greyScale false = RRRGGBBB mode , true greyscale mode
 	@return Display status code:
 			-# DisLib16::Success on success.
 			-# DisLib16::BitmapDataEmpty if bitmap is empty.
@@ -845,7 +843,90 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 	@note 	If dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined then the function 
 			will write to screen Buffer instead of VRAM.
 */
-DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h, bool greyScale )
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap4Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
+{
+	if (bitmap.empty()) // 1. Check for empty bitmap
+	{
+		printf("Error drawBitmap4 1: Bitmap array is empty\r\n");
+		return DisLib16::BitmapDataEmpty;
+	}
+	if ((x >= _width) || (y >= _height)) // 2. Check bounds
+	{
+		printf("Error drawBitmap4 2: Out of screen bounds\r\n");
+		return DisLib16::BitmapScreenBounds;
+	}
+	if (bitmap.size() < (static_cast<uint32_t>(w) * h + 1) / 2) // Ensure bitmap has enough data
+	{
+		printf("Error drawBitmap4 3: Bitmap size too small\r\n");
+		return DisLib16::BitmapSize;
+	}
+	if ((x + w - 1) >= _width)
+		w = _width - x;
+	if ((y + h - 1) >= _height)
+		h = _height - y;
+
+	const uint16_t bytesPerRow = (w + 1) / 2;
+#ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
+	uint8_t rowBuffer[w * 2]; // Allocate space for 16-bit per pixel row buffer
+	for (uint16_t j = 0; j < h; ++j)
+	{
+		uint16_t col = 0;
+		// lambda to process packing of row buffer 
+		auto write_pixel = [&](uint8_t nibble)
+		{
+			if (col >= w) return;  // guard for odd widths / padding nibble
+			uint16_t color       = convert4bitTo16bit(nibble);
+			rowBuffer[2 * col]   = color >> 8;
+			rowBuffer[2 * col + 1] = color & 0xFF;
+			++col;
+		};
+		for (const auto byte : bitmap.subspan(j * bytesPerRow , bytesPerRow ))
+		{
+			write_pixel((byte >> 4) & 0x0F);  // high nibble = left pixel
+			write_pixel( byte       & 0x0F);  // low nibble  = right pixel
+		}
+		setAddrWindow(x, y + j, x + w - 1, y + j);
+		spiWriteDataBuffer(rowBuffer, w * 2);
+	}
+#else
+	for (uint16_t j = 0; j < h; ++j)
+	{
+		uint16_t col = 0;
+		// lambda to process draw pixel converted byte by byte
+		auto draw_pixel = [&](uint8_t nibble)
+		{
+			if (col >= w) return;  // guard for odd widths / padding nibble
+			drawPixel(x + col, y + j, convert4bitTo16bit(nibble));
+			++col;
+		};
+		for (const auto byte : bitmap.subspan(j * bytesPerRow, bytesPerRow))
+		{
+			draw_pixel((byte >> 4) & 0x0F);  // high nibble = left pixel
+			draw_pixel( byte       & 0x0F);  // low nibble  = right pixel
+		}
+	}
+#endif
+	return DisLib16::Success;
+}
+
+/*!
+	@brief Draws an 8-bit color bitmap (RRRGGGBB format) to the screen.
+		This function reads an 8-bit bitmap stored in RRRGGGBB format, converts each
+		pixel to 16-bit RGB565, and writes it to the display. 
+	@param x X coordinate of the top-left corner of the bitmap.
+	@param y Y coordinate of the top-left corner of the bitmap.
+	@param bitmap span to the 8-bit bitmap data array.
+	@param w Width of the bitmap in pixels.
+	@param h Height of the bitmap in pixels.
+	@return Display status code:
+			-# DisLib16::Success on success.
+			-# DisLib16::BitmapDataEmpty if bitmap is empty.
+			-# DisLib16::BitmapScreenBounds if the coordinates are out of screen bounds.
+			-# DisLib16::BitmapSize if bitmap is too small.
+	@note 	If dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined then the function 
+			will write to screen Buffer instead of VRAM.
+*/
+DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16_t y, const std::span<const uint8_t> bitmap, uint16_t w, uint16_t h)
 {
 	if (bitmap.empty()) // 1. Check for empty bitmap
 	{
@@ -869,7 +950,6 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 
 	// Create an iterator to traverse the bitmap
 	auto bitmapIter = bitmap.begin();
-	uint8_t g = 0;
 #ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 	uint8_t rowBuffer[w * 2]; // Allocate space for 16-bit per pixel row buffer
 	uint16_t j = 0;
@@ -880,14 +960,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 		// Convert 8-bit colors to 16-bit RGB565
 		for (uint16_t i = 0; i < w; i++)
 		{
-			if (greyScale == false){
-				color = convert8bitTo16bit(*bitmapIter);
-			}else{
-				// Convert 8-bit grey to RGB565
-				// R = top 5 bits, G = top 6 bits, B = top 5 bits
-				g = *bitmapIter;
-				color = ((g & 0xF8) << 8) | ((g & 0xFC) << 3) | (g >> 3);
-			}
+			color = convert8bitTo16bit(*bitmapIter);
 			rowBuffer[2 * i] = color >> 8;
 			rowBuffer[2 * i + 1] = color & 0xFF;
 			++bitmapIter;
@@ -901,12 +974,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 	{
 		for (uint16_t i = 0; i < w; i++)
 		{
-			if (greyScale == false){
-				color = convert8bitTo16bit(*bitmapIter++);
-			}else{
-				g = *bitmapIter++;
-				color = ((g & 0xF8) << 8) | ((g & 0xFC) << 3) | (g >> 3);
-			}
+			color = convert8bitTo16bit(*bitmapIter++);
 			drawPixel(x + i, y + j, color);
 			//drawPixel(x + i, y + h - 1 - j, color);
 		}
@@ -1185,22 +1253,33 @@ void displaylib_16_graphics::setTextColor(uint16_t c, uint16_t b)
 }
 
 /*!
+	@brief convert 4 bit color nibble to 16 bit word color 565
+	@param fourBitColor byte of 4 bit color XXXX-RBGG
+	@details XXXX-RBGG to RRRRRGGGGGGBBBBB , XXX is ignored
+	@return a uint16_t containing 16 bit 565 color values.
+*/
+uint16_t displaylib_16_graphics::convert4bitTo16bit(uint8_t fourBitColor)
+{
+	// Get palette from Lookup table, mutiple tables can be added with changes
+	return palette_4bitcolour[fourBitColor & 0x0F];
+}
+
+/*!
 	@brief convert 8 bit color to 16 bit color 565
-	@param RRRGGGBB a byte of 8bit color
+	@param eightBitColor a byte of 8 bit color RRRG-GGBB 
 	@details RRRGGGBB to RRRRRGGGGGGBBBBB
 	@return a uint16_t 565 color value
 */
-uint16_t displaylib_16_graphics::convert8bitTo16bit(uint8_t RRRGGGBB)
+uint16_t displaylib_16_graphics::convert8bitTo16bit(uint8_t eightBitColor)
 {
-	uint16_t red = (RRRGGGBB >> 5) & 0x07;
-	uint16_t green = (RRRGGGBB >> 2) & 0x07;
-	uint16_t blue = RRRGGGBB & 0x03;
-	red = (red * 255 / 7) >> 3;		// Scale 3-bit red (0-7) to 5-bit (0-31)
-	green = (green * 255 / 7) >> 2; // Scale 3-bit green (0-7) to 6-bit (0-63)
-	blue = (blue * 255 / 3) >> 3;	// Scale 2-bit blue (0-3) to 5-bit (0-31)
-	return (red << 11) | (green << 5) | blue;
+		uint16_t red = (eightBitColor>> 5) & 0x07;
+		uint16_t green = (eightBitColor >> 2) & 0x07;
+		uint16_t blue = eightBitColor & 0x03;
+		red = (red * 255 / 7) >> 3;		// Scale 3-bit red (0-7) to 5-bit (0-31)
+		green = (green * 255 / 7) >> 2; // Scale 3-bit green (0-7) to 6-bit (0-63)
+		blue = (blue * 255 / 3) >> 3;	// Scale 2-bit blue (0-3) to 5-bit (0-31)
+		return (red << 11) | (green << 5) | blue;
 }
-
 /*!
 	@brief Set the text rendering mode to either buffered or pixel-by-pixel.
 	@param mode If true, characters are drawn pixel by pixel; if false, characters are drawn using a buffer.
