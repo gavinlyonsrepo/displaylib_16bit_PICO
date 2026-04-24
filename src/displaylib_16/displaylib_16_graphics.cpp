@@ -1441,8 +1441,8 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawPolygon(int16_t x, int16_t y, 
 		and adjusts them if necessary. It also validates The grid of dots gap value and defaults it to 2 if invalid.
 	@param x The x-coordinate of the top-left corner where The grid of dots will start.
 	@param y The y-coordinate of the top-left corner where The grid of dots will start.
-	@param w The width of the area to draw The grid of dots, from the starting x-coordinate.
-	@param h The height of the area to draw The grid of dots, from the starting y-coordinate.
+	@param w The absolute x-coordinate of the right edge where The grid of dots will end (not a width).
+	@param h The absolute y-coordinate of the bottom edge where The grid of dots will end (not a height).
 	@param DotGridGap The gap between each dot gap line, controlling the spacing between drawn pixels.
 	@param color The color of the pixels to draw in The grid of dots.
 	@return DisLib16::Ret_Codes_e Returns a status code indicating success or failure. Possible return values:

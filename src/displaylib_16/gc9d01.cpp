@@ -7,7 +7,7 @@
 #include "../../include/displaylib_16/gc9d01.hpp"
  
 /*!
-	@brief Constructor for class GC9D01_LTSM
+	@brief Constructor for class GC9D01_TFT
 */
 GC9D01_TFT :: GC9D01_TFT(){}
 

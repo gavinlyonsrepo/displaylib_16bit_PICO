@@ -57,6 +57,7 @@ for the Raspberry PI PICO.
 | ILI9341 | 16 bit Colour Graphic TFT LCD | SPI HW & SW | [Readme](extra/doc/ili9341/README.md) |
 | GC9A01 | 16 bit Colour Graphic TFT LCD | SPI HW & SW | [Readme](extra/doc/gc9a01/README.md) |
 | GC9D01 | 16 bit Colour Graphic TFT LCD | SPI HW & SW | [Readme](extra/doc/gc9d01/README.md) |
+| GC9107 | 16 bit Colour Graphic TFT LCD | SPI HW & SW | [Readme](extra/doc/gc9107/README.md) |
 
 ### API Documentation
 
