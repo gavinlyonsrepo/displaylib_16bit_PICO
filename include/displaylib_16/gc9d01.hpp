@@ -2,14 +2,30 @@
 	@file    gc9d01.hpp
 	@author  Gavin Lyons, LionTron Systems
 	@brief   PICO Library header file, Contains driver methods for gc9d01 display
-	@todo    gc9d01 :: investigate brightness mode, not working?
-	
 */
 
 #pragma once
 
 // Section Libraries
 #include "displaylib_16_graphics.hpp"
+
+// ========== Section User Options ===========
+// Choose ONE and ONE ONLY (comment out the others)
+#define   GC9D01_DUAL_INIT 1  // 160x160 default
+//#define GC9D01_DUAL_INIT_120x160  1 // May not exist on market?
+//#define GC9D01_SINGLE_INIT_40x160 1
+//#define GC9D01_SINGLE_INIT_50x160 1
+//#define GC9D01_SINGLE_INIT_60x160 1
+//#define GC9D01_SINGLE_INIT_80x160 1  // May not exist on market?
+//  ========== End Section User Options===========
+
+#ifdef GC9D01_DUAL_INIT_120x160 // no init yet, default to GC9D01_DUAL_INIT
+	#define GC9D01_DUAL_INIT
+#endif
+
+#ifdef GC9D01_SINGLE_INIT_80x160 // no init yet, default to _SINGLE_INIT_40x160
+	#define GC9D01_SINGLE_INIT_40x160
+#endif
 
 /*! @brief Class to control GC9D01 TFT basic functionality. */
 class GC9D01_TFT : public displaylib_16_graphics
@@ -42,10 +58,12 @@ public:
 	 */
 	enum class Resolution_e : uint8_t
 	{
-		RGB160x160_DualGate,	 /**< 160RGB × 160, S1–S240, Dual gate (default) */
-		RGB120x160_DualGate,	 /**< 120RGB × 160, S31–S210, Dual gate */
-		RGB80x160_SingleGate,	 /**< 80RGB × 160, S1–S240, Single gate */
-		RGB40x160_SingleGate	 /**< 40RGB × 160, S61–S180, Single gate */
+		RGB160x160_DualGate,  /**< 160×160, S1–S240, Dual gate (default) */
+		RGB120x160_DualGate,  /**< 120×160, S31–S210, Dual gate */
+		RGB80x160_SingleGate, /**< 80×160, S1–S240, Single gate */
+		RGB60x160_SingleGate, /**< 60×160, Single gate */
+		RGB50x160_SingleGate, /**< 50×160, Single gate */
+		RGB40x160_SingleGate  /**< 40×160, S61–S180, Single gate */
 	};
 	
 	/*!
@@ -67,7 +85,7 @@ public:
 	void TFTInitSPIType(uint16_t CommDelay);
 	void TFTInitScreenSize(uint16_t w = 160, uint16_t h = 160, 
 		Resolution_e r = Resolution_e::RGB160x160_DualGate, PixelFixMode_e p = PixelFixMode_e::Both, 
-		uint16_t Xstart= 0, uint16_t Ystart=0);
+		uint16_t XLstart = 0, uint16_t YLstart = 0, uint16_t XPstart= 0, uint16_t YPstart = 0);
 	void TFTGC9D01Initialize(void);
 	void TFTPowerDown(void);
 	uint16_t TFTSwSpiGpioDelayGet(void);
@@ -86,16 +104,33 @@ public:
 
 private:
 	void TFTHWSPIInitialize(void);
+	void TFTinitByResolution(void);
 	void TFTResetPIN(void);
-	void DualGatecmdInitSequence(void);
-	void SingleGatecmdInitSequence(void);
+#ifdef GC9D01_DUAL_INIT
+	void DualGatecmdInitSequence(void); // default
+#endif
+#ifdef GC9D01_DUAL_INIT_120x160
+	void DualGatecmdInitSequence120x160(void);
+#endif
+#ifdef GC9D01_SINGLE_INIT_40x160
+	void SingleGatecmdInitSequence40x160(void);
+#endif
+#ifdef GC9D01_SINGLE_INIT_50x160
+	void SingleGatecmdInitSequence50x160(void);
+#endif
+#ifdef GC9D01_SINGLE_INIT_60x160
+	void SingleGatecmdInitSequence60x160(void);
+#endif
+#ifdef GC9D01_SINGLE_INIT_80x160
+	void SingleGatecmdInitSequence80x160(void);
+#endif
 
 private:
 	// Display 
 	PowerState_e _currentPowerState = PowerState_e::NormalIdleOff; /**< Enum to hold display mode */
 	Resolution_e  _currentResolution = Resolution_e::RGB160x160_DualGate ; /**< enum to hold display resolution */
 	PixelFixMode_e _currentPixelFixMode = PixelFixMode_e::Off; /**< enum to hold pixel fix mode */
-	bool _displayOn = false; /**< Enum to hold display on/off status */
+	bool _displayOn = false; /**< bool to hold display on/off status */
 	const uint16_t _sleepDelay = 120; /**< Sleep delay in ms, datasheet 4.2.4. */
 	// SPI
 	bool _resetPinOn = true; /**< reset pin? true:hw rst pin, false:sw rt*/
@@ -103,10 +138,12 @@ private:
 	uint16_t _widthStartTFT = 160;	/**< never change after first init */
 	uint16_t _heightStartTFT = 160; /**< never change after first init */
 	// Screen Offsets
-	uint16_t  _GC9D01_X_Offset_Start = 0; /**< column offset, never change after first init */
-	uint16_t  _GC9D01_Y_Offset_Start = 0; /**< row offset, never change after first init */
-	uint16_t _GC9D01_X_Offset = 0; /**< Column offset based on rotation, resolution and display type */
-	uint16_t _GC9D01_Y_Offset = 0; /**< Row offset based on rotation, resolution and display type */
+	uint16_t _GC9D01_X_Portrait  = 0;  /**< Column offset for 0/180 rotation */
+	uint16_t _GC9D01_Y_Portrait  = 0;  /**< Row offset for 0/180 rotation    */
+	uint16_t _GC9D01_X_Landscape = 0;  /**< Column offset for 90/270 rotation */
+	uint16_t _GC9D01_Y_Landscape = 0;  /**< Row offset for 90/270 rotation   */
+	uint16_t _GC9D01_X_Offset    = 0;  /**< Active offset, set by TFTsetRotation */
+	uint16_t _GC9D01_Y_Offset    = 0;  /**< Active offset, set by TFTsetRotation */
 	/*!
 	 * @brief MADCTL bit flags for register GC9D01_MADCTL (0x36).
 	 */

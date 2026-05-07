@@ -24,24 +24,12 @@
 #define TEST_DELAY1 1000
 #define TEST_DELAY2 2000
 #define TEST_DELAY5 5000
-#define CLOCK_DISPLAY_TIME 20 // seconds
 #ifdef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 #pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
 #endif
 
-// Screen Values Setup
-// Size of VRAM (note 60x160 display has VRAM of 128x160)
-uint16_t TFT_VRAM_WIDTH  = 128; // VRAM width  size in pixels
-uint16_t TFT_VRAM_HEIGHT = 160; // VRAM height size in pixels
-// Offsets for portrait and landscape rotations, see readme for values calculation
-#define X_OFFSET 34 // Offset for portrait  rotation  0 and 180
-#define Y_OFFSET 34 // Offset for landscape rotation 90 and 270
 // Init display class object
 GC9107_TFT myTFT;
-// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
-GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
-// Empty span For unit testing 
-std::span<const uint8_t> emptyBitmap{};
 
 //  Section ::  Function Headers
 
@@ -97,7 +85,16 @@ void Setup(void)
 	myTFT.TFTsetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 // ***
 // *** USER OPTION 2 Screen Setup ***
-	myTFT.TFTInitScreen(TFT_VRAM_WIDTH , TFT_VRAM_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+	uint16_t TFT_WIDTH = 60;   // width  size in pixels
+	uint16_t TFT_HEIGHT = 160; // height size in pixels
+	// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
+	GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
+	myTFT.TFTInitScreen(TFT_WIDTH , TFT_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+// ***
+// *** USER OPTION 3 Screen offsets in portrait***
+	uint8_t X_Offset = 34;
+	uint8_t Y_Offset = 0;
+	myTFT.TFTsetPanelOffset(X_Offset, Y_Offset);
 // ***
 	myTFT.TFTGC9107Initialize();
 }
@@ -112,16 +109,16 @@ void Test300(void)
 	// Green background screen
 	myTFT.fillScreen(myTFT.C_GREEN);
 	MILLISEC_DELAY(TEST_DELAY2);
-	myTFT.drawSpriteData(0, Y_OFFSET, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
+	myTFT.drawSpriteData(0, 0, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
 	MILLISEC_DELAY(TEST_DELAY5);
 
 	// Test 300-B test 16-bit color Sprite 
 	// Draw as sprite, without background , 32 X 32 .background color = ST7375_LBLUE
 	// Bitmap background screen
-	myTFT.drawBitmap16Data(60, Y_OFFSET, sPosterImage, 80, 48);
+	myTFT.drawBitmap16Data(60, 0, sPosterImage, 80, 48);
 	MILLISEC_DELAY(TEST_DELAY5);
-	myTFT.drawSpriteData(60, Y_OFFSET, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
-	myTFT.drawSpriteData(90, Y_OFFSET, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
+	myTFT.drawSpriteData(60, 0, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
+	myTFT.drawSpriteData(90, 0, sSpriteTest16, 32, 32, myTFT.C_LBLUE, false);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -134,10 +131,10 @@ void Test302(void)
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	char teststr1[] = "Test 302";
-	myTFT.writeCharString(5, 10 + Y_OFFSET, teststr1);
-	myTFT.drawBitmap(0, 30 + Y_OFFSET, 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
-	myTFT.drawBitmap(50, 30 + Y_OFFSET, 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
-	myTFT.drawBitmap(90 , 30 + Y_OFFSET, 40, 16, myTFT.C_YELLOW, myTFT.C_RED, sSunTextImage);
+	myTFT.writeCharString(5, 10 , teststr1);
+	myTFT.drawBitmap(0, 30 , 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
+	myTFT.drawBitmap(50, 30 , 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
+	myTFT.drawBitmap(90 , 30 , 40, 16, myTFT.C_YELLOW, myTFT.C_RED, sSunTextImage);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -149,9 +146,9 @@ void Test305(void)
 {
 	char teststr1[] = "Test 305";
 	myTFT.fillScreen(myTFT.C_WHITE);
-	myTFT.writeCharString(0, Y_OFFSET, teststr1);
+	myTFT.writeCharString(0, 0, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
-	myTFT.drawBitmap16Data(0, Y_OFFSET, sPosterImage, 80, 48);
+	myTFT.drawBitmap16Data(0, 0, sPosterImage, 80, 48);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -163,7 +160,7 @@ void EndTests(void)
 {
 	char teststr1[] = "Tests over";
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.writeCharString(0, Y_OFFSET + 4, teststr1);
+	myTFT.writeCharString(0, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.TFTPowerDown();
 	printf("TFT :: Tests Over\r\n");

@@ -183,21 +183,29 @@ void GC9107_TFT::TFTsetRotation(display_rotate_e mode) {
 		case Degrees_0 : // 0x00
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
+			_xstart = _colOffset;
+			_ystart = _rowOffset;
 			break;
 		case Degrees_90:
 			madctl |= (MADCTL_FLAGS_t::ML | MADCTL_FLAGS_t::MV | MADCTL_FLAGS_t::MX  ); // 0x70 0111-0000;
 			_width  =_heightStartTFT;
 			_height = _widthStartTFT;
+			_xstart = _rowOffset;
+			_ystart = _colOffset;
 			break;
 		case Degrees_180:  
 			madctl |= (MADCTL_FLAGS_t::MY | MADCTL_FLAGS_t::MX ); // 0xC0 1100-0000;
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
+			_xstart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
+			_ystart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
 			break;
 		case Degrees_270:  
 			madctl |= (MADCTL_FLAGS_t::MY |MADCTL_FLAGS_t::MV ); // 0xA0 1010-0000;
 			_width =_heightStartTFT;
 			_height = _widthStartTFT;
+			_xstart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
+			_ystart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
 			break;
 	}
 	writeCommand(GC9107_MADCTL);
@@ -219,6 +227,21 @@ void GC9107_TFT::TFTInitScreen(uint16_t width_TFT, uint16_t height_TFT,
 	_widthStartTFT  = width_TFT;
 	_heightStartTFT = height_TFT;
 	_memoryBase     = memoryBase;
+	switch (_memoryBase)
+	{
+		case GM_memory_base_e::MEMORY_BASE_GM_128x160:
+			_RAM_WIDTH  = 128;
+			_RAM_HEIGHT = 160;
+		break;
+		case GM_memory_base_e::MEMORY_BASE_GM_128x128:
+			_RAM_WIDTH  = 128;
+			_RAM_HEIGHT = 128;
+		break;
+		default:
+			_RAM_WIDTH  = 128;
+			_RAM_HEIGHT = 128;
+		break;
+	}
 	if (colorOrder != MADCTL_FLAGS_t::RGB && colorOrder != MADCTL_FLAGS_t::BGR)
 	{
 		if (DisLib16::isDebugMode())
@@ -257,7 +280,12 @@ void GC9107_TFT::setAddrWindow(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h)
 		w = x1;
 		h = y1;
 	}
-
+	// Translate panel coordinates → VRAM coordinates
+	x1 += _xstart;
+	w  += _xstart;
+	y1 += _ystart;
+	h  += _ystart;
+	// Send to display coordinates
 	uint8_t x1Higher = (x1 >> 8) ;
 	uint8_t x1Lower  = (x1 & 0xFF);
 	uint8_t x2Higher = (w >> 8);
@@ -516,5 +544,18 @@ void GC9107_TFT::TFTGammaSet(void) {
 		}
 	break;
 	}
+}
+
+/*!
+	@brief Set the panel RAM offsets for displays where the visible area
+		is smaller than the VRAM. Portrait X/Y offsets are supplied;
+		landscape offsets are derived automatically for all rotations.
+	@param colOffset  Columns of dead RAM to the left of the panel in portrait (0°)
+	@param rowOffset  Rows of dead RAM above the panel in portrait (0°)
+*/
+void GC9107_TFT::TFTsetPanelOffset(uint8_t colOffset, uint8_t rowOffset)
+{
+	_colOffset = colOffset;
+	_rowOffset = rowOffset;
 }
 // === EOF ===

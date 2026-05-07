@@ -5,11 +5,11 @@
 	@details Setup for 60x160 display. This example is for testing the frame buffer 
 			mode of the library, 
 			see readme for more details on this mode and how to use it.
-	@note   See USER OPTIONS 0-2 in SETUP function
+	@note   See USER OPTIONS in SETUP function
 			dislib16_ADVANCED_SCREEN_BUFFER_ENABLE must be enabled for this example
 			or it will not compile. Its in displaylib_16_graphics.hpp
 	@test
-		-# 1001 Frame buffer mode.
+		-# 1005 Frame buffer mode.
 */
 
 // Section ::  libraries
@@ -23,32 +23,24 @@
 #ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 #pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is not defined. it is required for this example")
 #endif
-// Screen Values Setup
-// Size of VRAM (note 60x160 display has VRAM of 128x160)
-uint16_t TFT_VRAM_WIDTH  = 128; // VRAM width  size in pixels
-uint16_t TFT_VRAM_HEIGHT = 160; // VRAM height size in pixels
-// Offsets for portrait and landscape rotations, see readme for values calculation
-#define X_OFFSET 34 // Offset for portrait  rotation  0 and 180
-#define Y_OFFSET 34 // Offset for landscape rotation 90 and 270
+
 // Init display class object
 GC9107_TFT myTFT;
-// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
-GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
 
 //  Section ::  Function Headers
 bool Setup(void);
-void Test100(void);
+void Test1005(void);
 void EndTests(void);
 void ScreenReset(void);
 
 //  Section ::  MAIN loop
 int main(void)
 {
-	DisLib16::setDebugMode(true); // turn on debug mode
+	DisLib16::setDebugMode(true); // turn on debug mode  optional
 	if (!Setup())
 		return -1;
 	myTFT.TFTsetRotation(myTFT.Degrees_90);
-	Test100();
+	Test1005();
 	EndTests();
 }
 // *** End OF MAIN **
@@ -81,15 +73,23 @@ bool Setup(void)
 	myTFT.TFTsetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 // ***
 // *** USER OPTION 2 Screen Setup ***
-	myTFT.TFTInitScreen(TFT_VRAM_WIDTH , TFT_VRAM_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+	uint16_t TFT_WIDTH = 60;   // width  size in pixels
+	uint16_t TFT_HEIGHT = 160; // height size in pixels
+	// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
+	GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
+	myTFT.TFTInitScreen(TFT_WIDTH , TFT_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+// ***
+// *** USER OPTION 3 Screen offsets in portrait***
+	uint8_t X_Offset = 34;
+	uint8_t Y_Offset = 0;
+	myTFT.TFTsetPanelOffset(X_Offset, Y_Offset);
 // ***
 	myTFT.TFTGC9107Initialize();
 
 	if (myTFT.setBuffer() != DisLib16::Success)
 		return false;					  // set up buffer
 	myTFT.setTextCharPixelOrBuffer(true); // set to use pixel mode for text
-	DisLib16::setDebugMode(true);
-	DisLib16::printMemoryUsage();
+	DisLib16::printMemoryUsage(); // optional
 	return true;
 }
 
@@ -109,9 +109,9 @@ void ScreenReset(void)
 	myTFT.clearBuffer(myTFT.C_BLACK);
 }
 
-void Test100(void)
+void Test1005(void)
 {
-	printf("Test1\r\n");
+	printf("Test1005\r\n");
 	myTFT.clearBuffer(myTFT.C_RED);
 	myTFT.writeBuffer();
 	MILLISEC_DELAY(1000);
@@ -124,7 +124,7 @@ void Test100(void)
 
 	myTFT.clearBuffer(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
-	myTFT.setCursor(15, 15+Y_OFFSET);
+	myTFT.setCursor(15, 15);
 	myTFT.setFont(font_arialBold);
 	myTFT.print("Buffer");
 	myTFT.writeBuffer();

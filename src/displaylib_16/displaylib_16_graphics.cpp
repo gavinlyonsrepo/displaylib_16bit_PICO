@@ -20,7 +20,7 @@ displaylib_16_graphics::displaylib_16_graphics() {}
 			Much faster than pixel by pixel spi byte writes
 			If dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined then the function 
 			will use the screen buffer to draw the pixel.
-	@return Will return early if x or y are out of bounds.
+			Will return early if x or y are out of bounds.
 */
 void displaylib_16_graphics ::drawPixel(uint16_t x, uint16_t y, uint16_t color)
 {

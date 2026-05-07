@@ -3,15 +3,15 @@
 	@author Gavin Lyons
 	@brief  Example cpp file for gc9d01 driver. Test Hello World on single gate 40x160
 	@note   See USER OPTIONS 0-2 in SETUP function
-			This example is for 40x160 single gate.
-			This example requires macro GC9D01_SINGLE_INIT_40x160,
+			This example is for 60x160 single gate.
+			This example requires macro GC9D01_SINGLE_INIT_60x160,
 			it is in gc9d01.hpp Section User Options.
 			This example requires frame buffer mode to be on.(non-default)
 			see displaylib_16_graphics.hpp USER OPTION 2.
 			Untested in real hardware by author, third party contribution.
-			Requires usable heap memory of (40x160x2) = 12,800 bytes for buffer
+			Requires usable heap memory of (60x160x2) = 19,200 bytes for buffer
 	@test
-		-# Test 102 Print out Hello world on single gate 40x160
+		-# Test 102 Print out Hello world on single gate 60x160
 */
 
 // Section ::  libraries 
@@ -81,14 +81,14 @@ bool Setup(void)
 	myTFT.TFTsetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 // ***
 // *** USER OPTION 2 Screen Setup ***
-	uint16_t TFT_WIDTH  =   40; // Screen width in pixels
+	uint16_t TFT_WIDTH  =   60; // Screen width in pixels
 	uint16_t TFT_HEIGHT =  160; // Screen height in pixels
-	uint16_t OFFSET_X_L =  -60; // Landscape Screen X offset in pixels
-	uint16_t OFFSET_Y_L =   60; // Landscape Screen Y offset in pixels
-	uint16_t OFFSET_X_P =    0; // Portrait Screen X offset in pixels
+	uint16_t OFFSET_X_L =  -40; // Landscape Screen X offset in pixels
+	uint16_t OFFSET_Y_L =   50; // Landscape Screen Y offset in pixels
+	uint16_t OFFSET_X_P =   10; // Portrait Screen X offset in pixels
 	uint16_t OFFSET_Y_P =    0; // Portrait Screen Y offset in pixels
 	// Display type, 4 choice's, see readme.
-	GC9D01_TFT::Resolution_e DisplayType = GC9D01_TFT::Resolution_e::RGB40x160_SingleGate;
+	GC9D01_TFT::Resolution_e DisplayType = GC9D01_TFT::Resolution_e::RGB60x160_SingleGate;
 	// Pixel Draw mode type, 4 choices , see readme.  
 	GC9D01_TFT::PixelFixMode_e FixType = GC9D01_TFT::PixelFixMode_e::Off;
 	myTFT.TFTInitScreenSize(TFT_WIDTH, TFT_HEIGHT, DisplayType, FixType,

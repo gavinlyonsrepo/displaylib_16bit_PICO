@@ -155,12 +155,87 @@ void GC9D01_TFT::TFTGC9D01Initialize()
 		TFTHWSPIInitialize();
 	}
 
-	if(_currentResolution == Resolution_e::RGB160x160_DualGate ||
-		   _currentResolution == Resolution_e::RGB120x160_DualGate) {
-			DualGatecmdInitSequence();
-	}else if(_currentResolution == Resolution_e::RGB80x160_SingleGate ||
-					_currentResolution == Resolution_e::RGB40x160_SingleGate) {
-			SingleGatecmdInitSequence();
+	TFTinitByResolution();
+}
+
+/*!
+	@brief   helper function for TFTGC9D01Initialize calls command sequnce
+	@details Calls the appropriate init sequence based on resolution selected
+*/
+void GC9D01_TFT::TFTinitByResolution()
+{
+	// Mismatch guard: macro and Resolution_e must agree 
+	bool _macroResolutionMismatch = false;
+	#if defined(GC9D01_DUAL_INIT)
+		if (_currentResolution != Resolution_e::RGB160x160_DualGate &&
+		    _currentResolution != Resolution_e::RGB120x160_DualGate)
+			_macroResolutionMismatch = true;
+	#elif defined(GC9D01_SINGLE_INIT_40x160)
+		if (_currentResolution != Resolution_e::RGB40x160_SingleGate &&
+		    _currentResolution != Resolution_e::RGB80x160_SingleGate)
+			_macroResolutionMismatch = true;
+	#elif defined(GC9D01_SINGLE_INIT_50x160)
+		if (_currentResolution != Resolution_e::RGB50x160_SingleGate)
+			_macroResolutionMismatch = true;
+	#elif defined(GC9D01_SINGLE_INIT_60x160)
+		if (_currentResolution != Resolution_e::RGB60x160_SingleGate)
+			_macroResolutionMismatch = true;
+	#endif
+
+	if (_macroResolutionMismatch) {
+		if(DisLib16::isDebugMode())
+			printf("Error: #define macro and Resolution_e mismatch in TFTInitScreenSize\n");
+		while(1) { MILLISEC_DELAY(5000); }
+	}
+	// End mismatch guard
+	// Select init sequence switch
+	switch (_currentResolution)
+	{
+		case Resolution_e::RGB160x160_DualGate:
+			#ifdef GC9D01_DUAL_INIT
+				DualGatecmdInitSequence();
+			#endif
+		break;
+		case Resolution_e::RGB120x160_DualGate:
+			if(DisLib16::isDebugMode()){
+				printf("Warning: No init for 120x160 DG available, fallback to 160x160\n");
+			}
+			#ifdef GC9D01_DUAL_INIT
+				DualGatecmdInitSequence();
+			#endif
+		break;
+		break;
+		case Resolution_e::RGB40x160_SingleGate:
+			#ifdef GC9D01_SINGLE_INIT_40x160
+				SingleGatecmdInitSequence40x160();
+			#endif
+		break;
+		case Resolution_e::RGB50x160_SingleGate:
+			#ifdef GC9D01_SINGLE_INIT_50x160
+				SingleGatecmdInitSequence50x160();
+			#endif
+		break;
+		case Resolution_e::RGB60x160_SingleGate:
+			#ifdef GC9D01_SINGLE_INIT_60x160
+				SingleGatecmdInitSequence60x160();
+			#endif
+		break;
+		case Resolution_e::RGB80x160_SingleGate:
+			if(DisLib16::isDebugMode()){
+				printf("Warning: No init for 80x160 SG available, fallback to 40x160 SG\n");
+			}
+			#ifdef GC9D01_SINGLE_INIT_40x160
+				SingleGatecmdInitSequence40x160();
+			#endif
+		break;
+		default:// Fallback should never get here. 
+			while(1){
+				if(DisLib16::isDebugMode()){
+					printf("Error: unknown resolution (Resolution_e) chosen:\n");
+				}
+				MILLISEC_DELAY(5000);
+			}
+		break;
 	}
 }
 
@@ -184,9 +259,11 @@ void GC9D01_TFT ::TFTchangeInvertMode(bool invert) {
 		2 = 180 rotate
 		3 =  270 rotate
 	@details 
-			Offsets passed in my user in setup() via TFTInitScreenSize
-			offsets 0,0 for   160x160 resolution
-			offsets -60,60 for 40x160 resolution in 90 and 270 rotations
+			Offsets passed in by user in setup() via TFTInitScreenSize
+			offsets     0,0,0,0 for 160x160 resolution
+			offsets  -60,60,0,0 for 40x160  resolution
+			offsets  -39,55,16,0 for 50x160  resolution(untested)
+			offsets -40,50,10,0 for 60x160  resolution
 */
 void GC9D01_TFT::TFTsetRotation(display_rotate_e mode) {
 	uint8_t madctl =0;
@@ -194,29 +271,29 @@ void GC9D01_TFT::TFTsetRotation(display_rotate_e mode) {
 		case Degrees_0 : // 0x00
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
-			_GC9D01_X_Offset = 0;
-			_GC9D01_Y_Offset = 0;
+			_GC9D01_X_Offset = _GC9D01_X_Portrait;
+			_GC9D01_Y_Offset = _GC9D01_Y_Portrait;
 			break;
 		case Degrees_90:
 			madctl |= (MADCTL_FLAGS_t::MV | MADCTL_FLAGS_t::ML);
 			_width  =_heightStartTFT;
 			_height = _widthStartTFT;
-			_GC9D01_X_Offset = _GC9D01_X_Offset_Start;
-			_GC9D01_Y_Offset = _GC9D01_Y_Offset_Start;
+			_GC9D01_X_Offset = _GC9D01_X_Landscape;
+			_GC9D01_Y_Offset = _GC9D01_Y_Landscape;
 			break;
 		case Degrees_180:  
 			madctl |= (MADCTL_FLAGS_t::MY | MADCTL_FLAGS_t::MX );
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
-			_GC9D01_X_Offset = 0;
-			_GC9D01_Y_Offset = 0;
+			_GC9D01_X_Offset = _GC9D01_X_Portrait;
+			_GC9D01_Y_Offset = _GC9D01_Y_Portrait;
 			break;
 		case Degrees_270:  
 			madctl |= (MADCTL_FLAGS_t::MV |MADCTL_FLAGS_t::MX |MADCTL_FLAGS_t::MY |MADCTL_FLAGS_t::ML );
 			_width =_heightStartTFT;
 			_height = _widthStartTFT;
-			_GC9D01_X_Offset = _GC9D01_X_Offset_Start;
-			_GC9D01_Y_Offset = _GC9D01_Y_Offset_Start;
+			_GC9D01_X_Offset = _GC9D01_X_Landscape;
+			_GC9D01_Y_Offset = _GC9D01_Y_Landscape;
 			break;
 	}
 	writeCommand(GC9D01_MADCTL);
@@ -229,12 +306,14 @@ void GC9D01_TFT::TFTsetRotation(display_rotate_e mode) {
 	@param height_TFT height in pixels
 	@param resolution Current Resolution see enum gc9d01_resolution_e for options
 	@param pixelFixMode Current PixelFixMode see enum PixelFixMode_e for options
-	@param Xstart Column start offset based on resolution and display type
-	@param Ystart Row start offset based on resolution and display type
+	@param XLstart landscape Column start offset based on resolution and display type
+	@param YLstart landscape Row start offset based on resolution and display type
+	@param XPstart portrait Column start offset based on resolution and display type
+	@param YPstart portrait Row start offset based on resolution and display type
 	@note  The offsets can be adjusted for any issues with manufacture tolerance/defects
 */
 void GC9D01_TFT  :: TFTInitScreenSize( uint16_t width_TFT, uint16_t height_TFT, Resolution_e resolution, 
-	PixelFixMode_e pixelFixMode, uint16_t Xstart, uint16_t Ystart)
+	PixelFixMode_e pixelFixMode, uint16_t XLstart, uint16_t YLstart, uint16_t XPstart, uint16_t YPstart)
 {
 	_width = width_TFT;
 	_height = height_TFT;
@@ -242,8 +321,13 @@ void GC9D01_TFT  :: TFTInitScreenSize( uint16_t width_TFT, uint16_t height_TFT, 
 	_heightStartTFT = height_TFT;
 	_currentResolution = resolution;
 	_currentPixelFixMode = pixelFixMode;
-	_GC9D01_X_Offset_Start = Xstart;
-	_GC9D01_Y_Offset_Start = Ystart;
+	_GC9D01_X_Landscape  = XLstart;
+	_GC9D01_Y_Landscape  = YLstart;
+	_GC9D01_X_Portrait   = XPstart;
+	_GC9D01_Y_Portrait   = YPstart;
+	// Portrait is default rotation
+	_GC9D01_X_Offset     = XPstart;
+	_GC9D01_Y_Offset     = YPstart;
 }
 
 /*!
@@ -436,18 +520,24 @@ void GC9D01_TFT::TFTsetBrightness(uint8_t level)
 
 /*!
 	@brief Set the pixel padding fix mode
+	@param mode the current pix fix padding mode
 */
 void GC9D01_TFT::TFTsetPixelFixMode(PixelFixMode_e mode){
 	_currentPixelFixMode = mode;
 }
 
+// ===  Init routine section ===
+
+#ifdef GC9D01_DUAL_INIT
 /*!
 	@brief GC9D01 init command sequence for Dual Gate variant
 		Dual Gate variants include 160x160 and 120x160 resolutions
 */
 void GC9D01_TFT::DualGatecmdInitSequence(void)
 {
-
+	if(DisLib16::isDebugMode()){
+		printf("DualGatecmdInitSequence init selected\n");
+	}
 	writeCommand(GC9D01_INREGEN1);
 	writeCommand(GC9D01_INREGEN2); 
 
@@ -459,7 +549,6 @@ void GC9D01_TFT::DualGatecmdInitSequence(void)
 		writeCommand(cmd);
 		writeData(0xFF);
 	}
-
 	writeCommand(GC9D01_INVERSION);
 	writeData(0x70); 
 	
@@ -571,13 +660,33 @@ void GC9D01_TFT::DualGatecmdInitSequence(void)
 	writeCommand(GC9D01_CONTINUE);
 
 }
+#endif
 
+#ifdef GC9D01_DUAL_INIT_120x160
+/*!
+	@brief GC9D01 init command sequence for dual Gate 120x160 variant
+	@details does not exist yet, Default to DualGatecmdInitSequence
+*/
+void GC9D01_TFT::DualGatecmdInitSequence120x160(void)
+{
+	if(DisLib16::isDebugMode()){
+		printf("GC9D01_DUAL_INIT_120x160 init selected\n");
+		printf("Default to DualGatecmdInitSequence, 160x160\n")
+	}
+	DualGatecmdInitSequence();
+}
+#endif
+
+#ifdef GC9D01_SINGLE_INIT_40x160
 /*!
 	@brief GC9D01 init command sequence for Single Gate variant
 		Single Gate variants include 80x160 and 40x160 resolutions
 */
-void GC9D01_TFT::SingleGatecmdInitSequence(void)
+void GC9D01_TFT::SingleGatecmdInitSequence40x160(void)
 {
+	if(DisLib16::isDebugMode()){
+		printf("SingleGatecmdInitSequence40x160 init selected\n");
+	}
 	writeCommand(0xFE);
 	writeCommand(0xEF);
 
@@ -711,5 +820,279 @@ void GC9D01_TFT::SingleGatecmdInitSequence(void)
 	MILLISEC_DELAY(50);
 	writeCommand(GC9D01_CONTINUE); 
 }
+#endif
+
+#ifdef GC9D01_SINGLE_INIT_50x160
+/*!
+	@brief GC9D01 init command sequence for Single Gate variant
+		Single Gate variants include 50X160 display resolutions
+*/
+void GC9D01_TFT::SingleGatecmdInitSequence50x160(void)
+{
+	if(DisLib16::isDebugMode()){
+		printf("SingleGatecmdInitSequence50x160 init selected\n");
+	}
+	writeCommand(GC9D01_INREGEN1);
+	writeCommand(GC9D01_INREGEN2);
+
+	// 0x80–0x8F block (mostly like 60x160 but 0x84=0x60)
+	writeCommand(0x86); writeData(0xFF);
+	writeCommand(0x87); writeData(0xFF);
+	writeCommand(0x8E); writeData(0xFF);
+	writeCommand(0x8F); writeData(0xFF);
+	writeCommand(0x80); writeData(0x13);
+	writeCommand(0x81); writeData(0x40);
+	writeCommand(0x82); writeData(0x0A);
+	writeCommand(0x83); writeData(0x0B);
+	writeCommand(0x84); writeData(0x60);   // ← Unique
+	writeCommand(0x85); writeData(0x80);
+	writeCommand(0x89); writeData(0x10);
+	writeCommand(0x8A); writeData(0x0F);
+	writeCommand(0x8B); writeData(0x02);
+	writeCommand(0x8C); writeData(0x59);
+	writeCommand(0x8D); writeData(0x55);
+
+	writeCommand(GC9D01_COLMOD);
+	writeData(0x05);
+	writeCommand(GC9D01_INVERSION);
+	writeData(0x00);
+
+	writeCommand(0x7E);
+	writeData(0x30);
+	// Frame rate 0x74
+	writeCommand(0x74);
+	static const uint8_t frameData[] = {0x05, 0x4D, 0x00, 0x00, 0x01, 0x00, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(frameData), sizeof(frameData));
+
+	// Porch
+	writeCommand(GC9D01_BLANK_PORCH_CTRL);
+	static const uint8_t porchData[] = {0x0D, 0x0D};
+	spiWriteDataBuffer(const_cast<uint8_t*>(porchData), sizeof(porchData));
+	writeCommand(GC9D01_FUNCTION_CTRL);
+	static const uint8_t b6Data[] = {0x00, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(b6Data), sizeof(b6Data));
+
+	// GIP Timing
+	writeCommand(0x60);
+	static const uint8_t gip60[] = {0x38, 0x09, 0x1E, 0x7A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip60), sizeof(gip60));
+	writeCommand(0x63);
+	static const uint8_t gip63[] = {0x38, 0xAE, 0x1E, 0x7A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip63), sizeof(gip63));
+	writeCommand(0x64);
+	static const uint8_t gip64[] = {0x38, 0x0B, 0x70, 0xAB, 0x1E, 0x7A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip64), sizeof(gip64));
+	writeCommand(0x66);
+	static const uint8_t gip66[] = {0x38, 0x0F, 0x70, 0xAF, 0x1E, 0x7A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip66), sizeof(gip66));
+	writeCommand(0x68);
+	static const uint8_t gip68[] = {0x00, 0x08, 0x07, 0x00, 0x07, 0x55, 0x6A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip68), sizeof(gip68));
+	writeCommand(0x6A);
+	static const uint8_t gip6A[] = {0x00, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip6A), sizeof(gip6A));
+	writeCommand(0x6C);
+	static const uint8_t gip6C[] = {0x22, 0x02, 0x22, 0x02, 0x22, 0x22, 0x50};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip6C), sizeof(gip6C));
+	// 0x6E mapping (32 bytes)
+	writeCommand(0x6E);
+	static const uint8_t map6E[] = {
+		0x00, 0x00, 0x00, 0x02, 0x14, 0x12, 0x0C, 0x0A,
+		0x1E, 0x1D, 0x08, 0x00, 0x16, 0x15, 0x00, 0x00,
+		0x00, 0x00, 0x15, 0x16, 0x00, 0x07, 0x1D, 0x1E,
+		0x09, 0x0B, 0x11, 0x13, 0x01, 0x00, 0x00, 0x00
+	};
+	spiWriteDataBuffer(const_cast<uint8_t*>(map6E), sizeof(map6E));
+
+	writeCommand(0x98); writeData(0x3E);
+	writeCommand(0x99); writeData(0x3E);
+	writeCommand(0x9B); writeData(0x3B);
+	writeCommand(0x93);
+	static const uint8_t data93[] = {0x33, 0x7F, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(data93), sizeof(data93));
+	writeCommand(0x91);
+	static const uint8_t data91[] = {0x0E, 0x09};
+	spiWriteDataBuffer(const_cast<uint8_t*>(data91), sizeof(data91));
+	writeCommand(0x70);
+	static const uint8_t v70[] = {0x04, 0x02, 0x0D, 0x04, 0x02, 0x0D};
+	spiWriteDataBuffer(const_cast<uint8_t*>(v70), sizeof(v70));
+	writeCommand(0x71);
+	static const uint8_t v71[] = {0x04, 0x02, 0x0D};
+	spiWriteDataBuffer(const_cast<uint8_t*>(v71), sizeof(v71));
+
+	writeCommand(GC9D01_VREG1A_CTRL); writeData(0x26);
+	writeCommand(GC9D01_VREG1B_CTRL); writeData(0x26);
+	writeCommand(GC9D01_VREG2A_CTRL); writeData(0x1C);
+
+	// Gamma
+	writeCommand(GC9D01_GAMMA1);
+	static const uint8_t gmF0[] = {0x02, 0x03, 0x0A, 0x06, 0x00, 0x1A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gmF0), sizeof(gmF0));
+	writeCommand(GC9D01_GAMMA3);
+	static const uint8_t gmF2[] = {0x02, 0x03, 0x0A, 0x06, 0x00, 0x1A};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gmF2), sizeof(gmF2));
+	writeCommand(GC9D01_GAMMA2);
+	static const uint8_t gmF1[] = {0x38, 0x78, 0x1B, 0x2E, 0x2F, 0xC8};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gmF1), sizeof(gmF1));
+	writeCommand(GC9D01_GAMMA4);
+	static const uint8_t gmF3[] = {0x38, 0x74, 0x12, 0x2E, 0x2F, 0xDF};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gmF3), sizeof(gmF3));
+
+	writeCommand(GC9D01_DUAL_SINGLE); writeData(0x00);   // Single gate
+	writeCommand(0xF9); writeData(0x40);
+
+	// MADCTL with direction support
+	writeCommand(GC9D01_MADCTL);
+	writeData(0x00);
+	// Sleep Out + Display On
+	writeCommand(GC9D01_SLPOUT);
+	MILLISEC_DELAY(200);
+	writeCommand(GC9D01_DISPON);
+	MILLISEC_DELAY(50);
+	writeCommand(GC9D01_CONTINUE); 
+}
+#endif
+
+#ifdef GC9D01_SINGLE_INIT_60x160
+/*!
+	@brief GC9D01 init command sequence for Single Gate variant
+		Single Gate variants include 60X160 display resolutions
+*/
+void GC9D01_TFT::SingleGatecmdInitSequence60x160(void)
+{
+	if(DisLib16::isDebugMode()){
+		printf("SingleGatecmdInitSequence60x160 init selected\n");
+	}
+	writeCommand(GC9D01_INREGEN1);
+	writeCommand(GC9D01_INREGEN2);
+
+	// Internal registers 0x80–0x8F
+	writeCommand(0x80); writeData(0x13);
+	writeCommand(0x81); writeData(0x40);
+	writeCommand(0x82); writeData(0x0A);
+	writeCommand(0x83); writeData(0x0B);
+	writeCommand(0x84); writeData(0x20);
+	writeCommand(0x85); writeData(0x80);
+	writeCommand(0x86); writeData(0xFF);
+	writeCommand(0x87); writeData(0xFF);
+	writeCommand(0x89); writeData(0x10);
+	writeCommand(0x8A); writeData(0x0F);
+	writeCommand(0x8B); writeData(0x02);
+	writeCommand(0x8C); writeData(0x59);
+	writeCommand(0x8D); writeData(0x55);
+	writeCommand(0x8E); writeData(0xFF);
+	writeCommand(0x8F); writeData(0xFF);
+
+	// Color mode: RGB565
+	writeCommand(GC9D01_COLMOD);
+	writeData(0x05);
+	// Orientation MADCTL 
+	writeCommand(GC9D01_MADCTL);
+	writeData(0x00);
+	writeCommand(GC9D01_INVERSION);
+	writeData(0x00);
+	writeCommand(0x7E);
+	writeData(0x30);
+	// Frame rate / clock (0x74)
+	writeCommand(0x74);
+	static const uint8_t frameRateData[] = {0x04, 0x4E, 0x00, 0x00, 0x00, 0x00, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(frameRateData), sizeof(frameRateData));
+	// Porch (VFP / VBP)
+	writeCommand(GC9D01_BLANK_PORCH_CTRL);
+	static const uint8_t porchData[] = {0x0F, 0x0F};
+	spiWriteDataBuffer(const_cast<uint8_t*>(porchData), sizeof(porchData));
+	// GIP Timing registers
+	writeCommand(0x61);
+	static const uint8_t gip1[] = {0x58, 0x05, 0x6D, 0x67};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip1), sizeof(gip1));
+	writeCommand(0x62);
+	static const uint8_t gip2[] = {0x58, 0x07, 0x6D, 0x67};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip2), sizeof(gip2));
+	writeCommand(0x63);
+	static const uint8_t gip3[] = {0x58, 0x00, 0x6D, 0x67, 0x15};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip3), sizeof(gip3));
+	writeCommand(0x64);
+	static const uint8_t gip4[] = {0x38, 0x0C, 0x70, 0xB4, 0x7F, 0x50};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip4), sizeof(gip4));
+	writeCommand(0x66);
+	static const uint8_t gip5[] = {0x38, 0x08, 0x70, 0xB0, 0x7F, 0x50};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip5), sizeof(gip5));
+	writeCommand(0x6A);
+	static const uint8_t clkInt[] = {0x00, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(clkInt), sizeof(clkInt));
+	writeCommand(0x6C);
+	static const uint8_t gip6[] = {0x22, 0x02, 0x22, 0x02, 0x22, 0x22, 0x50};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gip6), sizeof(gip6));
+
+	// Long 0x6E mapping sequence (32 bytes)
+	writeCommand(0x6E);
+	static const uint8_t mappingData[] = {
+		0x07, 0x00, 0x08, 0x05, 0x1D, 0x1E, 0x12, 0x14,
+		0x0A, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0B, 0x09,
+		0x13, 0x11, 0x1E, 0x1D, 0x04, 0x08, 0x00, 0x07
+	};
+	spiWriteDataBuffer(const_cast<uint8_t*>(mappingData), sizeof(mappingData));
+
+	writeCommand(0x98); writeData(0x3E);
+	writeCommand(0x99); writeData(0x3E);
+	writeCommand(0x9B); writeData(0x3B);
+	writeCommand(0x93);
+	static const uint8_t data93[] = {0x33, 0x7F, 0x00};
+	spiWriteDataBuffer(const_cast<uint8_t*>(data93), sizeof(data93));
+	writeCommand(0x91);
+	static const uint8_t data91[] = {0x0E, 0x09};
+	spiWriteDataBuffer(const_cast<uint8_t*>(data91), sizeof(data91));
+	writeCommand(0x70);
+	static const uint8_t vgh1[] = {0x04, 0x05, 0x0D, 0x04, 0x05, 0x0D};
+	spiWriteDataBuffer(const_cast<uint8_t*>(vgh1), sizeof(vgh1));
+	writeCommand(0x71);
+	static const uint8_t vgh2[] = {0x04, 0x05, 0x0D};
+	spiWriteDataBuffer(const_cast<uint8_t*>(vgh2), sizeof(vgh2));
+	writeCommand(GC9D01_VREG1A_CTRL); writeData(0x15);   // VBP
+	writeCommand(GC9D01_VREG1B_CTRL); writeData(0x15);   // VBN
+	writeCommand(GC9D01_VREG2A_CTRL); writeData(0x3E);   // VRH
+
+	// GAMMA
+	writeCommand(GC9D01_GAMMA1);
+	static const uint8_t gammaF0[] = {0x54, 0x0D, 0x05, 0x02, 0x00, 0x32};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gammaF0), sizeof(gammaF0));
+	writeCommand(GC9D01_GAMMA3);
+	static const uint8_t gammaF2[] = {0x54, 0x0D, 0x05, 0x02, 0x00, 0x32};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gammaF2), sizeof(gammaF2));
+	writeCommand(GC9D01_GAMMA2);
+	static const uint8_t gammaF1[] = {0x4C, 0x94, 0x4F, 0x33, 0x34, 0xCF};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gammaF1), sizeof(gammaF1));
+	writeCommand(GC9D01_GAMMA4);
+	static const uint8_t gammaF3[] = {0x4C, 0x94, 0x4F, 0x33, 0x34, 0xCF};
+	spiWriteDataBuffer(const_cast<uint8_t*>(gammaF3), sizeof(gammaF3));
+
+	writeCommand(GC9D01_DUAL_SINGLE); writeData(0x00);   // Single gate mode
+	writeCommand(0xF9); writeData(0x40); 
+
+	// Sleep Out + Display On
+	writeCommand(GC9D01_SLPOUT);
+	MILLISEC_DELAY(200);
+
+	writeCommand(GC9D01_DISPON);
+	MILLISEC_DELAY(50);
+	writeCommand(GC9D01_CONTINUE); 
+}
+#endif
+
+#ifdef GC9D01_SINGLE_INIT_80x160
+/*!
+	@brief GC9D01 init command sequence for single Gate 80x160 variant
+	@details does not exist yet, Default to SingleGatecmdInitSequence 40x160
+*/
+void GC9D01_TFT::SingleGatecmdInitSequence80x160(void)
+{
+	if(DisLib16::isDebugMode()){
+		printf("GC9D01_SINGLE_INIT_80x160 init selected\n");
+		printf("Default to SingleGatecmdInitSequence, 40x160\n")
+	}
+	SingleGatecmdInitSequence40x160();
+}
+#endif
 
 //**************** EOF *****************

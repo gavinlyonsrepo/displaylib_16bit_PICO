@@ -1,7 +1,7 @@
 /*!
-	@file    gc9d01.hpp
+	@file    gc9107.hpp
 	@author  Gavin Lyons, LionTron Systems
-	@brief   PICO Library header file, Contains driver methods for gc9d01 display
+	@brief   PICO Library header file, Contains driver methods for gc9107 display
 */
 
 #pragma once
@@ -64,6 +64,7 @@ public:
 	void TFTInitScreen(uint16_t w = 128, uint16_t h = 160,
 						GM_memory_base_e memoryBase = GM_memory_base_e::MEMORY_BASE_GM_128x160,
 						uint8_t colorOrder = MADCTL_FLAGS_t::RGB);
+	void TFTsetPanelOffset(uint8_t colOffset, uint8_t rowOffset);
 	void TFTGC9107Initialize(void);
 	void TFTPowerDown(void);
 	uint16_t TFTSwSpiGpioDelayGet(void);
@@ -85,18 +86,24 @@ private:
 
 private:
 	// Display
-	 /**< Enum to hold current display power mode */
-	PowerState_e _currentPowerState = PowerState_e::NormalIdleOff;
-	/**< GRAM memory base mapping resolution, see GM_memory_base_e enum */
-	GM_memory_base_e _memoryBase = GM_memory_base_e::MEMORY_BASE_GM_128x160; 
-	uint8_t _colorOrder = MADCTL_FLAGS_t::RGB; // default RGB
-	bool _displayOn = false;	        /**< Enum to hold display on/off status */
-	const uint16_t _sleepDelay = 120;	/**< Sleep delay in ms, datasheet 6.2.9.*/
+
+	PowerState_e _currentPowerState = PowerState_e::NormalIdleOff; /**< Hold current display power mode */
+	GM_memory_base_e _memoryBase = GM_memory_base_e::MEMORY_BASE_GM_128x160; /**< GRAM memory base mapping resolution */
+	uint8_t _colorOrder = MADCTL_FLAGS_t::RGB; /**< Color order , default RGB ,RGB or BGR*/
+	bool _displayOn = false; /**< Enum to hold display on/off status */
+	const uint16_t _sleepDelay = 120; /**< Sleep delay in ms, datasheet 6.2.9.*/
 	// SPI
 	bool _resetPinOn = true; /**< reset pin on module ? true:hw rst pin, false:sw rt*/
-	// Screen Size
-	uint16_t _widthStartTFT = 128;	/**< never change after first init */
+	// Screen & RAM Size 
+	uint16_t _widthStartTFT = 128;  /**< never change after first init */
 	uint16_t _heightStartTFT = 160; /**< never change after first init */
+	uint16_t _RAM_WIDTH  = 128;     /**< Physical VRAM width limit of the GC9107 controller */
+	uint16_t _RAM_HEIGHT = 160;    /**< Physical VRAM height limit of the GC9107 controller */
+	// Screen Offsets
+	uint8_t _colOffset = 0;     /**< Portrait col (X) dead-RAM offset – user supplied */
+	uint8_t _rowOffset = 0;     /**< Portrait row (Y) dead-RAM offset – user supplied */
+	uint8_t _xstart = 0;        /**< Applied offset for current rotation (X axis) */
+	uint8_t _ystart = 0;        /**< Applied offset for current rotation (Y axis) */
 
 	// GC9107 registers + Commands
 	static constexpr uint8_t GC9107_SLPIN            = 0x10; /**< Enter Sleep Mode */

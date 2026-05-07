@@ -5,7 +5,7 @@
 	@details Setup for 60x160 display.
 	@note    See USER OPTIONS in SETUP function
 	@test
-		-# Test 101 Print out Hello world  
+		-# Test 103 Print out Hello world  at 90 degrees
 */
 
 // Section ::  libraries 
@@ -30,7 +30,7 @@ GC9107_TFT myTFT;
 //  Section ::  Function Headers 
 
 void Setup(void);  // setup + user options
-void Test100(void);  
+void Test103(void);  
 void EndTests(void);
 
 //  Section ::  MAIN loop
@@ -38,7 +38,7 @@ void EndTests(void);
 int main(void) 
 {
 	Setup();
-	Test100();
+	Test103();
 	EndTests();
 }
 // *** End OF MAIN **
@@ -84,10 +84,10 @@ void Setup(void)
 	myTFT.TFTsetPanelOffset(X_Offset, Y_Offset);
 // ***
 	myTFT.TFTGC9107Initialize(); 
-	myTFT.TFTsetRotation(myTFT.Degrees_0);
+	myTFT.TFTsetRotation(myTFT.Degrees_90);
 }
 
-void Test100(void) {
+void Test103(void) {
 	printf("Version %u \n",DisLib16::LibraryVersion());
 	myTFT.setFont(font_default);
 	myTFT.fillScreen(myTFT.C_RED);

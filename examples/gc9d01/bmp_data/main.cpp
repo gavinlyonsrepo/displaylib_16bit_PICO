@@ -1,9 +1,11 @@
 /*!
-	@file   main.cpp
-	@author Gavin Lyons
-	@brief  Example cpp file for gc9d01 bitmap tests + FPS bitmap test.
+	@file   	main.cpp
+	@author 	Gavin Lyons
+	@brief  	Example cpp file for gc9d01 bitmap tests + FPS bitmap test.
 	@details  	See USER OPTIONS in SETUP function
 				This example is for 160x160 Dual gate.
+				This example requires macro GC9D01_DUAL_INIT to be commented in,
+				Its in gc9d01.hpp , 'Section User Options'.
 				This example requires dislib16_ADVANCED_SCREEN_BUFFER_ENABLE 
 				to be on.(non-default)
 				see displaylib_16_graphics.hpp USER OPTION 2
@@ -115,15 +117,18 @@ bool Setup(void)
 	myTFT.TFTsetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 // ***
 // *** USER OPTION 2 Screen Setup ***
-	uint16_t TFT_WIDTH = 160;// Screen width in pixels
+	uint16_t TFT_WIDTH  = 160; // Screen width in pixels
 	uint16_t TFT_HEIGHT = 160; // Screen height in pixels
-	uint16_t OFFSET_X   =   0; // Screen X offset in pixels
-	uint16_t OFFSET_Y   =   0; // Screen Y offset in pixels
+	uint16_t OFFSET_X_L = 0;  // Landscape Screen X offset in pixels
+	uint16_t OFFSET_Y_L = 0;  // Landscape Screen Y offset in pixels
+	uint16_t OFFSET_X_P = 0;  // Portrait Screen X offset in pixels
+	uint16_t OFFSET_Y_P = 0;  // Portrait Screen Y offset in pixels
 	// Display type, 4 choice's, see readme.
 	GC9D01_TFT::Resolution_e DisplayType = GC9D01_TFT::Resolution_e::RGB160x160_DualGate;
 	// Pixel Draw mode type, 4 choices , see readme.  
 	GC9D01_TFT::PixelFixMode_e FixType = GC9D01_TFT::PixelFixMode_e::Off;
-	myTFT.TFTInitScreenSize(TFT_WIDTH, TFT_HEIGHT, DisplayType, FixType, OFFSET_X, OFFSET_Y);
+	myTFT.TFTInitScreenSize(TFT_WIDTH, TFT_HEIGHT, DisplayType, FixType,
+							OFFSET_X_L, OFFSET_Y_L, OFFSET_X_P, OFFSET_Y_P);
 // ***
 	myTFT.TFTGC9D01Initialize(); 
 	if (myTFT.setBuffer() != DisLib16::Success)

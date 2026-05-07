@@ -19,6 +19,7 @@ add_compile_options(-Wall -Wextra )
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
 # Tell CMake where to find the executable source file
+# Comment in ONE AND ONE ONLY
 add_executable(${PROJECT_NAME} 
   examples/st7735/hello/main.cpp
   #examples/st7735/graphics/main.cpp
@@ -56,14 +57,17 @@ add_executable(${PROJECT_NAME}
 
   #examples/gc9d01/hello/main.cpp
   #examples/gc9d01/hello_40x160/main.cpp
+  #examples/gc9d01/hello_50x160/main.cpp
+  #examples/gc9d01/hello_60x160/main.cpp
   #examples/gc9d01/demo/main.cpp
   #examples/gc9d01/text_graphics_functions/main.cpp
   #examples/gc9d01/bmp_data/main.cpp
 
   #examples/gc9107/hello/main.cpp
-  #examples/gc9107/frame_buffer/main.cpp
+  #examples/gc9107/hello_90/main.cpp
   #examples/gc9107/bmp_data/main.cpp 
   #examples/gc9107/text_graphics_functions/main.cpp
+  #examples/gc9107/frame_buffer/main.cpp
 )
 
 # Create map/bin/hex/uf2 files

@@ -2,7 +2,6 @@
 	@file   gc9a01.hpp
 	@author Gavin Lyons
 	@brief  Library header file, Contains driver methods for gc9a01 display
-	@todo gc9a01 :: investigate brightness mode, not working?
 	@todo gc9a01 :: investigate idle mode on , some lines on screen missing?
 */
 

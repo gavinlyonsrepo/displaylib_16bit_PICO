@@ -1,13 +1,13 @@
 /*! 
 	@file   main.cpp
-	@brief  Example cpp file for gc9107 display Library test file, tests : Text,graphics & functions.
+	@brief  Example cpp file for gc9107 Library, tests: Text,graphics & functions.
 	@author Gavin Lyons.
 	@details
 			Setup for 60x160 display.
 			For graphics after tests 905 to work 
 			dislib16_ADVANCED_GRAPHICS_ENABLE must be commented in.
 			Its in displaylib_16_graphics.hpp
-	@note   See USER OPTIONS 0-2 in SETUP function
+	@note   See USER OPTIONS in SETUP function
 
 	@test 
 	-# Test 500 RGB color OK?
@@ -42,17 +42,8 @@
 #pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
 #endif
 
-// Screen Values Setup
-// Size of VRAM (note 60x160 display has VRAM of 128x160)
-uint16_t TFT_VRAM_WIDTH  = 128; // VRAM width  size in pixels
-uint16_t TFT_VRAM_HEIGHT = 160; // VRAM height size in pixels
-// Offsets for portrait and landscape rotations, see readme for values calculation
-#define X_OFFSET 34 // Offset for portrait  rotation  0 and 180
-#define Y_OFFSET 34 // Offset for landscape rotation 90 and 270
 // Init display class object
 GC9107_TFT myTFT;
-// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
-GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
 
 //  Function Headers 
 void Setup(void); // setup + user options for hardware SPI
@@ -138,9 +129,19 @@ void Setup(void)
 	myTFT.TFTsetupGPIO(RST_TFT, DC_TFT, CS_TFT, SCLK_TFT, SDIN_TFT);
 // ***
 // *** USER OPTION 2 Screen Setup ***
-	myTFT.TFTInitScreen(TFT_VRAM_WIDTH , TFT_VRAM_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+	uint16_t TFT_WIDTH = 60;   // width  size in pixels
+	uint16_t TFT_HEIGHT = 160; // height size in pixels
+	// GRAM memory base mapping resolution, see GC9107_TFT::GM_memory_base_e enum
+	GC9107_TFT::GM_memory_base_e TFTmemoryBase = GC9107_TFT::GM_memory_base_e::MEMORY_BASE_GM_128x160;
+	myTFT.TFTInitScreen(TFT_WIDTH , TFT_HEIGHT, TFTmemoryBase, GC9107_TFT::MADCTL_FLAGS_t::RGB);
+// ***
+// *** USER OPTION 3 Screen offsets in portrait***
+	uint8_t X_Offset = 34;
+	uint8_t Y_Offset = 0;
+	myTFT.TFTsetPanelOffset(X_Offset, Y_Offset);
 // ***
 	myTFT.TFTGC9107Initialize(); 
+	myTFT.TFTsetRotation(myTFT.Degrees_0);
 }
 
 void EndTests(void)
@@ -163,11 +164,11 @@ void Test500(void)
 
 void ColorBlock(void)
 {
-	myTFT.fillRoundRect(X_OFFSET    , 100, 12, 60, 4, myTFT.C_RED);
-	myTFT.fillRoundRect(X_OFFSET + 12, 100, 12, 60, 4, myTFT.C_GREEN);
-	myTFT.fillRoundRect(X_OFFSET + 24, 100, 12, 60, 4, myTFT.C_BLUE);
-	myTFT.fillRoundRect(X_OFFSET + 36, 100, 12, 60, 4, myTFT.C_YELLOW);
-	myTFT.fillRoundRect(X_OFFSET + 48, 100, 12, 60, 4, myTFT.C_WHITE);
+	myTFT.fillRoundRect(0, 100, 12, 60, 4, myTFT.C_RED);
+	myTFT.fillRoundRect(12, 100, 12, 60, 4, myTFT.C_GREEN);
+	myTFT.fillRoundRect(24, 100, 12, 60, 4, myTFT.C_BLUE);
+	myTFT.fillRoundRect(36, 100, 12, 60, 4, myTFT.C_YELLOW);
+	myTFT.fillRoundRect(48, 100, 12, 60, 4, myTFT.C_WHITE);
 }
 
 void Test501(void)
@@ -176,7 +177,7 @@ void Test501(void)
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setFont(font_default);
 	char teststr0[] = "Scroll";
-	myTFT.writeCharString(X_OFFSET, 100, teststr0);
+	myTFT.writeCharString(0, 100, teststr0);
 
 	const uint16_t screenH = 160;
 	const uint16_t scrollArea = screenH - 0; // no fixed areas
@@ -202,26 +203,26 @@ void Test502()
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_0);
-	myTFT.writeCharString(X_OFFSET, 0, teststr0);
-	myTFT.writeCharString(X_OFFSET, 140, teststr0);
+	myTFT.writeCharString(0, 0, teststr0);
+	myTFT.writeCharString(0, 140, teststr0);
 	busy_wait_ms(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_90);
-	myTFT.writeCharString(0,   Y_OFFSET, teststr1);
-	myTFT.writeCharString(0,   68, teststr1);
+	myTFT.writeCharString(0,   0, teststr1);
+	myTFT.writeCharString(0,   40, teststr1);
 	busy_wait_ms(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_180);
-	myTFT.writeCharString(X_OFFSET,    0, teststr2);
-	myTFT.writeCharString(X_OFFSET,  140, teststr2);
+	myTFT.writeCharString(0,    0, teststr2);
+	myTFT.writeCharString(0,  140, teststr2);
 	busy_wait_ms(TEST_DELAY2);
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_270);
-	myTFT.writeCharString(0, Y_OFFSET, teststr3);
-	myTFT.writeCharString(0, 68, teststr3);
+	myTFT.writeCharString(0, 0, teststr3);
+	myTFT.writeCharString(0, 40, teststr3);
 	busy_wait_ms(TEST_DELAY2);
 
 	myTFT.TFTsetRotation(myTFT.Degrees_0);
@@ -235,7 +236,7 @@ void Test503()
 	char teststr2[] = "Display";
 	char teststr3[] = "Sleep  ";
 	ColorBlock();
-	myTFT.writeCharString(X_OFFSET, 32, teststr1);
+	myTFT.writeCharString(0, 32, teststr1);
 	busy_wait_ms(TEST_DELAY2);
 
 	// Invert on and off
@@ -247,7 +248,7 @@ void Test503()
 	busy_wait_ms(TEST_DELAY5);
 
 	// Display on and off
-	myTFT.writeCharString(X_OFFSET, 32, teststr2);
+	myTFT.writeCharString(0, 32, teststr2);
 	busy_wait_ms(TEST_DELAY2);
 	myTFT.TFTenableDisplay(false);
 	printf("Test 503-3: Display off\n");
@@ -256,7 +257,7 @@ void Test503()
 	printf("Test 503-4: Turn Display back on\n");
 	busy_wait_ms(TEST_DELAY2);
 	// sleep mode on and off
-	myTFT.writeCharString(X_OFFSET, 32, teststr3);
+	myTFT.writeCharString(0, 32, teststr3);
 	busy_wait_ms(TEST_DELAY2); 
 	// 1. sleep mode
 	myTFT.TFTsetPowerMode(GC9107_TFT::PowerState_e::SleepNormalIdleOff);
@@ -280,7 +281,7 @@ void Test701(void) {
 	// Start at ~20px Y offset and use ~20px spacing
 	int startY = 0;
 	int spacing = 20;
-	int x = X_OFFSET + 5;
+	int x = 5;
 	int y = startY;
 	myTFT.setFont(font_default);
 	myTFT.writeCharString(x, y, teststr1);
@@ -302,7 +303,7 @@ void Test702(void)
 	// Test Fonts default +  + pico+ sinclair + retro
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_WHITE, myTFT.C_BLACK);
-	int x = X_OFFSET + 5;
+	int x = 5;
 	int y = 0;
 	int spacing = 25;
 	// --- First Block ---
@@ -356,19 +357,19 @@ void Test703(void)
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
 	myTFT.setFont(font_sinclairS);
-	myTFT.setCursor(X_OFFSET, 20);
+	myTFT.setCursor(0, 20);
 	myTFT.print(-49);
 	DisplayReset();
 	// --- Inverted print ---
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
 	myTFT.setFont(font_default);
-	myTFT.setCursor(X_OFFSET, 40);
+	myTFT.setCursor(0, 40);
 	myTFT.print("INV");
 	DisplayReset();
 	// --- Test std::string print and wrapping ---
 	myTFT.setFont(font_default);
 	std::string timeInfo = "12:45";
-	myTFT.setCursor(X_OFFSET, 60);
+	myTFT.setCursor(0, 60);
 	myTFT.print(timeInfo);
 	DisplayReset();
 }
@@ -376,15 +377,15 @@ void Test703(void)
 void Test902(void) {
 	printf("Test 902: rectangles \n");
 	DisLib16::Ret_Codes_e returnValue;
-	myTFT.drawRectWH(X_OFFSET + 5, 5, 20, 20, myTFT.C_RED);
-	returnValue = myTFT.fillRectBuffer(X_OFFSET + 5, 30, 20, 20, myTFT.C_YELLOW);
+	myTFT.drawRectWH(5, 5, 20, 20, myTFT.C_RED);
+	returnValue = myTFT.fillRectBuffer(5, 30, 20, 20, myTFT.C_YELLOW);
 	if (returnValue != DisLib16::Success)
 	{
 		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", returnValue);
 	}
-	myTFT.fillRect(X_OFFSET + 5, 55, 20, 20, myTFT.C_GREEN);
-	myTFT.drawRoundRect(X_OFFSET + 5, 80, 50, 50, 8, myTFT.C_CYAN);
-	myTFT.fillRoundRect(X_OFFSET + 5, 135, 40, 20, 6, myTFT.C_WHITE);
+	myTFT.fillRect(5, 55, 20, 20, myTFT.C_GREEN);
+	myTFT.drawRoundRect(5, 80, 50, 50, 8, myTFT.C_CYAN);
+	myTFT.fillRoundRect(5, 135, 40, 20, 6, myTFT.C_WHITE);
 
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
@@ -392,8 +393,8 @@ void Test902(void) {
 
 void Test903(void) {
 	printf("Test 903 : circles\n");
-	myTFT.drawCircle(X_OFFSET + 29, 55,  15, myTFT.C_GREEN);   // top circle
-	myTFT.fillCircle(X_OFFSET + 29, 105, 15, myTFT.C_YELLOW);  // bottom circle
+	myTFT.drawCircle(29, 55,  15, myTFT.C_GREEN);   // top circle
+	myTFT.fillCircle(29, 105, 15, myTFT.C_YELLOW);  // bottom circle
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -402,16 +403,16 @@ void Test904(void) {
 	printf("Test 904 : Triangles \n");
 	// Triangle 1: pointing down, upper half
 	myTFT.drawTriangle(
-		X_OFFSET +  5, 20,   // top-left
-		X_OFFSET + 55, 20,   // top-right
-		X_OFFSET + 29, 70,   // bottom-centre
+		 5, 20,   // top-left
+		55, 20,   // top-right
+		29, 70,   // bottom-centre
 		myTFT.C_CYAN);
 
 	// Triangle 2: pointing up, lower half
 	myTFT.fillTriangle(
-		X_OFFSET +  5, 145,  // bottom-left
-		X_OFFSET + 55, 145,  // bottom-right
-		X_OFFSET + 29, 90,   // top-centre
+		 5, 145,  // bottom-left
+		55, 145,  // bottom-right
+		29, 90,   // top-centre
 		myTFT.C_RED);
 
 	busy_wait_ms(TEST_DELAY5);
@@ -425,10 +426,10 @@ void Test905(void)
 	myTFT.fillScreen(myTFT.C_BLACK);
 	//drawPolygon( x,  y, sides,  diameter,  rotation, color);
 	// octagon
-	myTFT.drawPolygon(X_OFFSET+30, 80, 8, 20, 0, false, myTFT.C_GREEN);
+	myTFT.drawPolygon(0+30, 80, 8, 20, 0, false, myTFT.C_GREEN);
 	busy_wait_ms(TEST_DELAY5);
 	// octagon
-	myTFT.drawPolygon(X_OFFSET+30, 80, 8, 20, 0, true, myTFT.C_GREEN);
+	myTFT.drawPolygon(0+30, 80, 8, 20, 0, true, myTFT.C_GREEN);
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -437,7 +438,7 @@ void Test906(void) {
 	printf("Test 906 : mesh\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	// drawDotGrid(x, y, w, h, gap, color)
-	myTFT.drawDotGrid(X_OFFSET + 1, 5, X_OFFSET + 59, 155, 5, myTFT.C_CYAN);
+	myTFT.drawDotGrid(1, 5, 59, 155, 5, myTFT.C_CYAN);
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -445,25 +446,25 @@ void Test906(void) {
 void Test907(void) {
 	printf("Test 907 : quadrilateral\n");
 	// Shape 1: Rectangle (top)
-	int16_t x0 = X_OFFSET +  5, y0 =  5;
-	int16_t x1 = X_OFFSET + 50, y1 =  5;
-	int16_t x2 = X_OFFSET + 50, y2 = 40;
-	int16_t x3 = X_OFFSET +  5, y3 = 40;
+	int16_t x0 =  5, y0 =  5;
+	int16_t x1 = 50, y1 =  5;
+	int16_t x2 = 50, y2 = 40;
+	int16_t x3 =  5, y3 = 40;
 	// Shape 2: Parallelogram (upper-middle)
-	int16_t x4 = X_OFFSET + 20, y4 =  50;
-	int16_t x5 = X_OFFSET + 55, y5 =  50;
-	int16_t x6 = X_OFFSET + 40, y6 =  80;
-	int16_t x7 = X_OFFSET +  5, y7 =  80;
+	int16_t x4 = 20, y4 =  50;
+	int16_t x5 = 55, y5 =  50;
+	int16_t x6 = 40, y6 =  80;
+	int16_t x7 =  5, y7 =  80;
 	// Shape 3: Trapezoid wide-top (lower-middle)
-	int16_t x8  = X_OFFSET +  5, y8  =  95;
-	int16_t x9  = X_OFFSET + 55, y9  =  95;
-	int16_t x10 = X_OFFSET + 45, y10 = 125;
-	int16_t x11 = X_OFFSET + 15, y11 = 125;
+	int16_t x8  =  5, y8  =  95;
+	int16_t x9  = 55, y9  =  95;
+	int16_t x10 = 45, y10 = 125;
+	int16_t x11 = 15, y11 = 125;
 	// Shape 4: Irregular quad (bottom)
-	int16_t x12 = X_OFFSET +  5, y12 = 135;
-	int16_t x13 = X_OFFSET + 50, y13 = 140;
-	int16_t x14 = X_OFFSET + 45, y14 = 158;
-	int16_t x15 = X_OFFSET + 10, y15 = 155;
+	int16_t x12 =  5, y12 = 135;
+	int16_t x13 = 50, y13 = 140;
+	int16_t x14 = 45, y14 = 158;
+	int16_t x15 = 10, y15 = 155;
 	myTFT.drawQuadrilateral(x0,  y0,  x1,  y1,  x2,  y2,  x3,  y3,  myTFT.C_RED);
 	myTFT.fillQuadrilateral(x4,  y4,  x5,  y5,  x6,  y6,  x7,  y7,  myTFT.C_GREEN);
 	myTFT.fillQuadrilateral(x8,  y8,  x9,  y9,  x10, y10, x11, y11, myTFT.C_BLUE);
@@ -476,16 +477,16 @@ void Test908(void) {
 	printf("Test 908 : Ellipse\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	// === Unfilled pass ===
-	myTFT.drawEllipse(X_OFFSET + 15,  55, 12, 25, false, myTFT.C_WHITE);  // top-left
-	myTFT.drawEllipse(X_OFFSET + 45,  55, 12, 25, false, myTFT.C_RED);    // top-right
-	myTFT.drawEllipse(X_OFFSET + 15, 120, 14, 12, false, myTFT.C_BLUE);   // bottom-left
-	myTFT.drawEllipse(X_OFFSET + 45, 120, 14, 12, false, myTFT.C_YELLOW); // bottom-right
+	myTFT.drawEllipse(15,  55, 12, 25, false, myTFT.C_WHITE);  // top-left
+	myTFT.drawEllipse(45,  55, 12, 25, false, myTFT.C_RED);    // top-right
+	myTFT.drawEllipse(15, 120, 14, 12, false, myTFT.C_BLUE);   // bottom-left
+	myTFT.drawEllipse(45, 120, 14, 12, false, myTFT.C_YELLOW); // bottom-right
 	busy_wait_ms(TEST_DELAY5);
 	// === Filled pass - same positions ===
-	myTFT.drawEllipse(X_OFFSET + 15,  55, 12, 25, true, myTFT.C_WHITE);
-	myTFT.drawEllipse(X_OFFSET + 45,  55, 12, 25, true, myTFT.C_RED);
-	myTFT.drawEllipse(X_OFFSET + 15, 120, 14, 12, true, myTFT.C_BLUE);
-	myTFT.drawEllipse(X_OFFSET + 45, 120, 14, 12, true, myTFT.C_YELLOW);
+	myTFT.drawEllipse(15,  55, 12, 25, true, myTFT.C_WHITE);
+	myTFT.drawEllipse(45,  55, 12, 25, true, myTFT.C_RED);
+	myTFT.drawEllipse(15, 120, 14, 12, true, myTFT.C_BLUE);
+	myTFT.drawEllipse(45, 120, 14, 12, true, myTFT.C_YELLOW);
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);
 }
@@ -493,7 +494,7 @@ void Test908(void) {
 void Test909(void) {
 	printf("Test 909 : Drawing Arc: drawArc\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
-	int16_t centerX = X_OFFSET+40;  // X-coordinate of the circle center
+	int16_t centerX = 0+40;  // X-coordinate of the circle center
 	int16_t centerY = 80;  // Y-coordinate of the circle center
 	int16_t radius = 20;    // Radius of the circle
 	printf(" Angle offset default : %i \n", myTFT.getArcAngleOffset());

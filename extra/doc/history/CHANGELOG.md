@@ -52,7 +52,18 @@
   * Software reset bug in ili9341 fixed, see github issue 12 for more details.
 
 * Version 2.5.0 April 2026
-  * Added Getters for font width and height, see github issue 13 for more details
+  * Added getters for font width and height, see github issue 13 for more details
   * Adjusted print usage function so works with rp2350 Risc V, see github issue 14
   * Added 4 bit colour bitmap function
   * Added support for GC9107 TFT LCD.
+
+* Version 2.6.0 May 2026
+  * GC9D01
+    * Added Support for 50x160 single gate display
+    * Added Support for 60x160 single gate display
+    * Added two new parameters to TFTInitScreenSize() :portrait Column start offset
+    & portrait Row start offset required for new displays added.
+    * Enum 'Resolution_e' adjusted & marco section user options added to gc9d01.hpp
+  * GC9107
+    * Added function TFTsetPanelOffset to set and calculate required offsets
+    internally in the library. Examples adjusted for new function.
