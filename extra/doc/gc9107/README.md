@@ -82,15 +82,17 @@ Which I refer to as model A and B, These require different init routines.
 
 #### USER OPTION 2 Screen offsets
 
-In addition here are number of different truncated displays on market: These truncated displays require different offset's.
+In addition here are number of different truncated displays on market.
+These truncated displays require different offset's.
+These displays have panel sizes smaller than available Video RAM.
 Known displays types on market with GC9107 controller.
-The offsets for untested devices are estimates and may be incorrect.
+Note: The offsets for untested devices are estimates and may be incorrect.
 
-| Display Type | Memory Base | VRAM size setup (WbyH) | Offsets rotation | Tested |
-| s--- | --- | --- | --- | --- |
+| Display Type | Memory Base | VRAM size (WbyH) | Offsets rotation | Tested |
+| --- | --- | --- | --- | --- |
 | 128x128 Square | MEMORY_BASE_GM_128x128 A | 128 , 128 | 0,0 | No device |
-| 128x115 Round Truncated | MEMORY_BASE_GM_128x128 A | 128 , 128 | 7,0? | No device |
-| 60x160 Truncated | MEMORY_BASE_GM_128x160 B | 128 , 160 | 34,0 | YES |
+| 128x115 Round Truncated | MEMORY_BASE_GM_128x128 A | 128 , 128 | 0,13 ? | No device |
+| 60x160 Truncated | MEMORY_BASE_GM_128x160 B | 128 , 160 | 34,0 | YES! |
 | 96x160 Truncated | MEMORY_BASE_GM_128x160 B | 128 , 160 | 16,0? | No device |
 | 128x160 Full | MEMORY_BASE_GM_128x160 B | 128 , 160 | 0,0 | No device |
 
