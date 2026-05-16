@@ -21,13 +21,13 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 # Tell CMake where to find the executable source file
 # Comment in ONE AND ONE ONLY
 add_executable(${PROJECT_NAME} 
-  #examples/st7735/hello/main.cpp
+  examples/st7735/hello/main.cpp
   #examples/st7735/graphics/main.cpp
   #examples/st7735/functions_fps/main.cpp
   #examples/st7735/text/main.cpp
   #examples/st7735/bmp_data/main.cpp
   #examples/st7735/demos/main.cpp
-  examples/st7735/frame_buffer/main.cpp
+  #examples/st7735/frame_buffer/main.cpp
 
   #examples/st7789/hello/main.cpp
   #examples/st7789/graphics/main.cpp
