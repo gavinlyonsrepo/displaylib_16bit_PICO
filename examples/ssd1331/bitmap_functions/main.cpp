@@ -228,10 +228,10 @@ void Test503()
 	printf("Test 503: Rotate\n");
 	myOLED.setFont(font_default);
 	myOLED.setTextColor(myOLED.C_RED,myOLED.C_BLACK);
-	char teststr0[] = "Rot 0";
-	char teststr1[] = "Rot 90";
-	char teststr2[] = "Rot 180";
-	char teststr3[] = "R 270";
+	const char teststr0[] = "Rot 0";
+	const char teststr1[] = "Rot 90";
+	const char teststr2[] = "Rot 180";
+	const char teststr3[] = "R 270";
 
 	myOLED.fillScreen(myOLED.C_BLACK);
 	myOLED.setRotation(myOLED.Degrees_0);

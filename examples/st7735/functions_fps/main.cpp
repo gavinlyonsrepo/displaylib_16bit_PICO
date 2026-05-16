@@ -132,7 +132,7 @@ void Test501(void)
 void Test502(void)
 {
 	const uint8_t LINES = 10, LINE_SIZE = 10, LINE_OFFSET = 3, TOP_FIXED = 0, BOTTOM_FIXED = 0;
-	char teststr1[] = "Scroll test";
+	const char teststr1[] = "Scroll test";
 
 	for (uint8_t i = 0; i < LINES; i++)
 	{
@@ -161,10 +161,10 @@ void Test502(void)
 */
 void Test503()
 {
-	char teststr0[] = "Rotate 0";	// normal
-	char teststr1[] = "Rotate 90";	// 90
-	char teststr2[] = "Rotate 180"; // 180
-	char teststr3[] = "Rotate 270"; // 270
+	const char teststr0[] = "Rotate 0";	// normal
+	const char teststr1[] = "Rotate 90";	// 90
+	const char teststr2[] = "Rotate 180"; // 180
+	const char teststr3[] = "Rotate 270"; // 270
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	
@@ -198,7 +198,7 @@ void Test503()
 void Test504()
 {
 	printf("Test 504: Mode Tests\r\n");
-	char teststr1[] = "Modes Test";
+	const char teststr1[] = "Modes Test";
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
 	myTFT.fillRoundRect(8, 10, 24, 60, 8, myTFT.C_RED);
 	myTFT.fillRoundRect(32, 10, 24, 60, 8, myTFT.C_GREEN);

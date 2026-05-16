@@ -112,17 +112,17 @@ void Setup(void)
 void Test701(void) {
 
 	printf("Test 701: Print out all fonts with writeCharString\n");
-	char teststr1[] = "Default ";
-	char teststr2[] = "GLL ";
-	char teststr3[] = "Pico ";
-	char teststr4[] = "Sinclair ";
-	char teststr5[] = "Orla ";
-	char teststr6[] = "Retro ";
-	char teststr7[] = "Mega";
-	char teststr8[] = "Arial b";
-	char teststr9[] = "Hall ";
-	char teststr10[] = "Arial R";
-	char teststr11[] = "GroTesk";
+	const char teststr1[] = "Default ";
+	const char teststr2[] = "GLL ";
+	const char teststr3[] = "Pico ";
+	const char teststr4[] = "Sinclair ";
+	const char teststr5[] = "Orla ";
+	const char teststr6[] = "Retro ";
+	const char teststr7[] = "Mega";
+	const char teststr8[] = "Arial b";
+	const char teststr9[] = "Hall ";
+	const char teststr10[] = "Arial R";
+	const char teststr11[] = "GroTesk";
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 
@@ -155,11 +155,11 @@ void Test701(void) {
 
 	#ifdef dislib16_ADVANCED_FONTS_ENABLE
 
-	char teststr12[] = "16";
-	char teststr13[] = "7";
-	char teststr14[] = "inco";
-	char teststr15[] = "GB";
-	char teststr16[] = "Mint";
+	const char teststr12[] = "16";
+	const char teststr13[] = "7";
+	const char teststr14[] = "inco";
+	const char teststr15[] = "GB";
+	const char teststr16[] = "Mint";
 	myTFT.setFont(font_sixteenSeg);
 	myTFT.writeCharString(5,120, teststr12);
 	DisplayReset();
@@ -367,8 +367,8 @@ bool Test808(void)
 	// Vector to store return values
 	std::vector<uint8_t> returnValues; 
 
-	char testlowercase[] = "ZA[ab";
-	char testNonNumExtend[] = "-;A";
+	const char testlowercase[] = "ZA[ab";
+	const char testNonNumExtend[] = "-;A";
 	bool errorFlag = false;
 	myTFT.setFont(font_gll);
 	// (1) Print statement test, gll font lower case letters

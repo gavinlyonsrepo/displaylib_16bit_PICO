@@ -204,7 +204,6 @@ void GC9D01_TFT::TFTinitByResolution()
 				DualGatecmdInitSequence();
 			#endif
 		break;
-		break;
 		case Resolution_e::RGB40x160_SingleGate:
 			#ifdef GC9D01_SINGLE_INIT_40x160
 				SingleGatecmdInitSequence40x160();

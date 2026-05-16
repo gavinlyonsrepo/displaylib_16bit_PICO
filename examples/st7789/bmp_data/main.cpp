@@ -152,7 +152,7 @@ void Test300(void)
 void Test301(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
-	char teststr1[] = "Test 301";
+	const char teststr1[] = "Test 301";
 	myTFT.writeCharString(90, 90, teststr1);
 	// TOP small bitmap box
 	myTFT.drawBitmap(40, 40, 16, 8, myTFT.C_BLACK, myTFT.C_WHITE, SignalIcon);
@@ -172,7 +172,7 @@ void Test301(void)
 void Test302(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
-	char teststr1[] = "Test 302";
+	const char teststr1[] = "Test 302";
 	myTFT.writeCharString(50, 50, teststr1);
 	myTFT.drawBitmap(80, 60, 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(20, 100, 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
@@ -186,7 +186,7 @@ void Test302(void)
 */
 void Test303(void)
 {
-	char teststr1[] = "Test 303";
+	const char teststr1[] = "Test 303";
 	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap(50, 65, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage);
@@ -199,7 +199,7 @@ void Test303(void)
 */
 void Test304(void)
 {
-	char teststr1[] = "Test 304";
+	const char teststr1[] = "Test 304";
 	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap16Data(65, 65, sMotorImage, 128, 128);
@@ -212,7 +212,7 @@ void Test304(void)
 */
 void Test305(void)
 {
-	char teststr1[] = "Test 305";
+	const char teststr1[] = "Test 305";
 	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap16Data(65, 65, sPosterImage, 80, 48);
@@ -225,7 +225,7 @@ void Test305(void)
 */
 void Test306(void)
 {
-	char teststr1[] = "Test 306";
+	const char teststr1[] = "Test 306";
 	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY2);
 	myTFT.drawBitmap8Data(65, 65, sColorTestImage, 96,96);
@@ -247,7 +247,7 @@ void Test603(void)
 	uint16_t count = 0;
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
-	char teststr1[] = "Test 601 FPS, Output Results to USB port";
+	const char teststr1[] = "Test 601 FPS, Output Results to USB port";
 	myTFT.writeCharString(20, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);
@@ -312,7 +312,7 @@ void Test802(void)
 	std::vector<uint8_t> returnValues; 
 	
 	// test variables
-	char testString5[] = "Error Check Test 802, results to usb";
+	const char testString5[] = "Error Check Test 802, results to usb";
 	bool errorFlag = false;
 
 	// === Tests===
@@ -383,7 +383,7 @@ void Test802(void)
 */
 void EndTests(void)
 {
-	char teststr1[] = "Tests over";
+	const char teststr1[] = "Tests over";
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.writeCharString(50, 50, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);

@@ -43,9 +43,9 @@ void setDebugMode(bool mode)
 */
 void printMemoryUsage(void) {
 
-	char* bss_end = &__bss_end__;
-	char* heap_end = (char*)sbrk(0);
-	char* stack_ptr;
+	const char* bss_end = &__bss_end__;
+	const char* heap_end = reinterpret_cast<const char*>(sbrk(0));
+	const char* stack_ptr;
 	
 	#if defined(__arm__)
 		__asm volatile ("mov %0, sp" : "=r"(stack_ptr));

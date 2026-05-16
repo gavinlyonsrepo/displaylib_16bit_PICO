@@ -50,8 +50,6 @@
 #pragma message("gll: dislib16_ADVANCED_GRAPHICS_ENABLE is not defined. it is required for this demo")
 #endif
 
-uint16_t TFT_WIDTH = 160;// Screen width in pixels
-uint16_t TFT_HEIGHT = 160; // Screen height in pixels
 GC9D01_TFT myTFT;
 
 //  Function Headers 
@@ -197,7 +195,7 @@ void Test501(void)
 	printf("Test 501: Scroll\n");
 	myTFT.clearBuffer(myTFT.C_BLACK);
 	myTFT.setFont(font_retro);
-	char teststr0[] = "Scroll Test";
+	const char teststr0[] = "Scroll Test";
 	myTFT.writeCharString(25, 80, teststr0);
 	myTFT.writeBuffer(); // update screen from buffer
 
@@ -218,10 +216,10 @@ void Test502()
 {
 	printf("Test 502: Rotate\n");
 	myTFT.setFont(font_retro);
-	char teststr0[] = "Rotate 0"; //normal
-	char teststr1[] = "Rotate 90"; // 90
-	char teststr2[] = "Rotate 180"; // 180
-	char teststr3[] = "Rotate 270"; // 270
+	const char teststr0[] = "Rotate 0"; //normal
+	const char teststr1[] = "Rotate 90"; // 90
+	const char teststr2[] = "Rotate 180"; // 180
+	const char teststr3[] = "Rotate 270"; // 270
 
 	myTFT.clearBuffer(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_0);
@@ -254,9 +252,9 @@ void Test502()
 void Test503()
 {
 	printf("Test 503: Mode Tests\n");
-	char teststr1[] = "Invert";
-	char teststr2[] = "Display on/off";
-	char teststr3[] = "Sleep   on/off";
+	const char teststr1[] = "Invert";
+	const char teststr2[] = "Display on/off";
+	const char teststr3[] = "Sleep   on/off";
 	ColorBlock();
 	myTFT.writeCharString(25, 100, teststr1);
 	myTFT.writeBuffer();
@@ -298,13 +296,13 @@ void Test503()
 void Test701(void) {
 
 	printf("Test 701: Print out some fonts with writeCharString\n");
-	char teststr1[] = "Default ";
-	char teststr2[] = "GLL ";
-	char teststr3[] = "Pico ";
-	char teststr4[] = "Sinclair ";
-	char teststr5[] = "Orla ";
-	char teststr6[] = "Retro ";
-	char teststr7[] = "Mega";
+	const char teststr1[] = "Default ";
+	const char teststr2[] = "GLL ";
+	const char teststr3[] = "Pico ";
+	const char teststr4[] = "Sinclair ";
+	const char teststr5[] = "Orla ";
+	const char teststr6[] = "Retro ";
+	const char teststr7[] = "Mega";
 
 
 	myTFT.clearBuffer(myTFT.C_BLACK);
@@ -334,7 +332,6 @@ void Test701(void) {
 	y += spacing;
 	myTFT.setFont(font_mega);
 	myTFT.writeCharString(x, y, teststr7);
-	y += spacing;
 
 	DisplayReset();
 }
@@ -489,7 +486,7 @@ void Test902(void) {
 	returnValue = myTFT.fillRectBuffer(85, 25, 20, 20, myTFT.C_YELLOW);
 	if (returnValue != DisLib16::Success)
 	{
-		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", returnValue);
+		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", (unsigned int)returnValue);
 	}
 	busy_wait_ms(TEST_DELAY5);
 	myTFT.fillScreen(myTFT.C_BLACK);

@@ -174,7 +174,7 @@ void Test702(void) {
 		uint16_t color;
 	};
 	
-	ColorText colorTexts[] = {
+	const ColorText colorTexts[] = {
 		{"WHITE", myTFT.C_WHITE}, {"BLUE", myTFT.C_BLUE}, {"RED", myTFT.C_RED},
 		{"GREEN", myTFT.C_GREEN}, {"CYAN", myTFT.C_CYAN}, {"MAGENTA", myTFT.C_MAGENTA},
 		{"YELLOW", myTFT.C_YELLOW}, {"GREY", myTFT.C_GREY}, {"TAN", myTFT.C_TAN},
@@ -185,7 +185,7 @@ void Test702(void) {
 		int x = (i < 6) ? 5 : 60;  // First 6 on the left, next 6 on the right
 		int y = 5 + (i % 6) * 10;  // Vertical spacing
 		myTFT.setTextColor(colorTexts[i].color, myTFT.C_BLACK);
-		myTFT.writeCharString(x, y, const_cast<char*>(colorTexts[i].text));
+		myTFT.writeCharString(x, y, colorTexts[i].text);
 	}
 	
 	DisplayReset();
@@ -216,7 +216,7 @@ void Test704(void) {
 	printf("Test 704: font invert + test character draw using draw functions\n");
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_YELLOW);
 	myTFT.setFont(font_default);
-	char teststr1[] = "TEST";
+	const char teststr1[] = "TEST";
 	myTFT.writeCharString(15, 5, teststr1);
 	myTFT.setInvertFont(true);
 	myTFT.writeCharString(15, 15, teststr1); //inverted yellow on red
@@ -397,7 +397,7 @@ void Test707(void)
 	printf("Test 707: Misc draw functions tests wrap,  etc\n");
 
 	//wrap
-	char teststr0[] = "123456789";
+	const char teststr0[] = "123456789";
 
 	myTFT.setFont(font_default);
 	myTFT.writeCharString(80, 5, teststr0);
@@ -421,10 +421,10 @@ void Test707(void)
 	DisplayReset();
 
 	//invert + Numeric
-	char teststr1[] = "12:81";
-	char teststr2[] = "72:83";
-	char teststr3[] = "9 rnd";
-	char teststr4[] = "10 bold";
+	const char teststr1[] = "12:81";
+	const char teststr2[] = "72:83";
+	const char teststr3[] = "9 rnd";
+	const char teststr4[] = "10 bold";
 
 	myTFT.setFont(font_mega);
 	myTFT.setTextColor(myTFT.C_RED, myTFT.C_BLACK);
@@ -475,8 +475,8 @@ bool Test808(void)
 	// Vector to store return values
 	std::vector<uint8_t> returnValues; 
 
-	char testlowercase[] = "ZA[ab";
-	char testNonNumExtend[] = "-;A";
+	const char testlowercase[] = "ZA[ab";
+	const char testNonNumExtend[] = "-;A";
 	bool errorFlag = false;
 	myTFT.setFont(font_gll);
 	// (1) Print statement test, gll font lower case letters
@@ -557,7 +557,7 @@ void DisplayReset(void)
 */
 void EndTests(void)
 {
-	char teststr1[] = "Tests over";
+	const char teststr1[] = "Tests over";
 	myTFT.setFont(font_default);
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);

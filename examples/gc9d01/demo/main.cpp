@@ -32,7 +32,6 @@
 #endif
 
 GC9D01_TFT myTFT;
-bool bhardwareSPI = true;  // true for hardware spi, false for software
 
 bool Setup(void);
 void EndTests(void);
@@ -40,7 +39,7 @@ void EndTests(void);
 void arcGauge(uint16_t count=100);
 void drawPointerHelper(int16_t val, uint16_t x, uint16_t y, uint16_t r, uint16_t color);
 void drawGaugeMarkers(uint16_t centerX, uint16_t centerY, uint16_t radius, int startAngle, int endAngle, float scaleFactor);
-void drawPointer(int16_t &val, int16_t &oldVal , uint16_t x, uint16_t y, uint16_t r, uint16_t color, uint16_t bcolor);
+void drawPointer(const int16_t &val, const int16_t &oldVal , uint16_t x, uint16_t y, uint16_t r, uint16_t color, uint16_t bcolor);
 
 // MAIN loop
 int main(void)  {
@@ -162,10 +161,10 @@ void arcGauge(uint16_t countLimit) {
 }
 
 void drawGaugeMarkers(uint16_t centerX, uint16_t centerY, uint16_t radius, int startAngle, int endAngle, float scaleFactor) {
-	float angleRad, innerX, innerY, outerX, outerY;
 	int angle;
 	// Loop through the specified angle range, drawing ticks every 30 degrees
 	for (angle = startAngle; angle <= endAngle; angle += 30) {
+		float angleRad, innerX, innerY, outerX, outerY;
 		// Convert degrees to radians
 		angleRad = angle * (std::numbers::pi / 180);
 		// inner marker position
@@ -181,7 +180,7 @@ void drawGaugeMarkers(uint16_t centerX, uint16_t centerY, uint16_t radius, int s
 	}
 }
 
-void drawPointer(int16_t &currentValue, int16_t &oldValue, uint16_t x, uint16_t y, uint16_t r, uint16_t colour, uint16_t bcolour) {
+void drawPointer(const int16_t &currentValue, const int16_t &oldValue, uint16_t x, uint16_t y, uint16_t r, uint16_t colour, uint16_t bcolour) {
 	uint16_t i;
 	if (currentValue > oldValue) {
 		// Incrementally move the pointer from oldValue to currentValue

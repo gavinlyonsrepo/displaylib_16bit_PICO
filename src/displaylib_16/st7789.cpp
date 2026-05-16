@@ -217,14 +217,14 @@ void ST7789_TFT ::setRotation(display_rotate_e mode) {
 	uint8_t madctl = 0;
 	switch (mode) {
 		case Degrees_0 :
-			madctl = ST7789_MADCTL_MX | ST7789_MADCTL_MY | ST7789_MADCTL_RGB;
+			madctl = ST7789_MADCTL_MX | ST7789_MADCTL_MY; // | ST7789_MADCTL_RGB;
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
 			_XStart = _colstart;
 			_YStart = _rowstart;
 			break;
 		case Degrees_90:
-			madctl = ST7789_MADCTL_MY | ST7789_MADCTL_MV | ST7789_MADCTL_RGB;
+			madctl = ST7789_MADCTL_MY | ST7789_MADCTL_MV;//  | ST7789_MADCTL_RGB;
 			_YStart = _colstart;
 			_XStart = _rowstart;
 			_width  =_heightStartTFT;
@@ -238,7 +238,7 @@ void ST7789_TFT ::setRotation(display_rotate_e mode) {
 			_height = _heightStartTFT;
 			break;
 		case Degrees_270:
-			madctl = ST7789_MADCTL_MX | ST7789_MADCTL_MV | ST7789_MADCTL_RGB;
+			madctl = ST7789_MADCTL_MX | ST7789_MADCTL_MV;// | ST7789_MADCTL_RGB;
 			_YStart = _colstart;
 			_XStart = _rowstart;
 			_width =_heightStartTFT;

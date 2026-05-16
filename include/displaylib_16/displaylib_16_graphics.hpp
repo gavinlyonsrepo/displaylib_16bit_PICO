@@ -140,7 +140,7 @@ public:
 	void setTextColor(uint16_t c);
 	void setTextColor(uint16_t c, uint16_t bg);
 	DisLib16::Ret_Codes_e  writeChar( int16_t x, int16_t y, char value );
-	DisLib16::Ret_Codes_e  writeCharString( int16_t x, int16_t y, char *text);
+	DisLib16::Ret_Codes_e  writeCharString( int16_t x, int16_t y, const char *text);
 	void setTextCharPixelOrBuffer(bool mode);
 	bool getTextCharPixelOrBuffer() const;
 	// Bitmap functions
@@ -157,10 +157,12 @@ protected:
 	void spiWriteSoftware(uint8_t spidata);
 	uint8_t spiReadSoftware(void);
 	void spiWriteDataBuffer(uint8_t *spidata, uint32_t len);
-	bool _hardwareSPI;			  /**< True for Hardware SPI on , false for Software SPI on*/
-	spi_inst_t *_pspiInterface;	  /**< SPI instance pointer*/
-	uint16_t _speedSPIKHz;		  /**< SPI speed value in kilohertz*/
-	uint16_t _SWSPIGPIODelay = 0; /**< uS GPIO Communications delay, SW SPI ONLY */
+
+protected:
+	bool _hardwareSPI = false;			  /**< True for Hardware SPI on , false for Software SPI on*/
+	spi_inst_t *_pspiInterface = nullptr; /**< SPI instance pointer*/
+	uint16_t _speedSPIKHz = 0;		      /**< SPI speed value in kilohertz*/
+	uint16_t _SWSPIGPIODelay = 0;    	  /**< uS GPIO Communications delay, SW SPI ONLY */
 	// text variables
 	bool _textwrap = true;			/**< wrap text around the screen on overflow*/
 	uint16_t _textcolor = 0xFFFF;	/**< ForeGround color for text*/
@@ -168,17 +170,17 @@ protected:
 	// Screen variables
 	int16_t _cursorX = 0; /**< Current pixel column postion of Cursor*/
 	int16_t _cursorY = 0; /**< Current pixel row position of Cursor*/
-	uint8_t _XStart;      /**< Records column offset postion */
-	uint8_t _YStart;      /**< Records row offset postion */
-	uint16_t _width;      /**< Records width TFT postion */
-	uint16_t _height;     /**< Records Height TFT postion */
+	uint8_t _XStart  = 0; /**< Records column offset postion */
+	uint8_t _YStart  = 0; /**< Records row offset postion */
+	uint16_t _width  = 0; /**< Records width TFT postion */
+	uint16_t _height = 0; /**< Records Height TFT postion */
 	// GPIO variables
-	int8_t _display_DC;	   /**< GPIO Data or command line */
-	int8_t _display_RST;   /**< GPIO Reset line */
-	int8_t _display_CS;	   /**< GPIO Chip select line */
-	int8_t _display_SCLK;  /**< GPIO Clock SPI Line */
-	int8_t _display_SDATA; /**< GPIO MOSI data into display SPI Line */
-	int8_t _display_MISO; /**< GPIO  MISO data out SPI Line */
+	int8_t _display_DC = -1;	/**< GPIO Data or command line */
+	int8_t _display_RST = -1;   /**< GPIO Reset line */
+	int8_t _display_CS = -1;	/**< GPIO Chip select line */
+	int8_t _display_SCLK = -1;  /**< GPIO Clock SPI Line */
+	int8_t _display_SDATA = -1; /**< GPIO MOSI data into display SPI Line */
+	int8_t _display_MISO = -1;  /**< GPIO  MISO data out SPI Line */
 
 private:
 	// Helper functions

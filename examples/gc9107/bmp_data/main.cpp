@@ -130,7 +130,7 @@ void Test302(void)
 {
 
 	myTFT.fillScreen(myTFT.C_BLACK);
-	char teststr1[] = "Test 302";
+	const char teststr1[] = "Test 302";
 	myTFT.writeCharString(5, 10 , teststr1);
 	myTFT.drawBitmap(0, 30 , 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(50, 30 , 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
@@ -144,7 +144,7 @@ void Test302(void)
 */
 void Test305(void)
 {
-	char teststr1[] = "Test 305";
+	const char teststr1[] = "Test 305";
 	myTFT.fillScreen(myTFT.C_WHITE);
 	myTFT.writeCharString(0, 0, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -158,7 +158,7 @@ void Test305(void)
 */
 void EndTests(void)
 {
-	char teststr1[] = "Tests over";
+	const char teststr1[] = "Tests over";
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.writeCharString(0, 5, teststr1);
 	MILLISEC_DELAY(TEST_DELAY5);

@@ -177,10 +177,10 @@ void Test502()
 {
 	printf("Test 502: Rotate\n");
 	myTFT.setFont(font_retro);
-	char teststr0[] = "Rotate 0"; //normal
-	char teststr1[] = "Rotate 90"; // 90
-	char teststr2[] = "Rotate 180"; // 180
-	char teststr3[] = "Rotate 270"; // 270
+	const char teststr0[] = "Rotate 0"; //normal
+	const char teststr1[] = "Rotate 90"; // 90
+	const char teststr2[] = "Rotate 180"; // 180
+	const char teststr3[] = "Rotate 270"; // 270
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setRotation(myTFT.Degrees_0);
@@ -213,7 +213,7 @@ void Test502()
 void Test503()
 {
 	printf("Test 503: Mode Tests\n");
-	char teststr1[] = "Modes Test";
+	const char teststr1[] = "Modes Test";
 	myTFT.fillRoundRect(8, 10, 24, 60, 8, myTFT.C_RED);
 	myTFT.fillRoundRect(32, 10, 24, 60, 8, myTFT.C_GREEN);
 	myTFT.fillRoundRect(56, 10, 24, 60, 8, myTFT.C_BLUE);
@@ -243,17 +243,17 @@ void Test503()
 void Test701(void) {
 
 	printf("Test 701: Print out all fonts with writeCharString\n");
-	char teststr1[] = "Default ";
-	char teststr2[] = "GLL ";
-	char teststr3[] = "Pico ";
-	char teststr4[] = "Sinclair ";
-	char teststr5[] = "Orla ";
-	char teststr6[] = "Retro ";
-	char teststr7[] = "Mega";
-	char teststr8[] = "Arial b";
-	char teststr9[] = "Hall ";
-	char teststr10[] = "Arial R";
-	char teststr11[] = "GroTesk";
+	const char teststr1[] = "Default ";
+	const char teststr2[] = "GLL ";
+	const char teststr3[] = "Pico ";
+	const char teststr4[] = "Sinclair ";
+	const char teststr5[] = "Orla ";
+	const char teststr6[] = "Retro ";
+	const char teststr7[] = "Mega";
+	const char teststr8[] = "Arial b";
+	const char teststr9[] = "Hall ";
+	const char teststr10[] = "Arial R";
+	const char teststr11[] = "GroTesk";
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 
@@ -287,11 +287,11 @@ void Test701(void) {
 
 	#ifdef dislib16_ADVANCED_FONTS_ENABLE
 
-	char teststr12[] = "16";
-	char teststr13[] = "7";
-	char teststr14[] = "inco";
-	char teststr15[] = "GB";
-	char teststr16[] = "Mint";
+	const char teststr12[] = "16";
+	const char teststr13[] = "7";
+	const char teststr14[] = "inco";
+	const char teststr15[] = "GB";
+	const char teststr16[] = "Mint";
 	myTFT.setFont(font_sixteenSeg);
 	myTFT.writeCharString(5,5, teststr12);
 
@@ -477,7 +477,7 @@ void Test902(void) {
 	returnValue = myTFT.fillRectBuffer(85, 25, 20, 20, myTFT.C_YELLOW);
 	if (returnValue != DisLib16::Success)
 	{
-		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", returnValue);
+		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", (unsigned int)returnValue);
 	}
 	myTFT.fillRect(115, 25, 20, 20, myTFT.C_GREEN);
 	myTFT.drawRoundRect(15, 100, 70, 70, 20, myTFT.C_CYAN);

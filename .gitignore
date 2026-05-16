@@ -1,3 +1,4 @@
 stuff/
 build/
 .vscode/
+display-cppcheck-build-dir/

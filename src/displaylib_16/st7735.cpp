@@ -497,7 +497,7 @@ void ST7735_TFT ::setRotation(display_rotate_e mode) {
 	switch (mode) {
 		case Degrees_0 :
 			if (TFT_PCBtype == TFT_ST7735S_Black ){
-				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MY | ST7735_MADCTL_RGB;
+				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MY; // | ST7735_MADCTL_RGB
 			}else{
 				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MY | ST7735_MADCTL_BGR;
 			}
@@ -509,7 +509,7 @@ void ST7735_TFT ::setRotation(display_rotate_e mode) {
 		case Degrees_90:
 			if (TFT_PCBtype == TFT_ST7735S_Black )
 			{
-				madctl = ST7735_MADCTL_MY | ST7735_MADCTL_MV | ST7735_MADCTL_RGB;
+				madctl = ST7735_MADCTL_MY | ST7735_MADCTL_MV; // | ST7735_MADCTL_RGB 
 			}else{
 				madctl = ST7735_MADCTL_MY | ST7735_MADCTL_MV | ST7735_MADCTL_BGR;
 			}
@@ -532,7 +532,7 @@ void ST7735_TFT ::setRotation(display_rotate_e mode) {
 			break;
 		case Degrees_270:
 			if (TFT_PCBtype == TFT_ST7735S_Black){
-				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_RGB;
+				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MV; // | ST7735_MADCTL_RGB;
 			}else{
 				madctl = ST7735_MADCTL_MX | ST7735_MADCTL_MV | ST7735_MADCTL_BGR;
 			}

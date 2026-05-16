@@ -675,7 +675,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::writeChar(int16_t x, int16_t y, ch
 		-# DisLib16::CharArrayNullptr  String pText Array invalid pointer object
 		-# Failure code from  writeChar method upstream
  */
-DisLib16::Ret_Codes_e displaylib_16_graphics::writeCharString(int16_t x, int16_t y, char *pText)
+DisLib16::Ret_Codes_e displaylib_16_graphics::writeCharString(int16_t x, int16_t y, const char *pText)
 {
 	uint8_t count = 0;
 	uint8_t MaxLength = 0;
@@ -790,7 +790,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap(int16_t x, int16_t y, i
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 #ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
-	uint16_t mycolor = 0;
+	uint16_t mycolor;
 	// Buffer for one row of pixels (16-bit per pixel split into bytes)
 	uint8_t rowBuffer[w * 2];
 	// Draw row by row
@@ -953,7 +953,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 #ifndef dislib16_ADVANCED_SCREEN_BUFFER_ENABLE
 	uint8_t rowBuffer[w * 2]; // Allocate space for 16-bit per pixel row buffer
 	uint16_t j = 0;
-	uint16_t color = 0;
+	uint16_t color;
 	// Process bitmap data row-by-row
 	for (j = 0; j < h; j++)
 	{
@@ -969,7 +969,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap8Data(uint16_t x, uint16
 		spiWriteDataBuffer(rowBuffer, w * 2);
 	}
 #else
-	uint16_t color = 0;
+	uint16_t color;
 	for (uint16_t j = 0; j < h; j++)
 	{
 		for (uint16_t i = 0; i < w; i++)
@@ -1467,15 +1467,16 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawDotGrid(int16_t x, int16_t y, 
 	if ((y + h - 1) >= _height)
 		h = _height - y;
 	// Swap coordinates if the width or height are smaller than the starting point
-	int16_t dotGapWidth, dotGapHeight;
 	if (w < x)
 	{
+		int16_t dotGapWidth;
 		dotGapWidth = w;
 		w = x;
 		x = dotGapWidth;
 	}
 	if (h < y)
 	{
+		int16_t dotGapHeight;
 		dotGapHeight = h;
 		h = y;
 		y = dotGapHeight;
@@ -1721,36 +1722,16 @@ void displaylib_16_graphics::ellipseHelper(uint16_t cx, uint16_t cy, uint16_t x,
 */
 void displaylib_16_graphics::drawArcHelper(uint16_t centerX, uint16_t centerY, uint16_t radius, uint16_t thickness, float start, float end, uint16_t color)
 {
-	// Define bounding box variables
-	int16_t minX = 65535;
-	int16_t maxX = -32767;
-	int16_t minY = 32767;
-	int16_t maxY = -32767;
-	// Trigonometric values
-	float cosStart, sinStart, cosEnd, sinEnd;
-	float outerRadius, tempValue;
-	float startAngle, endAngle;
-	// Squared radius values for comparison
-	int16_t innerRadiusSquared, outerRadiusSquared;
-	// Loop variables
-	int16_t x, y, xSquared, ySquared;
-	int16_t y1Start, y2End, y2Start;
-	// Slope calculations
-	float startSlope, endSlope;
-	// Boolean flags for arc filling logic
-	bool y1StartFound, y2StartFound, y1EndFound, y2EndSearching;
 	// Convert arc angles to degrees from the normalized input range
-	startAngle = (start / _arcAngleMax) * 360;
-	endAngle = (end / _arcAngleMax) * 360;
+	float startAngle = (start / _arcAngleMax) * 360;
+	float endAngle = (end / _arcAngleMax) * 360;
+
 	// Normalize angles to stay within the 0-360 range
-	while (startAngle < 0)
-		startAngle += 360;
-	while (endAngle < 0)
-		endAngle += 360;
-	while (startAngle > 360)
-		startAngle -= 360;
-	while (endAngle > 360)
-		endAngle -= 360;
+	while (startAngle < 0) startAngle += 360;
+	while (endAngle < 0)   endAngle += 360;
+	while (startAngle > 360) startAngle -= 360;
+	while (endAngle > 360)   endAngle -= 360;
+
 	// Handle cases where the arc wraps around 0 degrees
 	if (startAngle > endAngle)
 	{
@@ -1758,89 +1739,90 @@ void displaylib_16_graphics::drawArcHelper(uint16_t centerX, uint16_t centerY, u
 		drawArcHelper(centerX, centerY, radius, thickness, 0, ((endAngle / 360.0) * _arcAngleMax), color);
 	}
 	else
-	{ // Compute trigonometric values for start and end angles
-		cosStart = cosineFromDegrees(startAngle);
-		sinStart = sineFromDegrees(startAngle);
-		cosEnd = cosineFromDegrees(endAngle);
-		sinEnd = sineFromDegrees(endAngle);
+	{
+		// Compute trigonometric values for start and end angles
+		float cosStart = cosineFromDegrees(startAngle);
+		float sinStart = sineFromDegrees(startAngle);
+		float cosEnd   = cosineFromDegrees(endAngle);
+		float sinEnd   = sineFromDegrees(endAngle);
+
 		// Determine the bounding box of the arc
-		outerRadius = radius;
-		tempValue = outerRadius * cosStart;
-		if (tempValue < minX)
-			minX = tempValue;
-		if (tempValue > maxX)
-			maxX = tempValue;
+		int16_t minX = 65535,  maxX = -32767;
+		int16_t minY = 32767,  maxY = -32767;
+
+		float outerRadius = radius;
+		float tempValue = outerRadius * cosStart;
+		if (tempValue < minX) minX = tempValue;
+		if (tempValue > maxX) maxX = tempValue;
 		tempValue = outerRadius * sinStart;
-		if (tempValue < minY)
-			minY = tempValue;
-		if (tempValue > maxY)
-			maxY = tempValue;
+		if (tempValue < minY) minY = tempValue;
+		if (tempValue > maxY) maxY = tempValue;
 
 		tempValue = outerRadius * cosEnd;
-		if (tempValue < minX)
-			minX = tempValue;
-		if (tempValue > maxX)
-			maxX = tempValue;
+		if (tempValue < minX) minX = tempValue;
+		if (tempValue > maxX) maxX = tempValue;
 		tempValue = outerRadius * sinEnd;
-		if (tempValue < minY)
-			minY = tempValue;
-		if (tempValue > maxY)
-			maxY = tempValue;
+		if (tempValue < minY) minY = tempValue;
+		if (tempValue > maxY) maxY = tempValue;
+
 		// Adjust bounding box for inner arc
 		outerRadius = radius - thickness;
 		tempValue = outerRadius * cosStart;
-		if (tempValue < minX)
-			minX = tempValue;
-		if (tempValue > maxX)
-			maxX = tempValue;
+		if (tempValue < minX) minX = tempValue;
+		if (tempValue > maxX) maxX = tempValue;
 		tempValue = outerRadius * sinStart;
-		if (tempValue < minY)
-			minY = tempValue;
-		if (tempValue > maxY)
-			maxY = tempValue;
+		if (tempValue < minY) minY = tempValue;
+		if (tempValue > maxY) maxY = tempValue;
 
 		tempValue = outerRadius * cosEnd;
-		if (tempValue < minX)
-			minX = tempValue;
-		if (tempValue > maxX)
-			maxX = tempValue;
+		if (tempValue < minX) minX = tempValue;
+		if (tempValue > maxX) maxX = tempValue;
 		tempValue = outerRadius * sinEnd;
-		if (tempValue < minY)
-			minY = tempValue;
-		if (tempValue > maxY)
-			maxY = tempValue;
+		if (tempValue < minY) minY = tempValue;
+		if (tempValue > maxY) maxY = tempValue;
+
 		// Special cases for quarter-circle boundary adjustments
-		if ((startAngle < 90) && (endAngle > 90))
-			maxY = radius;
-		if ((startAngle < 180) && (endAngle > 180))
-			minX = -radius;
-		if ((startAngle < 270) && (endAngle > 270))
-			minY = -radius;
+		if ((startAngle < 90)  && (endAngle > 90))  maxY = radius;
+		if ((startAngle < 180) && (endAngle > 180)) minX = -radius;
+		if ((startAngle < 270) && (endAngle > 270)) minY = -radius;
+
 		// Calculate slopes for boundary conditions
-		startSlope = (float)cosStart / (float)sinStart;
-		endSlope = (float)cosEnd / (float)sinEnd;
-		if (endAngle == 360)
-			endSlope = -1000000; // Force slope to an extreme value
-		innerRadiusSquared = (radius - thickness) * (radius - thickness);
-		outerRadiusSquared = radius * radius;
+		float startSlope = (float)cosStart / (float)sinStart;
+		float endSlope   = (float)cosEnd   / (float)sinEnd;
+		if (endAngle == 360) endSlope = -1000000;
+
+		int16_t innerRadiusSquared = (radius - thickness) * (radius - thickness);
+		int16_t outerRadiusSquared = radius * radius;
+
 		// Scan through bounding box to determine which pixels to fill
-		for (x = minX; x <= maxX; x++)
+		for (int16_t x = minX; x <= maxX; x++)
 		{
-			y1StartFound = false;
-			y2StartFound = false;
-			y1EndFound = false;
-			y2EndSearching = false;
-			y1Start = 0;
-			y2End = 0;
-			y2Start = 0;
-			for (y = minY; y <= maxY; y++)
+			bool    y1StartFound   = false;
+			bool    y2StartFound   = false;
+			bool    y1EndFound     = false;
+			bool    y2EndSearching = false;
+			int16_t y1Start = 0;
+			int16_t y2End   = 0;
+			int16_t y2Start = 0;
+
+			for (int16_t y = minY; y <= maxY; y++)
 			{
-				xSquared = x * x;
-				ySquared = y * y;
-				// Check if pixel is within the arc boundaries
+				int16_t xSquared = x * x;
+				int16_t ySquared = y * y;
+
 				if (
-					(xSquared + ySquared < outerRadiusSquared && xSquared + ySquared >= innerRadiusSquared) && ((y > 0 && startAngle < 180 && x <= y * startSlope) || (y < 0 && startAngle > 180 && x >= y * startSlope) || (y < 0 && startAngle <= 180) || (y == 0 && startAngle <= 180 && x < 0) || (y == 0 && startAngle == 0 && x > 0)) && ((y > 0 && endAngle < 180 && x >= y * endSlope) || (y < 0 && endAngle > 180 && x <= y * endSlope) || (y > 0 && endAngle >= 180) || (y == 0 && endAngle >= 180 && x < 0) || (y == 0 && startAngle == 0 && x > 0)))
-				{ // Find start and end points for vertical line drawing
+					(xSquared + ySquared < outerRadiusSquared && xSquared + ySquared >= innerRadiusSquared) &&
+					((y > 0 && startAngle < 180 && x <= y * startSlope) ||
+					 (y < 0 && startAngle > 180 && x >= y * startSlope) ||
+					 (y < 0 && startAngle <= 180) ||
+					 (y == 0 && startAngle <= 180 && x < 0) ||
+					 (y == 0 && startAngle == 0 && x > 0)) &&
+					((y > 0 && endAngle < 180 && x >= y * endSlope) ||
+					 (y < 0 && endAngle > 180 && x <= y * endSlope) ||
+					 (y > 0 && endAngle >= 180) ||
+					 (y == 0 && endAngle >= 180 && x < 0) ||
+					 (y == 0 && startAngle == 0 && x > 0)))
+				{
 					if (!y1StartFound)
 					{
 						y1StartFound = true;
@@ -1869,14 +1851,8 @@ void displaylib_16_graphics::drawArcHelper(uint16_t centerX, uint16_t centerY, u
 						y1EndFound = true;
 						y2End = y - 1;
 						drawFastVLine(centerX + x, centerY + y1Start, y - y1Start, color);
-						if (y < 0)
-						{
-							y = abs(y);
-						}
-						else
-						{
-							break;
-						}
+						if (y < 0) y = abs(y);
+						else break;
 					}
 					else if (y2StartFound)
 					{
@@ -1894,13 +1870,11 @@ void displaylib_16_graphics::drawArcHelper(uint16_t centerX, uint16_t centerY, u
 					}
 				}
 			}
-			if (y1StartFound && !y1EndFound)
-			{
+			if (y1StartFound && !y1EndFound){
 				y2End = maxY;
 				drawFastVLine(centerX + x, centerY + y1Start, y2End - y1Start + 1, color);
 			}
-			else if (y2StartFound && y2EndSearching)
-			{
+			else if (y2StartFound && y2EndSearching){
 				drawFastVLine(centerX + x, centerY + y2Start, maxY - y2Start + 1, color);
 			}
 		}

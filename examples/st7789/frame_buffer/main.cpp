@@ -202,7 +202,7 @@ void TestBitmapFPS(void)
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
 
-	char teststr1[] = "Test bitmap FPS, Output Results to USB Serial port";
+	const char teststr1[] = "Test bitmap FPS, Output Results to USB Serial port";
 	myTFT.writeCharString(5, 5, teststr1);
 	MILLISEC_DELAY(5000);
 	myTFT.setTextColor(myTFT.C_YELLOW, myTFT.C_RED);

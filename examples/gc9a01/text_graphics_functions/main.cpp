@@ -40,8 +40,6 @@
 #pragma message("gll: dislib16_ADVANCED_SCREEN_BUFFER_ENABLE is defined. This example is not for that mode")
 #endif
 
-uint16_t TFT_WIDTH = 240;// Screen width in pixels
-uint16_t TFT_HEIGHT = 240; // Screen height in pixels
 GC9A01_TFT myTFT;
 
 //  Function Headers 
@@ -166,7 +164,7 @@ void Test501(void)
 	printf("Test 501: Scroll\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setFont(font_retro);
-	char teststr0[] = "Scroll Test";
+	const char teststr0[] = "Scroll Test";
 	myTFT.writeCharString(75, 75, teststr0);
 
 	const uint16_t screenH = 240;
@@ -186,10 +184,10 @@ void Test502()
 {
 	printf("Test 502: Rotate\n");
 	myTFT.setFont(font_retro);
-	char teststr0[] = "Rotate 0"; //normal
-	char teststr1[] = "Rotate 90"; // 90
-	char teststr2[] = "Rotate 180"; // 180
-	char teststr3[] = "Rotate 270"; // 270
+	const char teststr0[] = "Rotate 0"; //normal
+	const char teststr1[] = "Rotate 90"; // 90
+	const char teststr2[] = "Rotate 180"; // 180
+	const char teststr3[] = "Rotate 270"; // 270
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_0);
@@ -222,9 +220,9 @@ void Test502()
 void Test503()
 {
 	printf("Test 503: Mode Tests\n");
-	char teststr1[] = "Invert    Test";
-	char teststr2[] = "Display on/off";
-	char teststr3[] = "Sleep   on/off";
+	const char teststr1[] = "Invert    Test";
+	const char teststr2[] = "Display on/off";
+	const char teststr3[] = "Sleep   on/off";
 	ColorBlock();
 	myTFT.writeCharString(10, 80, teststr1);
 	busy_wait_ms(TEST_DELAY2);
@@ -263,15 +261,15 @@ void Test503()
 void Test701(void) {
 
 	printf("Test 701: Print out all fonts with writeCharString\n");
-	char teststr1[] = "Default ";
-	char teststr2[] = "GLL ";
-	char teststr3[] = "Pico ";
-	char teststr4[] = "Sinclair ";
-	char teststr5[] = "Orla ";
-	char teststr6[] = "Retro ";
-	char teststr7[] = "Mega";
-	char teststr8[] = "Arial b";
-	char teststr9[] = "Hall ";
+	const char teststr1[] = "Default ";
+	const char teststr2[] = "GLL ";
+	const char teststr3[] = "Pico ";
+	const char teststr4[] = "Sinclair ";
+	const char teststr5[] = "Orla ";
+	const char teststr6[] = "Retro ";
+	const char teststr7[] = "Mega";
+	const char teststr8[] = "Arial b";
+	const char teststr9[] = "Hall ";
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	// Start at ~20px Y offset and use ~20px spacing
@@ -306,7 +304,6 @@ void Test701(void) {
 	y += spacing;
 	myTFT.setFont(font_hallfetica);
 	myTFT.writeCharString(x, y, teststr9);
-	y += spacing;
 	myTFT.setFont(font_arialRound);
 	DisplayReset();
 }
@@ -465,7 +462,7 @@ void Test902(void) {
 	returnValue = myTFT.fillRectBuffer(85, 25, 20, 20, myTFT.C_YELLOW);
 	if (returnValue != DisLib16::Success)
 	{
-		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", returnValue);
+		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", (unsigned int)returnValue);
 	}
 	myTFT.fillRect(115, 25, 20, 20, myTFT.C_GREEN);
 	myTFT.drawRoundRect(15, 100, 70, 70, 20, myTFT.C_CYAN);

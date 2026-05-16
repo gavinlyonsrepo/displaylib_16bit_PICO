@@ -176,7 +176,7 @@ void Test501(void)
 	printf("Test 501: Scroll\n");
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.setFont(font_default);
-	char teststr0[] = "Scroll";
+	const char teststr0[] = "Scroll";
 	myTFT.writeCharString(0, 100, teststr0);
 
 	const uint16_t screenH = 160;
@@ -196,10 +196,10 @@ void Test502()
 {
 	printf("Test 502: Rotate\n");
 	myTFT.setFont(font_retro);
-	char teststr0[] = "R 0"; //normal
-	char teststr1[] = "R 90"; // 90
-	char teststr2[] = "R 180"; // 180
-	char teststr3[] = "R 270"; // 270
+	const char teststr0[] = "R 0"; //normal
+	const char teststr1[] = "R 90"; // 90
+	const char teststr2[] = "R 180"; // 180
+	const char teststr3[] = "R 270"; // 270
 
 	myTFT.fillScreen(myTFT.C_BLACK);
 	myTFT.TFTsetRotation(myTFT.Degrees_0);
@@ -232,9 +232,9 @@ void Test502()
 void Test503()
 {
 	printf("Test 503: Mode Tests\n");
-	char teststr1[] = "Invert";
-	char teststr2[] = "Display";
-	char teststr3[] = "Sleep  ";
+	const char teststr1[] = "Invert";
+	const char teststr2[] = "Display";
+	const char teststr3[] = "Sleep  ";
 	ColorBlock();
 	myTFT.writeCharString(0, 32, teststr1);
 	busy_wait_ms(TEST_DELAY2);
@@ -273,10 +273,10 @@ void Test503()
 void Test701(void) {
 
 	printf("Test 701: Print out all fonts with writeCharString\n");
-	char teststr1[] = "Default";
-	char teststr2[] = "GLL";
-	char teststr3[] = "Pico";
-	char teststr6[] = "Retro";
+	const char teststr1[] = "Default";
+	const char teststr2[] = "GLL";
+	const char teststr3[] = "Pico";
+	const char teststr6[] = "Retro";
 	myTFT.fillScreen(myTFT.C_BLACK);
 	// Start at ~20px Y offset and use ~20px spacing
 	int startY = 0;
@@ -381,7 +381,7 @@ void Test902(void) {
 	returnValue = myTFT.fillRectBuffer(5, 30, 20, 20, myTFT.C_YELLOW);
 	if (returnValue != DisLib16::Success)
 	{
-		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", returnValue);
+		printf("Warning : Test TFTfillRectangle, An error occurred returnValue = %u \n", (unsigned int)returnValue);
 	}
 	myTFT.fillRect(5, 55, 20, 20, myTFT.C_GREEN);
 	myTFT.drawRoundRect(5, 80, 50, 50, 8, myTFT.C_CYAN);

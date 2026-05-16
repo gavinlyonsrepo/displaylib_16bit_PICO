@@ -34,7 +34,7 @@ void EndTests(void);
 void arcGauge(uint16_t count=100);
 void drawPointerHelper(int16_t val, uint8_t x, uint8_t y, uint8_t r, uint16_t color);
 void drawGaugeMarkers(uint8_t centerX, uint8_t centerY, uint8_t radius, int startAngle, int endAngle, float scaleFactor);
-void drawPointer(int16_t &val, int16_t &oldVal , uint8_t x, uint8_t y, uint8_t r, uint16_t color, uint16_t bcolor);
+void drawPointer(const int16_t &val, const int16_t &oldVal , uint8_t x, uint8_t y, uint8_t r, uint16_t color, uint16_t bcolor);
 
 //  Section ::  MAIN loop
 int main(void) 
@@ -152,11 +152,11 @@ void arcGauge(uint16_t countLimit)
 
 void drawGaugeMarkers(uint8_t centerX, uint8_t centerY, uint8_t radius, int startAngle, int endAngle, float scaleFactor) 
 {
-	float angleRad, innerX, innerY, outerX, outerY;
 	int angle;
 	// Loop through the specified angle range, drawing ticks every 30 degrees
 	for (angle = startAngle; angle <= endAngle; angle += 30) 
 	{
+		float angleRad, innerX, innerY, outerX, outerY;
 		// Convert degrees to radians
 		angleRad = angle * (std::numbers::pi / 180);
 		// inner marker position
@@ -172,7 +172,7 @@ void drawGaugeMarkers(uint8_t centerX, uint8_t centerY, uint8_t radius, int star
 	}
 }
 
-void drawPointer(int16_t &currentValue, int16_t &oldValue, uint8_t x, uint8_t y, uint8_t r, uint16_t colour, uint16_t bcolour) 
+void drawPointer(const int16_t &currentValue, const int16_t &oldValue, uint8_t x, uint8_t y, uint8_t r, uint16_t colour, uint16_t bcolour) 
 {
 	uint16_t i;
 

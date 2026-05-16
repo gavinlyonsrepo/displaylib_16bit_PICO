@@ -187,7 +187,7 @@ void Test301(void)
 */
 void Test302(void)
 {
-	char teststr1[] = "Test 302";
+	const char teststr1[] = "Test 302";
 	myTFT.writeCharString(45, 45, teststr1);
 	myTFT.drawBitmap(80, 60, 40, 16, myTFT.C_CYAN, myTFT.C_BLACK, sSunTextImage);
 	myTFT.drawBitmap(20, 80, 40, 16, myTFT.C_RED, myTFT.C_BLACK, sSunTextImage);
@@ -200,7 +200,7 @@ void Test302(void)
 */
 void Test303(void)
 {
-	char teststr1[] = "Test 303";
+	const char teststr1[] = "Test 303";
 	myTFT.writeCharString(45,10, teststr1);
 	myTFT.drawBitmap(25, 25, 128, 128, myTFT.C_WHITE, myTFT.C_GREEN, sArrowImage);
 	DisplayReset();
@@ -211,7 +211,7 @@ void Test303(void)
 */
 void Test304(void)
 {
-	char teststr1[] = "Test 304";
+	const char teststr1[] = "Test 304";
 	myTFT.writeCharString(45, 10, teststr1);
 	myTFT.drawBitmap16Data(25, 25, sMotorImage, 128, 128);
 	DisplayReset();
@@ -222,7 +222,7 @@ void Test304(void)
 */
 void Test305(void)
 {
-	char teststr1[] = "Test 305";
+	const char teststr1[] = "Test 305";
 	myTFT.fillScreen(myTFT.C_WHITE);
 	myTFT.writeCharString(45, 10, teststr1);
 	myTFT.drawBitmap16Data(50, 50, sPosterImage, 80, 48);
@@ -234,7 +234,7 @@ void Test305(void)
 */
 void Test306(void)
 {
-	char teststr1[] = "Test 306";
+	const char teststr1[] = "Test 306";
 	myTFT.writeCharString(45, 10, teststr1);
 	myTFT.drawBitmap8Data(50, 50, sColorTestImage, 96,96);
 	DisplayReset();
@@ -255,7 +255,7 @@ void Test601(void)
 	uint16_t seconds = 0;
 	uint16_t fps = 0;
 
-	char teststr1[] = "Test 601 FPS, Output Results to USB Serial port";
+	const char teststr1[] = "Test 601 FPS, Output Results to USB Serial port";
 	myTFT.writeCharString(25, 75, teststr1);
 	myTFT.writeBuffer();
 	MILLISEC_DELAY(TEST_DELAY5);
@@ -322,7 +322,7 @@ void Test802(void)
 	// Vector to store return values
 	std::vector<uint8_t> returnValues; 
 	// test variables
-	char testString5[] = "Error Check Test 802, results to usb";
+	const char testString5[] = "Error Check Test 802, results to usb";
 	bool errorFlag = false;
 
 	// === Tests===
@@ -395,7 +395,7 @@ void Test802(void)
 */
 void EndTests(void)
 {
-	char teststr1[] = "Tests over";
+	const char teststr1[] = "Tests over";
 	myTFT.writeCharString(10, 40, teststr1);
 	DisplayReset();
 	myTFT.fillScreen(myTFT.C_BLACK);
