@@ -13,6 +13,9 @@
         <dir name="src"/>
         <dir name="examples"/>
     </paths>
+    <defines>
+        <define name="__arm__"/>
+    </defines>
     <suppressions>
         <suppression>knownConditionTrueFalse</suppression>
         <suppression>unusedPrivateFunction</suppression>
