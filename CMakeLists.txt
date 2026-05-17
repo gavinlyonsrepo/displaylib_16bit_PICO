@@ -28,6 +28,7 @@ add_executable(${PROJECT_NAME}
   #examples/st7735/bmp_data/main.cpp
   #examples/st7735/demos/main.cpp
   #examples/st7735/frame_buffer/main.cpp
+  #examples/st7735/hello_80x160/main.cpp
 
   #examples/st7789/hello/main.cpp
   #examples/st7789/graphics/main.cpp

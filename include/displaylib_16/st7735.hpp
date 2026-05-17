@@ -40,6 +40,7 @@ public:
 		TFT_ST7735R_Green,	 /**<  ST7735R Green Tab */
 		TFT_ST7735S_Black,	 /**<  ST7735S Black Tab */
 		TFT_ST7735B,		 /**<  ST7735B controller */
+		TFT_ST7735S_80160	 /**<  ST7735S 80x160, BOE panel, (buydisplay) */
 	};
 
 	TFT_modes_e _currentMode = TFT_Normal_mode;                   /**< Enum to hold display mode */
@@ -70,13 +71,15 @@ private:
 	void TFTGreenTabInitialize(void);
 	void TFTBlackTabInitialize(void);
 	void TFTRedTabInitialize(void);
+	void TFTST7735S80160Initialize(void);
 	void Rcmd1(void);
 	void Rcmd2red(void);
 	void Rcmd3(void);
 	void Bcmd(void);
 	void Rcmd2green(void);
+	void Scmd(void);
 	//screen 
-	uint8_t _colstart = 0;        /**< Used to offset column in the event of defect at edge of screen */
+	uint8_t _colstart = 0;       /**< Used to offset column in the event of defect at edge of screen */
 	uint8_t _rowstart= 0;        /**< Used to offset row in the event of defect at edge of screen */
 	uint16_t _widthStartTFT= 128; /**<  never change after first init */
 	uint16_t _heightStartTFT= 128; /**< never change after first init */

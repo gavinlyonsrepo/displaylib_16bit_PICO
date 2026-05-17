@@ -67,3 +67,5 @@
   * GC9107
     * Added function TFTsetPanelOffset to set and calculate required offsets
     internally in the library. Examples adjusted for new function.
+  * Get codebase to pass cppcheck and add cppcheck CI workflow
+  * STT735 addded support for 80x160 varient (see github issue #15)

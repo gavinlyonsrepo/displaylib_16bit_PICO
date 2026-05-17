@@ -90,7 +90,7 @@ bool Setup(void)
 	// ******************************************
 
 	// ******** USER OPTION 3 PCB_TYPE  **************************
-	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,4 choices,see README
+	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,multi choice,see README
 	//**********************************************************
 
 	if (myTFT.setBuffer() != DisLib16::Success)
