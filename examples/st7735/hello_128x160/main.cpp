@@ -4,7 +4,7 @@
 	@brief  Example cpp file for st7735 library. Tests  Hello World
 	@note   See USER OPTIONS 0-3 in SETUP function
 	@test
-		-# Test100 write out Hello world  128x128 display
+		-# Test103 write out Hello world on 128x160 display
 */
 
 // Section ::  libraries 
@@ -25,14 +25,14 @@ ST7735_TFT myTFT;
 
 //  Section ::  Function Headers 
 void Setup(void);  // setup + user options
-void Test100(void);
+void Test103(void);
 void EndTests(void);
 
 //  Section ::  MAIN loop
 int main(void) 
 {
 	Setup();
-	Test100();
+	Test103();
 	EndTests();
 }
 // *** End OF MAIN **
@@ -71,19 +71,19 @@ void Setup(void)
 	uint8_t OFFSET_COL = 0;  // 2, These offsets can be adjusted for any issues->
 	uint8_t OFFSET_ROW = 0; // 3, with screen manufacture tolerance/defects
 	uint16_t TFT_WIDTH = 128;// Screen width in pixels
-	uint16_t TFT_HEIGHT = 128; // Screen height in pixels
+	uint16_t TFT_HEIGHT = 160; // Screen height in pixels
 	myTFT.TFTInitScreenSize(OFFSET_COL, OFFSET_ROW , TFT_WIDTH , TFT_HEIGHT);
 // ******************************************
 
 // ******** USER OPTION 3 PCB_TYPE  **************************
-	myTFT.TFTInitPCBType(myTFT.TFT_ST7735R_Red); // pass enum,multi choice,see README
+	myTFT.TFTInitPCBType(myTFT.TFT_ST7735S_Black); // pass enum,multi choice,see README
 //**********************************************************
 }
 
-void Test100(void) {
+void Test103(void) {
 	myTFT.setRotation(myTFT.Degrees_0);
 	myTFT.fillScreen(myTFT.C_BLACK);
-	myTFT.setTextColor(myTFT.C_GREEN, myTFT.C_BLACK);
+	myTFT.setTextColor(myTFT.C_RED, myTFT.C_BLACK);
 	myTFT.setCursor(5,5);
 	myTFT.setFont(font_default);
 	myTFT.print("Hello World");

@@ -2,7 +2,7 @@
 	@file     main.cpp
 	@author   Gavin Lyons
 	@brief    Example cpp file for st7735 library. Tests Hello World
-	@details  This example file is for 96' 80x160 display 
+	@details  This example file is for 0.96 inch 80x160 pixel display 
 			  See USER OPTIONS in SETUP function
 			  Note PCB choice and offsets
 	@test
@@ -100,13 +100,10 @@ void Test101(void)
 }
 
 // Colour Test :: Red, Green, Blue, Yellow, White — black background
-// If colours are wrong check: PCB type (option 3), setColorByteSwap(), TFTchangeInvertMode()
+// If colours are wrong check: PCB type (option 3), TFTchangeInvertMode()
 void ColorTest(void)
 {
 	myTFT.fillScreen(myTFT.C_BLACK);
-	// Five blocks stacked vertically, centred in 80x160
-	// Each block: width=64, height=24, x=8 (4px margin each side), radius=8
-	// Spacing: 28px per block (24 height + 4 gap), y_start=12 → last block ends at y=148
 	myTFT.fillRoundRect(8,  12, 64, 24, 8, myTFT.C_RED);
 	myTFT.fillRoundRect(8,  40, 64, 24, 8, myTFT.C_GREEN);
 	myTFT.fillRoundRect(8,  68, 64, 24, 8, myTFT.C_BLUE);

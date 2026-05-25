@@ -15,6 +15,7 @@ pico_sdk_init()
 
 # turn on all compiler warnings 
 add_compile_options(-Wall -Wextra )
+
 # print memory information
 string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 
@@ -22,6 +23,8 @@ string(APPEND CMAKE_EXE_LINKER_FLAGS "-Wl,--print-memory-usage")
 # Comment in ONE AND ONE ONLY
 add_executable(${PROJECT_NAME} 
   examples/st7735/hello/main.cpp
+  #examples/st7735/hello_128x160/main.cpp
+  #examples/st7735/hello_80x160/main.cpp
   #examples/st7735/graphics/main.cpp
   #examples/st7735/functions_fps/main.cpp
   #examples/st7735/text/main.cpp

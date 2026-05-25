@@ -28,7 +28,9 @@ Comment in one path and one path only.
 
 | Filename | Function | Note |
 | --- | --- | --- |
-| hello | Hello world | --- |
+| hello | Hello world for 128x128 display | --- |
+| hello_80x160 | Hello world for 80x160 display | note offsets |
+| hello_128x160 | Hello world for 128x160 display | --- |
 | text | Text  + fonts | --- |
 | graphics | Graphics | --- |
 | functions_fps | Functions(like rotate, scroll) + FPS tests | --- |
@@ -85,6 +87,8 @@ Default is "TFT_ST7735R_Red".  If you select the wrong one if may still work but
 | 3 | ST7735R Red Tab | TFT_ST7735R_Red | Red PCB v1.1, 1.44 inch , 128x128 pixels |
 | 4 | ST7735S Black Tab | TFT_ST7735S_Black | Red PCB v1.2, 1.8 inch, 128x160 pixels |
 | 5 | ST7735S 80x160 | TFT_ST7735S_80160 | Blue PCB .96 inch 80x160 pixels |
+
+The ST7735S 80x160 requires an offset of (26,1) or (24,0)
 
 ## Hardware
 

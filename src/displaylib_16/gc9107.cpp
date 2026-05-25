@@ -183,29 +183,29 @@ void GC9107_TFT::TFTsetRotation(display_rotate_e mode) {
 		case Degrees_0 : // 0x00
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
-			_xstart = _colOffset;
-			_ystart = _rowOffset;
+			_XStart = _colOffset;
+			_YStart = _rowOffset;
 			break;
 		case Degrees_90:
 			madctl |= (MADCTL_FLAGS_t::ML | MADCTL_FLAGS_t::MV | MADCTL_FLAGS_t::MX  ); // 0x70 0111-0000;
 			_width  =_heightStartTFT;
 			_height = _widthStartTFT;
-			_xstart = _rowOffset;
-			_ystart = _colOffset;
+			_XStart = _rowOffset;
+			_YStart = _colOffset;
 			break;
 		case Degrees_180:  
 			madctl |= (MADCTL_FLAGS_t::MY | MADCTL_FLAGS_t::MX ); // 0xC0 1100-0000;
 			_width =_widthStartTFT;
 			_height = _heightStartTFT;
-			_xstart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
-			_ystart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
+			_XStart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
+			_YStart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
 			break;
 		case Degrees_270:  
 			madctl |= (MADCTL_FLAGS_t::MY |MADCTL_FLAGS_t::MV ); // 0xA0 1010-0000;
 			_width =_heightStartTFT;
 			_height = _widthStartTFT;
-			_xstart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
-			_ystart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
+			_XStart = _RAM_HEIGHT - _heightStartTFT - _rowOffset;
+			_YStart = _RAM_WIDTH  - _widthStartTFT  - _colOffset;
 			break;
 	}
 	writeCommand(GC9107_MADCTL);
@@ -281,10 +281,10 @@ void GC9107_TFT::setAddrWindow(uint16_t x1, uint16_t y1, uint16_t w, uint16_t h)
 		h = y1;
 	}
 	// Translate panel coordinates → VRAM coordinates
-	x1 += _xstart;
-	w  += _xstart;
-	y1 += _ystart;
-	h  += _ystart;
+	x1 += _XStart;
+	w  += _XStart;
+	y1 += _YStart;
+	h  += _YStart;
 	// Send to display coordinates
 	uint8_t x1Higher = (x1 >> 8) ;
 	uint8_t x1Lower  = (x1 & 0xFF);
