@@ -19,7 +19,7 @@
 // ==========================================================
 // ===== USER OPTION 3 turns on fonts 12-16 if commented in =
 // default is off
-//#define dislib16_ADVANCED_FONTS_ENABLE
+#define dislib16_ADVANCED_FONTS_ENABLE
 // ==========================================================
 // ==========================================================
 
@@ -38,6 +38,7 @@ extern const std::span<const uint8_t> pFontHallfetica; /**< 16x16 Helvetica-styl
 extern const std::span<const uint8_t> pFontArialRound; /**< 16x24 Arial Round font */
 extern const std::span<const uint8_t> pFontOrla; /**< 16x24 Orla font */
 extern const std::span<const uint8_t> pFontGroTesk; /**< 16x32 GroTesk font */
+extern const std::span<const uint8_t> pFontRISCV; /**< 16x16 Font similar to RISC-V logo*/
 #ifdef dislib16_ADVANCED_FONTS_ENABLE
 
 extern const std::span<const uint8_t> pFontInconsola; /**< 24x32 Inconsola font */
@@ -64,13 +65,14 @@ enum display_Font_name_e : uint8_t
 	font_orla = 9,        /**< Orla 16by24 */
 	font_arialRound = 10, /**< ArialRound 16by24 */
 	font_groTesk = 11     /**< GroTesk 16by32 */
+	font_RISCV = 17 /**< Font similar to RISC-V logo 16by16 */
 	#ifdef dislib16_ADVANCED_FONTS_ENABLE
 	,
 	font_inconsola =12,   /**< Inconsola 24by32 */
 	font_mint = 13,       /**< Mint 24by32 */
 	font_sixteenSeg = 14, /**< Sixteen Segment 32by48 (NUMBERS ONLY + : . -) */
 	font_sevenSeg = 15,   /**< Seven Segment 32by50 (NUMBERS ONLY + : . -) */
-	font_groTeskBig = 16  /**< Grotesk big 32by64 (NO LOWERCASE) */
+	font_groTeskBig = 16,  /**< Grotesk big 32by64 (NO LOWERCASE) */
 	#endif
 };
 
