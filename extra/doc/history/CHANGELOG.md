@@ -69,3 +69,6 @@
     internally in the library. Examples adjusted for new function.
   * Get codebase to pass cppcheck and add cppcheck CI workflow
   * STT735 addded support for 80x160 varient (see github issue #15)
+
+* Version Next (NOTE, changes in repository but not in a release yet)
+  * Added new font see PR #16 on github

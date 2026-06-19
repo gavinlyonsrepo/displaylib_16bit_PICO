@@ -32,7 +32,7 @@ for the Raspberry PI PICO.
 2. Bitmaps supported.
 3. Polymorphic print class included to print many data types.
 4. Multiple displays supported, see supported-devices, new components can be easily added.
-5. 16 fonts included.
+5. 17 fonts included.
 6. [URL project github link](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO)
 
 * Author: Gavin Lyons

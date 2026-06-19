@@ -5,7 +5,7 @@
 	@note See USER OPTIONS 0-3 in SETUP function, 
 		to enable all tests , comment in define dislib16_ADVANCED_FONTS_ENABLE in *Font.hpp
 	@test
-	-# Test 701 print out fonts 1-12
+	-# Test 701 print out fonts
 	-# Test 702 defined 16-bit Colors, text
 	-# Test 703 print entire ASCII font 32 to 127, default font
 	-# Test 704 font invert + test character draw using draw functions
@@ -152,7 +152,7 @@ void Test701(void) {
 	// Second set of fonts
 	FontText fontTests2[] = {
 		{"16", font_sixteenSeg, 5, 5}, {"7", font_sevenSeg, 5, 5}, {"inco", font_inconsola, 5, 5},
-		{"GB", font_groTeskBig, 5, 5}, {"Mint", font_mint, 5, 5}
+		{"GB", font_groTeskBig, 5, 5}, {"Mint", font_mint, 5, 5}, {"RISCV", font_RISCV, 5, 5}
 	};
 	// Loop for second set
 	size_t testCount2 = sizeof(fontTests2) / sizeof(FontText);
