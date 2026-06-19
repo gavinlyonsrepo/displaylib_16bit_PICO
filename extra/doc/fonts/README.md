@@ -149,4 +149,4 @@ GroTesk Big
 
 RISCV (Contributed by user on github see PR #16 )
 
-[![font image](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/fonts/riscv.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/fonts/riscv.png)
+[![font image](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/riscv.png)](https://github.com/gavinlyonsrepo/displaylib_16bit_PICO/blob/main/extra/image/riscv.png)
