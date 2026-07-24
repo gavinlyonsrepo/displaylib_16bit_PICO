@@ -1043,7 +1043,7 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawBitmap16Data(uint16_t x, uint1
 			// Extract the 16-bit color from two consecutive bytes
 			color = (*bitmapIter << 8) | *(bitmapIter + 1);
 			bitmapIter += 2;
-			drawPixel(x + i - 1, y + j -1, color);
+			drawPixel(x + i, y + j, color);
 		}
 	}
 #endif
@@ -1103,10 +1103,10 @@ DisLib16::Ret_Codes_e displaylib_16_graphics::drawSpriteData(uint16_t x, uint16_
 			{
 				if (colour != backgroundColor)
 				{
-					drawPixel(x + i - 1, y + j - 1, colour);
+					drawPixel(x + i, y + j, colour);
 				}
 			}else{
-				drawPixel(x + i - 1, y + j - 1, colour);
+				drawPixel(x + i, y + j, colour);
 			}
 		}
 	}
